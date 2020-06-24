@@ -1,4 +1,4 @@
-import os.Main;
+import os.MainThread;
 
 public class Start {
     public static void main(String[] args) {
@@ -6,7 +6,7 @@ public class Start {
     }
 
     private void run() {
-        Thread mainThread = new Main();
+        Thread mainThread = new MainThread();
         mainThread.start();
     }
 }
