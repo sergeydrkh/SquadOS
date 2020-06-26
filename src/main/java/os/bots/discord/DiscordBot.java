@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import os.bots.discord.dsCommands.DS_Help;
 import os.bots.discord.dsCommands.DS_Info;
@@ -38,7 +39,9 @@ public class DiscordBot {
                     .setOwnerId(OWNER_ID)
                     .setPrefix("$")
                     .setAlternativePrefix("/")
-                    .setHelpWord("help");
+                    .setHelpWord("help")
+                    .setStatus(OnlineStatus.ONLINE)
+                    .setActivity(Activity.playing("v" + VERSION));
 
             commands.addCommand(new DS_Help());         // help command
             commands.addCommand(new DS_Info());         // info command

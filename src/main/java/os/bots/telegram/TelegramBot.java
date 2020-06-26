@@ -20,10 +20,12 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final String CREATOR = "@s3r3zka";
 
     public void onUpdateReceived(Update update) {
+        // update data
         Message receivedMessage = update.getMessage();
         String receivedText = receivedMessage.getText();
         long chatID = receivedMessage.getChatId();
 
+        // process data
         try {
             // if message has text
             if (update.hasMessage() && receivedMessage.getText() != null) {
@@ -55,8 +57,13 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
 
             // if message has CallbackQuery
-            if (update.hasCallbackQuery()) {
+            else if (update.hasCallbackQuery()) {
                 // todo: make callback query support
+            }
+
+            // if message has photo
+            else {
+                execute(sendMessage(chatID).setText("Сэр, вы ошиблись ботом!"));
             }
 
 
@@ -165,7 +172,7 @@ public class TelegramBot extends TelegramLongPollingBot {
      */
     private void command_registration(long chatID) throws TelegramApiException {
         // generate registration code
-        String regCode = System.currentTimeMillis() + "@" + (chatID * (Math.random() * 100000)) + "$" + (Math.random() * 1000000);
+        String regCode = System.currentTimeMillis() + "_" + (chatID * (Math.random() * 100000)) + ":" + chatID;
 
         // send reg code
         execute(sendMessage(chatID).setText("Ваш код регистрации:\n" + regCode));

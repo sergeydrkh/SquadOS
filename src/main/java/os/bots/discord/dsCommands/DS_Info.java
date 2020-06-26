@@ -10,6 +10,7 @@ public class DS_Info extends Command {
         this.name = "info";
         this.help = "информация о боте";
         this.arguments = "";
+        this.guildOnly = false;
     }
 
     @Override
@@ -23,7 +24,7 @@ public class DS_Info extends Command {
 
         infoMessage.setTitle("Информация о боте:");                                 // title
         infoMessage.addField("Название", DiscordBot.NAME, true);        // name
-        infoMessage.addField("Версия", DiscordBot.VERSION, true);        // version
+        infoMessage.addField("Версия", DiscordBot.VERSION, true);       // version
 
         // send message
         event.getChannel().sendMessage(infoMessage.build()).queue();
