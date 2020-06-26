@@ -5,6 +5,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import os.bots.discord.DiscordBot;
+import os.exceptions.NoConnectionWithDiscordException;
 import os.utils.Console;
 
 import java.text.SimpleDateFormat;
@@ -16,7 +18,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final String NICKNAME = "SquadOS";
     public static final String VERSION = "0.1.1_beta";
     public static final String CREATOR = "@s3r3zka";
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm");
 
     public void onUpdateReceived(Update update) {
         Message receivedMessage = update.getMessage();
@@ -39,6 +40,14 @@ public class TelegramBot extends TelegramLongPollingBot {
                     // info command
                     if (receivedText.startsWith("/info"))
                         command_info(chatID);
+
+                    // onlineUsers command
+                    if (receivedText.startsWith("/online"))
+                        command_onlineUsers(chatID);
+
+                    // registration command
+                    if (receivedText.startsWith("/reg"))
+                        command_registration(chatID);
 
                 } else {
                     execute(sendMessage(chatID).setText("Я вас не понимаю!\n/help - помощь по командам."));
@@ -69,6 +78,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return new SendMessage().setChatId(chatID);
     }
 
+    private String getStringDate(Date date) {
+        return new SimpleDateFormat("dd.MM.yyyy hh:mm").format(date);
+    }
+
     // >> BOT COMMANDS <<
 
     /**
@@ -77,14 +90,17 @@ public class TelegramBot extends TelegramLongPollingBot {
      * @action send start message
      */
     private void command_start(long chatID) throws TelegramApiException {
+        // create welcome message
         String greeting = "Привет! Это бот системы SquadOS.\nВведи /help для просмотра команд.";
+
+        // send
         execute(sendMessage(chatID).setText(greeting));
     }
 
     /**
-     * @param chatID
-     * @command /help
-     * @action send all commands
+     * @param       chatID
+     * @command     /help
+     * @action      send all commands
      */
     private void command_help(long chatID) throws TelegramApiException {
         StringBuilder commands = new StringBuilder();
@@ -94,14 +110,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         commands.append(" > /start - запустить бота.\n");
         commands.append(" > /help - помощь по всем командам.\n");
         commands.append(" > /info - информация о боте.\n");
+        commands.append(" > /online - онлайн на дискорд сервере.\n");
 
+        // send help
         execute(sendMessage(chatID).setText(commands.toString()));
     }
 
     /**
-     * @param chatID
-     * @command /info
-     * @action send info about bot
+     * @param       chatID
+     * @command     /info
+     * @action      send info about bot
      */
     private void command_info(long chatID) throws TelegramApiException {
         StringBuilder info = new StringBuilder();
@@ -111,8 +129,46 @@ public class TelegramBot extends TelegramLongPollingBot {
         info.append(" > Название: " + NICKNAME + ".\n");                                       // bot name
         info.append(" > Версия: " + VERSION + ".\n");                                          // bot version
         info.append(" > Создатель: " + CREATOR + ".\n");                                       // bot creator
-        info.append(" > Текущая дата: ").append(DATE_FORMAT.format(new Date())).append(".");   // current date
+        info.append(" > Текущая дата: ").append(getStringDate(new Date())).append(".");        // current date
 
+        // send info
         execute(sendMessage(chatID).setText(info.toString()));
+    }
+
+
+    /**
+     * @param       chatID
+     * @command     /online
+     * @action      send online users on the discord server
+     */
+    private void command_onlineUsers(long chatID) throws TelegramApiException {
+        StringBuilder onlineUsers = new StringBuilder();
+
+        // try send online users or error message
+        try {
+            onlineUsers.append("Пользователи онлайн:\n");
+            DiscordBot.getOnlineUsers().stream()
+                    .filter(member -> !member.getUser().isBot())
+                    .forEach(member -> onlineUsers.append(" > ").append(member.getEffectiveName()).append("\n"));
+        } catch (NoConnectionWithDiscordException noConnection) {
+            onlineUsers.append("Ошибка! Отсутствует связь с сервером.");
+        }
+
+        // send message
+        execute(sendMessage(chatID).setText(onlineUsers.toString()));
+    }
+
+    /**
+     * @param       chatID
+     * @command     /reg
+     * @action      send registration code
+     */
+    private void command_registration(long chatID) throws TelegramApiException {
+        // generate registration code
+        String regCode = System.currentTimeMillis() + "@" + (chatID * (Math.random() * 100000)) + "$" + (Math.random() * 1000000);
+
+        // send reg code
+        execute(sendMessage(chatID).setText("Ваш код регистрации:\n" + regCode));
+        execute(sendMessage(chatID).setText("Не передавайте никому данный код!"));
     }
 }
