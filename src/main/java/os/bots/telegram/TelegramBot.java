@@ -190,7 +190,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         String regCode = System.currentTimeMillis() + "_" + (chatID * (Math.random() * 100000)) + ":" + chatID;
 
         // send reg code
-        execute(sendMessage(chatID).setText("Ваш код регистрации:\n" + regCode));
-        execute(sendMessage(chatID).setText("Не передавайте никому данный код!"));
+        execute(sendMessage(chatID).setText("Ваш код регистрации:\n" + regCode + "\n\n Не передавайте никому данный код!"));
     }
 }
