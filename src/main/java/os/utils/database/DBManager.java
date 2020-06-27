@@ -48,7 +48,7 @@ public class DBManager {
             int temp_id = resultSet.getInt(1);
             List<Object> temp_data = new ArrayList<>();
 
-            for (int i = 2; i < resultSet.getMetaData().getColumnCount(); i++)
+            for (int i = 2; i <= resultSet.getMetaData().getColumnCount(); i++)
                 temp_data.add(resultSet.getObject(i));
 
             result.put(temp_id, temp_data);

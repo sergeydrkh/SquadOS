@@ -1,10 +1,7 @@
 package os.bots.discord;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import net.dv8tion.jda.api.AccountType;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import os.bots.discord.dsCommands.DS_Help;
@@ -22,7 +19,7 @@ import java.util.stream.Collectors;
 public class DiscordBot {
     // discord bot info
     public static final String NAME = "SquadOS";
-    public static final String VERSION = "0.1.4_beta";
+    public static final String VERSION = "0.1.8_beta";
     public static final String OWNER_ID = "662324806187745290";
     private static final String TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XvN3vw.8qP5htUlzBVxo3QrCM9DAFRaLQM";
 
@@ -70,7 +67,7 @@ public class DiscordBot {
     // >> BOT UTILS <<
 
     /**
-     * @return
+     * @return online users
      * @throws NoConnectionWithDiscordException
      * @action get online users on server, if jda isn't loaded throws exception
      */
@@ -80,5 +77,13 @@ public class DiscordBot {
         } catch (java.lang.NullPointerException e) {
             throw new NoConnectionWithDiscordException();
         }
+    }
+
+    /**
+     * @return invite link to ds main server
+     * @action get invite link
+     */
+    public static String getInviteLink() {
+        return "https://discord.gg/ARuwEjd";
     }
 }
