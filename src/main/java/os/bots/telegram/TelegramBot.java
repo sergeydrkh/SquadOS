@@ -6,10 +6,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import os.MainThread;
 import os.bots.discord.DiscordBot;
 import os.exceptions.NoConnectionWithDiscordException;
 import os.utils.Console;
+import os.utils.database.DBManager;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -19,8 +22,20 @@ public class TelegramBot extends TelegramLongPollingBot {
     private static final String TOKEN = "1216336612:AAGcae_ck98BvTPekF9mzg_IE9gRpSQt3q8";
     public static final String USERNAME = "@SquadOS_bot";
     public static final String NICKNAME = "SquadOS";
-    public static final String VERSION = "0.1.2_beta";
+    public static final String VERSION = "0.1.4_beta";
     public static final String CREATOR = "@s3r3zka";
+
+    public static DBManager dbManager;
+    public static final String DB_REGCODES_TABLE = "telegram_regCodes";
+
+    static {
+        // create database connection
+        try {
+            dbManager = new DBManager("localhost", 3306, "squados");
+        } catch (SQLException throwable) {
+            Console.errln("Ошибка! " + throwable.getMessage());
+        }
+    }
 
     public void onUpdateReceived(Update update) {
         // update data
@@ -189,7 +204,16 @@ public class TelegramBot extends TelegramLongPollingBot {
         // generate registration code
         String regCode = System.currentTimeMillis() + "_" + (chatID * (Math.random() * 100000)) + ":" + chatID;
 
-        // send reg code
-        execute(sendMessage(chatID).setText("Ваш код регистрации:\n" + regCode + "\n\n Не передавайте никому данный код!"));
+        // attempt add code to database
+        if(dbManager.insertData(DB_REGCODES_TABLE, new String[]{"regcode", "chatID"}, new String[]{regCode, String.valueOf(chatID)})) {
+            // send reg code
+            execute(sendMessage(chatID).setText(
+                    "Ваш код регистрации:\n" + regCode + "\n\nВведите его на сайте " +
+                            MainThread.MAIN_WEBSITE_URL +
+                            "\nНе передавайте никому данный код!"));
+        } else {
+            // send error message
+            execute(sendMessage(chatID).setText("Ошибка! Невозможно соединиться с базой данных."));
+        }
     }
 }

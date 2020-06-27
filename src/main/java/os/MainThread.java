@@ -5,7 +5,7 @@ import os.bots.telegram.TelegramStartThread;
 import os.bots.vk.VkStartThread;
 
 public class MainThread extends Thread {
-
+    public static final String MAIN_WEBSITE_URL = "test.com";
 
     @Override
     public void start() {
