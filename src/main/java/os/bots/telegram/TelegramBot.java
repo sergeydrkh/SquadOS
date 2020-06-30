@@ -26,7 +26,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final String USERNAME = "@SquadOS_bot";
     public static final String NICKNAME = "SquadOS";
     public static final String VERSION = "0.2.0_beta";
-    public static final String CREATOR = "@s3r3zka";
+    public static final String CREATOR = "@serezkaaaa";
 
     public static DBManager dbManager;
 
