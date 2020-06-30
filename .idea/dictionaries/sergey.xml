@@ -3,11 +3,13 @@
     <words>
       <w>cooldown</w>
       <w>errln</w>
+      <w>inlcommand</w>
       <w>jcenter</w>
       <w>regcode</w>
       <w>regcodes</w>
       <w>squados</w>
       <w>tgram</w>
+      <w>throwables</w>
     </words>
   </dictionary>
 </component>

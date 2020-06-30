@@ -3,8 +3,13 @@ package os.bots.telegram;
 import net.dv8tion.jda.api.entities.Member;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import os.bots.discord.DiscordBot;
 import os.exceptions.NoConnectionWithDiscordException;
@@ -24,9 +29,6 @@ public class TelegramBot extends TelegramLongPollingBot {
     public static final String CREATOR = "@s3r3zka";
 
     public static DBManager dbManager;
-    public static final String DB_REGCODES_TABLE = "telegram_regCodes";
-    private static final Map<Long, Integer> loginTasks = new HashMap<>();
-    private static final Map<Long, RegisterForm> registerTasks = new HashMap<>();
 
     static {
         // create database connection
@@ -38,79 +40,108 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     public void onUpdateReceived(Update update) {
-        // update data
-        Message receivedMessage = update.getMessage();
-        String receivedText = receivedMessage.getText();
-        long chatID = receivedMessage.getChatId();
+        System.out.println(update.toString());
 
         // process data
         try {
             // if message has text
-            if (update.hasMessage() && receivedMessage.getText() != null) {
+            if (update.hasMessage() && update.getMessage().hasText()) {
+                // get received data
+                Message receivedMessage = update.getMessage();
+                String receivedText = receivedMessage.getText();
+                long chatID = receivedMessage.getChatId();
+                int msgID = receivedMessage.getMessageId();
+
                 if (receivedMessage.isCommand()) {
+                    // check if user use commands in tasks
+                    if (tasksManager.contains(chatID)) {
+                        tasksManager.removeTask(chatID);
+                        execute(sendMessage(chatID).setText("Вы прервали операцию командой!"));
+                    }
 
                     // start command
                     if (receivedText.startsWith("/start"))
                         command_start(chatID);
 
-                    // help command
-                    if (receivedText.startsWith("/help"))
+                        // help command
+                    else if (receivedText.startsWith("/help"))
                         command_help(chatID);
 
-                    // info command
-                    if (receivedText.startsWith("/inf"))
+                        // info command
+                    else if (receivedText.startsWith("/inf"))
                         command_info(chatID);
 
-                    // onlineUsers command
-                    if (receivedText.startsWith("/onl"))
+                        // onlineUsers command
+                    else if (receivedText.startsWith("/onl"))
                         command_onlineUsers(chatID);
 
-                    // registration command
-                    if (receivedText.startsWith("/reg"))
-                        command_register(chatID);
+                        // account
+                    else if (receivedText.startsWith("/acc"))
+                        command_acc(chatID);
 
-                    // login command
-                    if (receivedText.startsWith("/log"))
-                        command_login(chatID);
-
-                    // exit command
-                    if (receivedText.startsWith("/ex"))
-                        command_exit(chatID);
-
-                    // discord link command
-                    if (receivedText.startsWith("/dsl"))
+                        // discord link command
+                    else if (receivedText.startsWith("/dsl"))
                         command_discordLink(chatID);
 
+                        // unknown command
+                    else
+                        execute(sendMessage(chatID).setText("Такой команды не существует!\n/help - все доступные команды."));
                 }
 
-                // get pass to login
-                else if (loginTasks.containsKey(chatID)) {
-                    authorize(chatID, receivedText);
+                // another tasks
+                else if (tasksManager.contains(chatID)) {
+                    tasksManager.getTask(chatID).doIt(chatID, msgID, receivedText);
                 }
 
-                // get login to register
-                else if (registerTasks.containsKey(chatID)) {
-                    register(chatID, receivedText);
-                }
-
-                // unknown command
+                // if user stupid
                 else {
-                    execute(sendMessage(chatID).setText("Я вас не понимаю!\n/help - помощь по командам."));
+                    execute(sendMessage(chatID).setText("Я вас не понимаю!"));
                 }
             }
 
             // if message has CallbackQuery
-            else if (update.hasCallbackQuery()) {
-                // todo: make callback query support
+            if (update.hasCallbackQuery()) {
+                // get received data
+                CallbackQuery receivedQuery = update.getCallbackQuery();
+
+                int msgID = receivedQuery.getMessage().getMessageId();
+                long chatID = receivedQuery.getMessage().getChatId();
+                String data = receivedQuery.getData();
+
+
+                // process
+
+                // delete message inlcommand
+                if (data.equals("delete_msg")) {
+                    tasksManager.removeTask(chatID);
+                    deleteMessage(chatID, msgID);
+                }
+
+                // get register inlcommand
+                if (data.equals("reg"))
+                    inlcommand_getRegister(chatID, msgID);
+
+                // get login inlcommand
+                if (data.equals("login"))
+                    inlcommand_getLogin(chatID, msgID);
+
+                // exit from account inlcommand
+                if (data.equals("exit"))
+                    inlcommand_exitFromAccount(chatID, msgID);
+
+                // get main control main page inlcommand
+                if (data.equals("control_main"))
+                    inlcommand_getMainPage(chatID, msgID);
+
+                // get settings control page inlcommand
+                if (data.equals("control_settings"))
+                    inlcommand_getSettings(chatID, msgID);
+
             }
 
-            // if message has photo
-            else {
-                execute(sendMessage(chatID).setText("Сэр, вы ошиблись ботом!"));
-            }
 
-
-        } catch (TelegramApiException | SQLException e) {
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
             Console.errln("Ошибка при отправке сообщения! " + e.getMessage() + ".");
         }
     }
@@ -239,153 +270,536 @@ public class TelegramBot extends TelegramLongPollingBot {
     // >> ACCOUNT SYSTEM << //////////////////////////////////////////////////////////////////// >> ACCOUNT SYSTEM <<
     // >> ACCOUNT SYSTEM << //////////////////////////////////////////////////////////////////// >> ACCOUNT SYSTEM <<
 
-    /**
-     * @param chatID
-     * @command /reg
-     * @action send registration code
-     */
-    private void command_register(long chatID) throws TelegramApiException, SQLException {
-        // check if account isn't created
-        Map<Integer, List<Object>> accounts = dbManager.getData("users");
-        for (List<Object> values : accounts.values()) {
-            if (Long.parseLong(String.valueOf(values.get(2))) == chatID) {
-                execute(sendMessage(chatID).setText("Вы уже зарегистрированы!\nВойдите через /login."));
-                return;
+    private static final TasksManager tasksManager = new TasksManager();
+
+    // structure of the tasks
+    // queue manager
+    private static class TasksManager {
+        private static final Map<Long, Task> tasks = new HashMap<>();
+
+        // add task to pull
+        public void addTask(long chatID, Task task) {
+            tasks.put(chatID, task);
+        }
+
+        // remove task by key
+        public void removeTask(long chatID) {
+            tasks.remove(chatID);
+        }
+
+        // check key in list
+        public boolean contains(long chatID) {
+            return tasks.containsKey(chatID);
+        }
+
+        // get task
+        public Task getTask(long chatID) {
+            return tasks.get(chatID);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder result = new StringBuilder();
+            for (Map.Entry<Long, Task> entry : tasks.entrySet())
+                result.append(entry.getKey()).append(" ").append(entry.getValue().taskType);
+
+            return result.toString();
+        }
+    }
+
+    // task
+    private abstract static class Task {
+        private final TaskType taskType;
+
+        public Task(TaskType taskType) {
+            this.taskType = taskType;
+        }
+
+        public TaskType getType() {
+            return taskType;
+        }
+
+        public abstract void doIt(long chatID, int msgID, String input) throws TelegramApiException;
+    }
+
+    // type of task
+    private enum TaskType {
+        LOGIN, REGISTER
+    }
+    // ---------------------
+
+    // tasks
+    // login task
+    private class LoginTask extends Task {
+        public String username;
+        public String password;
+        public long chatID;
+
+        public LoginTask(long chatID) {
+            super(TaskType.LOGIN);
+            this.chatID = chatID;
+        }
+
+        @Override
+        public void doIt(long chatID, int msgID, String input) throws TelegramApiException {
+            // delete message with pass
+            deleteMessage(chatID, msgID - 1);
+            deleteMessage(chatID, msgID);
+
+            // check if pass is right
+            User user = db_getUser(chatID);
+            if (user != null) {
+                if (user.getPassword().equals(input.trim())) {
+                    if(dbManager.insertData("sessions", new String[]{"telegram_chatID"}, new String[]{String.valueOf(chatID)})) {
+                        command_acc(chatID);
+                    } else {
+                       execute(sendMessage(chatID).setText("Произошла ошибка во время входа!\nПопробуйте войти позже."));
+                    }
+                } else {
+                    InlineKeyboardMarkup againLogin = getKeyboardMarkup();
+                    addButtons_acc_login(againLogin);
+                    execute(sendMessage(chatID).setText("Вы ввели неверный логин/пароль!").setReplyMarkup(againLogin));
+                }
+            } else {
+                execute(sendMessage(chatID).setText("Произошла ошибка во время входа!\nПопробуйте войти позже."));
             }
         }
-
-        // create register task
-        registerTasks.put(chatID, new RegisterForm());
-        execute(sendMessage(chatID).setText("Введите желаемый никнейм"));
     }
 
-    private void register(long chatID, String input) throws TelegramApiException {
-        // get form
-        RegisterForm form = registerTasks.get(chatID);
+    // register task
+    private class RegisterTask extends Task {
+        public String username;
+        public String password;
 
-        // process
-        if (form.username == null) {
-            form.setUsername(input.trim());
-            execute(sendMessage(chatID).setText("Введите пароль"));
-        } else if (form.password == null) {
-            form.setPassword(input.trim());
-            dbManager.insertData("users", new String[]{"username", "password", "telegram_chatID"}, new String[]{form.username, form.password, String.valueOf(chatID)});
+        public RegisterTask() {
+            super(TaskType.REGISTER);
+        }
 
-            execute(sendMessage(chatID).setText("Аккаунт создан! Авторизируйтесь через /login."));
-            registerTasks.remove(chatID);
+        @Override
+        public void doIt(long chatID, int msgID, String input) throws TelegramApiException {
+            deleteMessage(chatID, msgID - 1);
+            deleteMessage(chatID, msgID);
+
+            if (username == null) {
+                username = input.trim();
+                execute(sendMessage(chatID).setText("Придумайте пароль: "));
+            } else if (password == null) {
+                password = input.trim();
+
+                if (db_register(new User(this.username, this.password, chatID)))
+                    command_acc(chatID);
+                else
+                    execute(sendMessage(chatID).setText("При регистрации произошла ошибка!\nПопробуйте позже."));
+            }
         }
     }
 
-    private static class RegisterForm {
-        private String username;
-        private String password;
+    // >> DATABASE UTILS <<
+
+    // user
+    private static class User {
+        private Integer ID;
+        private final String username;
+        private final String password;
+        private final long telegram_chatID;
+        private String discord_userID;
+
+        public User(String username, String password, long telegram_chatID) {
+            this.username = username;
+            this.password = password;
+            this.telegram_chatID = telegram_chatID;
+        }
+
+        public void setDiscordUserID(String discord_userID) {
+            this.discord_userID = discord_userID;
+        }
+
+        public Integer getID() {
+            return ID;
+        }
 
         public String getUsername() {
             return username;
-        }
-
-        public void setUsername(String username) {
-            this.username = username;
         }
 
         public String getPassword() {
             return password;
         }
 
-        public void setPassword(String password) {
-            this.password = password;
+        public long getTelegram_chatID() {
+            return telegram_chatID;
+        }
+
+        public String getDiscord_userID() {
+            return discord_userID;
+        }
+
+        @Override
+        public String toString() {
+            return "ID: " + ID + "\n" +
+                    "Username: " + username + "\n" +
+                    "Password: " + password + "\n" +
+                    "tg chat id: " + telegram_chatID + "\n" +
+                    "ds user id: " + discord_userID + "\n";
         }
     }
+
+    private boolean db_register(User user) {
+        return dbManager.insertData(
+                "users",
+                new String[]{"username", "password", "telegram_chatID"},
+                new String[]{user.getUsername(), user.getPassword(), String.valueOf(user.getTelegram_chatID())});
+    }
+
+    private List<Long> db_getSessions() {
+        List<Long> sessions = new ArrayList<>();
+        try {
+            dbManager.getData("sessions").forEach((key, value) -> sessions.add(Long.valueOf((String) value.get(1))));
+        } catch (SQLException throwables) {
+            Console.errln("Ошибка! " + throwables.getMessage());
+            return new ArrayList<>();
+        }
+        return sessions;
+    }
+
+    private User db_getUser(long telegram_chatID) {
+        try {
+            // get users from database
+            Map<Integer, List<Object>> users = dbManager.getData("users");
+
+            // find user by chatID
+            for (Map.Entry<Integer, List<Object>> user : users.entrySet())
+                if (Long.parseLong(String.valueOf(user.getValue().get(2))) == telegram_chatID)
+                    return new User((String) user.getValue().get(0), (String) user.getValue().get(1), telegram_chatID);
+        } catch (SQLException throwables) {
+            Console.errln("Ошибка! " + throwables.getMessage());
+        }
+
+        // if nothing founded
+        return null;
+    }
+
+    // account command
 
     /**
      * @param chatID
-     * @command /login
-     * @action login to account
+     * @throws TelegramApiException
+     * @command /acc
+     * @action get account control
      */
-    private void command_login(long chatID) throws TelegramApiException {
-        // get active sessions
-        try {
-            Map<Integer, List<Object>> activeSessions = dbManager.getData("sessions");
+    private void command_acc(long chatID) throws TelegramApiException {
+        // get user and sessions
+        List<Long> sessions = db_getSessions();
+        User account = db_getUser(chatID);
 
-            // check if session inactive
-            for (Map.Entry<Integer, List<Object>> session : activeSessions.entrySet()) {
-                // DB `sessions` config: Integer - sessionID, list.get(0) - userID, list.get(1) - telegram_chatID.
-                String telegram_chatID = String.valueOf(session.getValue().get(1));
+        // generate inline keyboard
+        InlineKeyboardMarkup keyboard = getKeyboardMarkup();
 
-                if (Long.parseLong(telegram_chatID) == chatID) {
-                    execute(sendMessage(chatID).setText("Вы уже авторизированы!"));
-                    return;
-                }
+        // send msg and add keyboard
+        // if account != null => account is created
+        if (account != null) {
+            // check if acc tg_chatID in sessions list
+            if (sessions.contains(account.getTelegram_chatID())) {
+                addButtons_acc_control_main(keyboard);
+                execute(sendMessage(chatID).setText("Аккаунт").setReplyMarkup(keyboard));
             }
-
-            // find account to send name and add to task manager
-            String username = "[-]";
-            Integer userID = -1;
-
-            Map<Integer, List<Object>> accounts = dbManager.getData("users");
-            for (Map.Entry<Integer, List<Object>> account : accounts.entrySet()) {
-                // DB `users` config: Integer - userID, 0 - username, 1 - password, 2 - telegram_chatID, 3 - discord_userID.
-
-                try {
-                    long temp_telegram_chatID = Long.parseLong(String.valueOf(account.getValue().get(2)));
-                    if (temp_telegram_chatID == chatID) {
-                        username = String.valueOf(account.getValue().get(0));
-                        userID = account.getKey();
-                        break;
-                    }
-                } catch (java.lang.NumberFormatException ignored) {
-                }
+            // need login to account
+            else {
+                addButtons_acc_login(keyboard);
+                execute(sendMessage(chatID).setText("Здравствуйте, " + account.getUsername() + "! Войдите в акканут.").setReplyMarkup(keyboard));
             }
-
-            // if userID <= 0 - account didn't founded => user is not authorize
-            if (userID <= 0) {
-                execute(sendMessage(chatID).setText("Вы ещё не зарегистрировались!\nДля регистрации введите /reg."));
-                return;
-            }
-
-            // put authorize task to task manager
-            loginTasks.put(chatID, userID);
-
-            // send message with password query
-            execute(sendMessage(chatID).setText("Введите пароль к аккануту " + username + "."));
-
-        } catch (SQLException throwable) {
-            execute(sendMessage(chatID).setText("Ошибка! Нету связи с базой данных."));
+        }
+        // account does't created
+        else {
+            addButtons_acc_register(keyboard);
+            execute(sendMessage(chatID).setText("Вы ещё не зарегистрированы!").setReplyMarkup(keyboard));
         }
     }
 
-    private void authorize(long chatID, String input) throws TelegramApiException, SQLException {
-        // get userID and remove task
-        Integer userID = loginTasks.get(chatID);
-        loginTasks.remove(chatID);
+    // inline keyboard utils
+    // get harvesting for future keyboard
+    private InlineKeyboardMarkup getKeyboardMarkup() {
+        return new InlineKeyboardMarkup();
+    }
 
-        // check pass is correct
-        Map<Integer, List<Object>> accounts = dbManager.getData("users");
-        // DB `users` config: Integer - userID, 0 - username, 1 - password, 2 - telegram_chatID, 3 - discord_userID.
-        String temp_pass = String.valueOf(accounts.get(userID).get(1));
-        if (!temp_pass.equals(input.trim())) {
-            execute(sendMessage(chatID).setText("Вы ввели неверный пароль!\n/login для повторной попытки."));
+    // get buttons for registration
+    private void addButtons_acc_register(InlineKeyboardMarkup markup) {
+        // create buttons
+        InlineKeyboardButton button_register = new InlineKeyboardButton()
+                .setText("Регистрация")
+                .setCallbackData("reg");
 
+        InlineKeyboardButton button_cancel = new InlineKeyboardButton()
+                .setText("Закрыть")
+                .setCallbackData("delete_msg");
+
+        // fill rows
+        List<InlineKeyboardButton> buttons_row_1 = new ArrayList<>();
+        buttons_row_1.add(button_register);
+        buttons_row_1.add(button_cancel);
+
+        // add to keyboard
+        List<List<InlineKeyboardButton>> all_buttons = new ArrayList<>();
+        all_buttons.add(buttons_row_1);
+
+        markup.setKeyboard(all_buttons);
+    }
+
+    // get buttons for login
+    private void addButtons_acc_login(InlineKeyboardMarkup markup) {
+        // create buttons
+        InlineKeyboardButton button_login = new InlineKeyboardButton()
+                .setText("Войти")
+                .setCallbackData("login");
+
+        InlineKeyboardButton button_cancel = new InlineKeyboardButton()
+                .setText("Закрыть")
+                .setCallbackData("delete_msg");
+
+        // fill rows
+        List<InlineKeyboardButton> buttons_row_1 = new ArrayList<>();
+        buttons_row_1.add(button_login);
+        buttons_row_1.add(button_cancel);
+
+        // add to keyboard
+        List<List<InlineKeyboardButton>> all_buttons = new ArrayList<>();
+        all_buttons.add(buttons_row_1);
+
+        markup.setKeyboard(all_buttons);
+    }
+
+    // get buttons for acc control
+    private void addButtons_acc_control_main(InlineKeyboardMarkup markup) {
+        // create buttons
+        InlineKeyboardButton button_notifications = new InlineKeyboardButton()
+                .setText("Уведомления")
+                .setCallbackData("notifications");
+
+        InlineKeyboardButton button_settings = new InlineKeyboardButton()
+                .setText("Настройки")
+                .setCallbackData("control_settings");
+
+        InlineKeyboardButton button_exit = new InlineKeyboardButton()
+                .setText("Выйти")
+                .setCallbackData("exit");
+
+        InlineKeyboardButton button_close = new InlineKeyboardButton()
+                .setText("Закрыть")
+                .setCallbackData("delete_msg");
+
+        // fill rows
+        List<InlineKeyboardButton> buttons_row_1 = new ArrayList<>();
+        List<InlineKeyboardButton> buttons_row_2 = new ArrayList<>();
+
+        buttons_row_1.add(button_notifications);
+        buttons_row_1.add(button_settings);
+
+        buttons_row_2.add(button_exit);
+        buttons_row_2.add(button_close);
+
+        // add to keyboard
+        List<List<InlineKeyboardButton>> all_buttons = new ArrayList<>();
+        all_buttons.add(buttons_row_1);
+        all_buttons.add(buttons_row_2);
+
+        markup.setKeyboard(all_buttons);
+    }
+
+    private void addButtons_acc_control_settings(InlineKeyboardMarkup markup) {
+        // create buttons
+        InlineKeyboardButton button_notifications = new InlineKeyboardButton()
+                .setText("Изменить пароль")
+                .setCallbackData("notifications");
+
+        InlineKeyboardButton button_settings = new InlineKeyboardButton()
+                .setText("Изменить логин")
+                .setCallbackData("settings");
+
+        InlineKeyboardButton button_exit = new InlineKeyboardButton()
+                .setText("Удалить аккаунт")
+                .setCallbackData("exit");
+
+        InlineKeyboardButton button_close = new InlineKeyboardButton()
+                .setText("<<<")
+                .setCallbackData("control_main");
+
+        // fill rows
+        List<InlineKeyboardButton> buttons_row_1 = new ArrayList<>();
+        List<InlineKeyboardButton> buttons_row_2 = new ArrayList<>();
+
+        buttons_row_1.add(button_notifications);
+        buttons_row_1.add(button_settings);
+
+        buttons_row_2.add(button_exit);
+        buttons_row_2.add(button_close);
+
+        // add to keyboard
+        List<List<InlineKeyboardButton>> all_buttons = new ArrayList<>();
+        all_buttons.add(buttons_row_1);
+        all_buttons.add(buttons_row_2);
+
+        markup.setKeyboard(all_buttons);
+    }
+
+    // INLINE COMMANDS
+
+    /**
+     * @param chatID - where message
+     * @param msgID  - witch message
+     * @throws TelegramApiException
+     * @action delete selected message
+     */
+    private void deleteMessage(long chatID, int msgID) throws TelegramApiException {
+        // generate delete message query
+        DeleteMessage deleteMessage_bot = new DeleteMessage()
+                .setChatId(chatID)
+                .setMessageId(msgID);
+
+        // execute it
+        execute(deleteMessage_bot);
+    }
+
+
+    /**
+     * @param chatID - where edit
+     * @param msgID  - what edit
+     * @throws TelegramApiException
+     * @action get reg form
+     */
+    private void inlcommand_getRegister(long chatID, int msgID) throws TelegramApiException {
+        // delete message
+        deleteMessage(chatID, msgID);
+
+        // create registration task
+        RegisterTask register = new RegisterTask();
+        tasksManager.addTask(chatID, register);
+
+        // send start register message
+        execute(sendMessage(chatID).setText("Придумайте логин:"));
+    }
+
+
+    /**
+     * @throws TelegramApiException
+     * @action start login procedure
+     */
+    private void inlcommand_getLogin(long chatID, int msgID) throws TelegramApiException {
+        // delete message
+        deleteMessage(chatID, msgID);
+
+        // create registration task
+        LoginTask login = new LoginTask(chatID);
+        tasksManager.addTask(chatID, login);
+
+        // send start register message
+        execute(sendMessage(chatID).setText("Введите пароль:"));
+    }
+
+    /**
+     * @throws TelegramApiException
+     * @action get notification settings
+     */
+    private void inlcommand_getNotificationCenter(long chatID, int msgID) throws TelegramApiException {
+        // check if user doesn't login
+        if (!db_getSessions().contains(chatID)) {
+            InlineKeyboardMarkup loginKeyboard = getKeyboardMarkup();
+            addButtons_acc_login(loginKeyboard);
+            execute(new EditMessageText().setChatId(chatID).setMessageId(msgID).setText("Для продолжения войдите.").setReplyMarkup(loginKeyboard));
             return;
         }
 
-        dbManager.insertData(
-                "sessions",
-                new String[]{"userID", "telegram_chatID", "time"},
-                new String[]{String.valueOf(userID), String.valueOf(chatID), String.valueOf((Calendar.getInstance().getTimeInMillis() / 1000) + 3600)});
+        // delete message
+        deleteMessage(chatID, msgID);
 
-        execute(sendMessage(chatID).setText("Вы успешно авторизировались!"));
+        // create registration task
+        LoginTask login = new LoginTask(chatID);
+        tasksManager.addTask(chatID, login);
+
+        // send start register message
+        execute(sendMessage(chatID).setText("Введите пароль:"));
     }
 
+    /**
+     * @throws TelegramApiException
+     * @action get settings page
+     */
+    private void inlcommand_getSettings(long chatID, int msgID) throws TelegramApiException {
+        // check if user doesn't login
+        if (!db_getSessions().contains(chatID)) {
+            InlineKeyboardMarkup loginKeyboard = getKeyboardMarkup();
+            addButtons_acc_login(loginKeyboard);
+            execute(new EditMessageText().setChatId(chatID).setMessageId(msgID).setText("Для продолжения войдите.").setReplyMarkup(loginKeyboard));
+            return;
+        }
+
+        // change message
+        InlineKeyboardMarkup newKeyboard = getKeyboardMarkup();
+        addButtons_acc_control_settings(newKeyboard);
+
+        EditMessageText loginMessage = new EditMessageText()
+                .setChatId(chatID)
+                .setMessageId(msgID)
+                .setText("Настройки")
+                .setReplyMarkup(newKeyboard);
+
+        execute(loginMessage);
+    }
 
     /**
-     * @param chatID
-     * @command /exit
+     * @throws TelegramApiException
+     * @action get main page of control
+     */
+    private void inlcommand_getMainPage(long chatID, int msgID) throws TelegramApiException {
+        // check if user doesn't login
+        if (!db_getSessions().contains(chatID)) {
+            InlineKeyboardMarkup loginKeyboard = getKeyboardMarkup();
+            addButtons_acc_login(loginKeyboard);
+            execute(new EditMessageText().setChatId(chatID).setMessageId(msgID).setText("Для продолжения войдите.").setReplyMarkup(loginKeyboard));
+            return;
+        }
+
+        // change message
+        InlineKeyboardMarkup newKeyboard = getKeyboardMarkup();
+        addButtons_acc_control_main(newKeyboard);
+
+        EditMessageText loginMessage = new EditMessageText()
+                .setChatId(chatID)
+                .setMessageId(msgID)
+                .setText("Аккаунт")
+                .setReplyMarkup(newKeyboard);
+
+        execute(loginMessage);
+    }
+
+    /**
+     * @throws TelegramApiException
      * @action exit from account
      */
-    private void command_exit(long chatID) throws TelegramApiException {
-        // delete session from database
-        dbManager.deleteData("sessions", new String[]{"telegram_chatID=" + chatID});
-        execute(sendMessage(chatID).setText("Вы вышли из аккаунта!"));
+    private void inlcommand_exitFromAccount(long chatID, int msgID) throws TelegramApiException {
+        // check if user doesn't login
+        if (!db_getSessions().contains(chatID)) {
+            InlineKeyboardMarkup loginKeyboard = getKeyboardMarkup();
+            addButtons_acc_login(loginKeyboard);
+            execute(new EditMessageText().setChatId(chatID).setMessageId(msgID).setText("Для продолжения войдите.").setReplyMarkup(loginKeyboard));
+            return;
+        }
+
+        // try delete session
+        if (dbManager.deleteData("sessions", new String[]{"telegram_chatID=" + chatID})) {
+            // change message
+            InlineKeyboardMarkup newKeyboard = getKeyboardMarkup();
+            addButtons_acc_login(newKeyboard);
+
+            EditMessageText loginMessage = new EditMessageText()
+                    .setChatId(chatID)
+                    .setMessageId(msgID)
+                    .setText("Вы вышли из аккаунта.")
+                    .setReplyMarkup(newKeyboard);
+
+            execute(loginMessage);
+        } else {
+            // send error message
+            execute(sendMessage(chatID).setText("При выходе произошла ошибка!\nПовторите операцию позже."));
+        }
     }
 }
