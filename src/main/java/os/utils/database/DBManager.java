@@ -4,10 +4,7 @@ import os.utils.Console;
 import os.utils.database.sql.MySQL;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DBManager {
     // pass and login to my database
@@ -116,6 +113,34 @@ public class DBManager {
         // attempt run query, if catch error return false, if all right - true
         try {
             sql.runQuery(deleteQuery.toString(), connection);
+            return true;
+        } catch (SQLException throwable) {
+            Console.errln("Ошибка! " + throwable.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * @param tableName (where change)
+     * @param params    (fields to change)
+     * @param newValues (new values)
+     * @return if update successfully - returns true, in other cases returns false
+     */
+    public boolean updateData(String tableName, String[] params, String[] newValues) {
+        // generate query
+        StringBuilder updateQuery = new StringBuilder();
+
+        updateQuery.append("UPDATE SET ");
+        Arrays.stream(params).forEach(s -> updateQuery.append(s).append(","));
+        updateQuery.deleteCharAt(updateQuery.length());
+
+        updateQuery.append(" WHERE ");
+        Arrays.stream(newValues).forEach(s -> updateQuery.append(s).append(","));
+        updateQuery.append(";");
+
+        // attempt run query, if catch error return false, if all right - true
+        try {
+            sql.runQuery(updateQuery.toString(), connection);
             return true;
         } catch (SQLException throwable) {
             Console.errln("Ошибка! " + throwable.getMessage());
