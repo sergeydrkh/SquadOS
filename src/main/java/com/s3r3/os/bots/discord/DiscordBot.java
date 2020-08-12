@@ -1,4 +1,4 @@
-package os.bots.discord;
+package com.s3r3.os.bots.discord;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import os.utils.Console;
+import com.s3r3.os.ConsoleHelper;
 
 import javax.security.auth.login.LoginException;
 import java.time.OffsetDateTime;
@@ -26,24 +26,17 @@ public class DiscordBot {
     public static final String OWNER_ID = "662324806187745290";
     private static final String TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XvN3vw.8qP5htUlzBVxo3QrCM9DAFRaLQM";
 
-    public DiscordBot() {
+    public void load() {
         try {
-            // authorize bot
             JDA api = JDABuilder.createDefault(TOKEN).build();
             api.awaitReady();
-
-            // add data listener
             api.addEventListener(new MainListener());
 
-            Console.println("DS >> Successfully logged in!");
+            ConsoleHelper.println("Discord bot started!");
         } catch (LoginException | InterruptedException e) {
-            Console.errln("Ошибка! " + e + ".");
+            ConsoleHelper.errln("Ошибка! " + e + ".");
+            ConsoleHelper.println("Discord bot didn't started!");
         }
-    }
-
-
-    public void run() {
-        // do smth
     }
 
     private static class MainListener extends ListenerAdapter {

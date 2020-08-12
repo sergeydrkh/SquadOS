@@ -1,8 +1,8 @@
-package os.utils;
+package com.s3r3.os;
 
 import java.util.Date;
 
-public class Console {
+public class ConsoleHelper {
     private static final String style = "%tT [%s] >> ";
 
     public static void println(String text) {

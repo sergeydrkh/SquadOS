@@ -1,12 +1,9 @@
-package os.bots.discord;
-
-import os.utils.Console;
+package com.s3r3.os.bots.discord;
 
 public class DiscordStartThread extends Thread {
     @Override
     public void run() {
-        Console.println("Starting discord bot...");
         DiscordBot bot = new DiscordBot();
-        bot.run();
+        bot.load();
     }
 }
