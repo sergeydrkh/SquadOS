@@ -1,5 +1,6 @@
-package com.s3r3.os.bots.discord;
+package app.os.bots.discord;
 
+import app.os.ConsoleHelper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import com.s3r3.os.ConsoleHelper;
 
 import javax.security.auth.login.LoginException;
 import java.time.OffsetDateTime;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 public class DiscordBot {
     // discord bot info
     public static final String NAME = "SquadOS";
-    public static final String VERSION = "0.3_stable";
+    public static final String VERSION = "0.3.2_stable";
     public static final String OWNER_ID = "662324806187745290";
     private static final String TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XvN3vw.8qP5htUlzBVxo3QrCM9DAFRaLQM";
 
@@ -34,8 +34,8 @@ public class DiscordBot {
 
             ConsoleHelper.println("Discord bot started!");
         } catch (LoginException | InterruptedException e) {
-            ConsoleHelper.errln("Ошибка! " + e + ".");
             ConsoleHelper.println("Discord bot didn't started!");
+            ConsoleHelper.errln("Ошибка! " + e + ".");
         }
     }
 
@@ -45,9 +45,6 @@ public class DiscordBot {
             // receive
             Message received = event.getMessage();
             String rawData = received.getContentRaw();
-
-            if (rawData.matches("^(banbanmemebanbanmeme)"))
-                received.getGuild().ban(Objects.requireNonNull(received.getMember()), 1).queue();
 
             if (rawData.matches("^(invite|инвайт|приглашение|inviteLink|ссылка)"))
                 received.getChannel().sendMessage(String.format("**Ссылка для приглашения:** %n%n%s%n%s%n%s", getInviteLink(), getInviteLink(), getInviteLink())).queue();
@@ -69,27 +66,30 @@ public class DiscordBot {
                 // users management
                 List<Member> mentionedMembers = received.getMentionedMembers();
                 if (mentionedMembers.isEmpty()) {
-                    received.getChannel().sendMessage("Ошибка! Вы не указали пользователей!").queue();
+                    received.getChannel().sendMessage("Ошибка! Вы не указали **пользователей**!").queue();
                     return;
                 }
 
                 if (command.matches("^(warn|пред|варн)")) {
                     for (Member memberToWarn : mentionedMembers) {
                         warnUser(memberToWarn);
+                        received.getChannel().sendMessage(String.format("<@%s> получил **варн**!", memberToWarn.getId())).queue();
                     }
                     return;
                 }
 
                 if (command.matches("^(tempban|временный-бан|снятие-ролей)")) {
-                    for (Member memberToBan : mentionedMembers) {
-                        timeBan(memberToBan);
+                    for (Member memberToTimeBan : mentionedMembers) {
+                        timeBan(memberToTimeBan);
+                        received.getChannel().sendMessage(String.format("<@%s> получил **временный** бан! (снятие ролей)", memberToTimeBan.getId())).queue();
                     }
                     return;
                 }
 
                 if (command.matches("^(permban|перманент|пермач)")) {
-                    for (Member memberToBan : mentionedMembers) {
-                        permBan(memberToBan);
+                    for (Member memberToPermBan : mentionedMembers) {
+                        permBan(memberToPermBan);
+                        received.getChannel().sendMessage(String.format("<@%s> получил **перманентный** бан!", memberToPermBan.getId())).queue();
                     }
                     return;
                 }
@@ -97,6 +97,7 @@ public class DiscordBot {
                 if (command.matches("^(verify|верификация)")) {
                     for (Member memberToVerify : mentionedMembers) {
                         verify(memberToVerify);
+                        received.getChannel().sendMessage(String.format("<@%s> прошел **верефикацию**.", memberToVerify.getId())).queue();
                     }
                     return;
                 }
@@ -104,6 +105,7 @@ public class DiscordBot {
                 if (command.matches("^(unwarn|снять-варны)")) {
                     for (Member memberToUnWarn : mentionedMembers) {
                         unWarn(memberToUnWarn);
+                        received.getChannel().sendMessage(String.format("С <@%s> сняты **все** варны.", memberToUnWarn.getId())).queue();
                     }
                     return;
                 }

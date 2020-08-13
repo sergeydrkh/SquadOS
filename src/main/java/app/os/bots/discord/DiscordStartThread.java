@@ -1,4 +1,4 @@
-package com.s3r3.os.bots.discord;
+package app.os.bots.discord;
 
 public class DiscordStartThread extends Thread {
     @Override

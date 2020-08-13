@@ -1,4 +1,4 @@
-package com.s3r3.os;
+package app.os;
 
 import java.util.Date;
 

@@ -3,7 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/SquadOS_jar</output-path>
     <root id="archive" name="SquadOS.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/com/s3r3/os/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/app/os/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="SquadOS" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/inject/javax.inject/1/javax.inject-1.jar" path-in-jar="/" />

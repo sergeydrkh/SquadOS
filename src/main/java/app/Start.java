@@ -1,6 +1,6 @@
-package com.s3r3;
+package app;
 
-import com.s3r3.os.MainThread;
+import app.os.MainThread;
 
 public class Start {
     public static void main(String[] args) {
