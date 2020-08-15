@@ -15,20 +15,22 @@ import javax.security.auth.login.LoginException;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class DiscordBot {
-    // discord bot info
-    public static final String NAME = "SquadOS";
-    public static final String VERSION = "0.3.3_stable";
-    public static final String OWNER_ID = "662324806187745290";
-    private static final String TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XvN3vw.8qP5htUlzBVxo3QrCM9DAFRaLQM";
+    public static final String VERSION = "0.3.4_stable";
+    private final Map<DiscordProperties, String> loadProp;
 
-    public void load() {
+    public DiscordBot(Map<DiscordProperties, String> loadProp) {
+        this.loadProp = loadProp;
+    }
+
+    public void launch() {
         try {
-            JDA api = JDABuilder.createDefault(TOKEN).build();
+            JDA api = JDABuilder.createDefault(loadProp.get(DiscordProperties.BOT_TOKEN)).build();
             api.awaitReady();
             api.addEventListener(new MainListener());
 
@@ -39,7 +41,7 @@ public class DiscordBot {
         }
     }
 
-    private static class MainListener extends ListenerAdapter {
+    private class MainListener extends ListenerAdapter {
         @Override
         public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
             // receive
@@ -47,8 +49,12 @@ public class DiscordBot {
             String rawData = received.getContentRaw();
             String[] args = rawData.split(" ");
 
-            if (!rawData.startsWith("!"))
-                return;
+            try {
+                if (!rawData.startsWith(loadProp.get(DiscordProperties.BOT_PREFIX)) || !rawData.startsWith(loadProp.get(DiscordProperties.BOT_ADDITIONAL_PREFIX)))
+                    return;
+            } catch (NullPointerException e) {
+                ConsoleHelper.errln("No prefix founded in config file!");
+            }
 
             if (rawData.contains("link"))
                 received.getChannel().sendMessage(String.format("**Ссылка для приглашения:** %n%n%s%n%s%n%s", getInviteLink(), getInviteLink(), getInviteLink())).queue();
@@ -62,7 +68,7 @@ public class DiscordBot {
 
             // other commands
             if (command.contains("clear")) {
-                AdminCommands.clearMessages(received.getTextChannel());
+                Commands.AdminCommands.clearMessages(received.getTextChannel());
                 return;
             }
 
@@ -72,27 +78,27 @@ public class DiscordBot {
             if (!mentionedMembers.isEmpty()) {
                 if (command.contains("warn")) {
                     for (Member memberToWarn : mentionedMembers) {
-                        AdminCommands.warnUser(memberToWarn);
+                        Commands.AdminCommands.warnUser(memberToWarn);
                         received.getChannel().sendMessage(String.format("<@%s> получил **варн**!", memberToWarn.getId())).queue();
                     }
                 } else if (command.contains("ban")) {
                     for (Member memberToTimeBan : mentionedMembers) {
-                        AdminCommands.timeBan(memberToTimeBan);
+                        Commands.AdminCommands.timeBan(memberToTimeBan);
                         received.getChannel().sendMessage(String.format("<@%s> получил **временный** бан! (снятие ролей)", memberToTimeBan.getId())).queue();
                     }
                 } else if (command.contains("permban")) {
                     for (Member memberToPermBan : mentionedMembers) {
-                        AdminCommands.permBan(memberToPermBan);
+                        Commands.AdminCommands.permBan(memberToPermBan);
                         received.getChannel().sendMessage(String.format("<@%s> получил **перманентный** бан!", memberToPermBan.getId())).queue();
                     }
                 } else if (command.contains("verify")) {
                     for (Member memberToVerify : mentionedMembers) {
-                        AdminCommands.verify(memberToVerify);
+                        Commands.AdminCommands.verify(memberToVerify);
                         received.getChannel().sendMessage(String.format("<@%s> прошел **верефикацию**.", memberToVerify.getId())).queue();
                     }
                 } else if (command.contains("unwarn")) {
                     for (Member memberToUnWarn : mentionedMembers) {
-                        AdminCommands.unWarn(memberToUnWarn);
+                        Commands.AdminCommands.unWarn(memberToUnWarn);
                         received.getChannel().sendMessage(String.format("У <@%s> сняты **все** варны.", memberToUnWarn.getId())).queue();
                     }
                 } else {
@@ -100,7 +106,9 @@ public class DiscordBot {
                 }
             }
         }
+    }
 
+    private static class Commands {
         private static class AdminCommands {
             private static void warnUser(Member member) {
                 List<Role> addWarns = member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("warn") && !member.getRoles().contains(role)).collect(Collectors.toList());
