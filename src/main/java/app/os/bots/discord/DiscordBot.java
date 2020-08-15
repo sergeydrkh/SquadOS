@@ -45,9 +45,9 @@ public class DiscordBot {
     private class MainListener extends ListenerAdapter {
         @Override
         public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
-            // receive
             Message received = event.getMessage();
             String rawData = received.getContentRaw();
+
 
             try {
                 if (!rawData.startsWith(loadProperties.get(DiscordProperties.BOT_PREFIX)))
@@ -58,6 +58,7 @@ public class DiscordBot {
                 ConsoleHelper.errln("No prefix founded in config file!");
             }
 
+            // user commands
             if (rawData.startsWith("info")) {
                 EmbedBuilder infoMsg = new EmbedBuilder();
 
@@ -87,13 +88,20 @@ public class DiscordBot {
 
                 if (rawData.startsWith("clear")) {
                     Commands.AdminCommands.clearMessages(received.getTextChannel());
-                } else if (rawData.startsWith("textChannels")) {
+                } else if (rawData.startsWith("text")) {
                     StringBuilder textChannelsString = new StringBuilder();
                     textChannelsString.append("Текстовые чаты на сервере **").append(received.getGuild().getName()).append("**.\n");
                     received.getGuild().getTextChannels().forEach(textChannel -> textChannelsString.append("> <#").append(textChannel.getId()).append(">\n"));
 
                     received.getChannel().sendMessage(
                             Commands.Utilities.sendEmbedMessage(textChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
+                } else if (rawData.startsWith("voice")) {
+                    StringBuilder voiceChannelsString = new StringBuilder();
+                    voiceChannelsString.append("Голосовые комнаты на сервере **").append(received.getGuild().getName()).append("**.\n");
+                    received.getGuild().getVoiceChannels().forEach(voiceChannel -> voiceChannelsString.append("> <#").append(voiceChannel.getId()).append(">\n"));
+
+                    received.getChannel().sendMessage(
+                            Commands.Utilities.sendEmbedMessage(voiceChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
                 }
 
                 List<TextChannel> mentionedChannels = received.getMentionedChannels();
