@@ -86,21 +86,42 @@ public class DiscordBot {
             List<Role> adminRoles = received.getGuild().getRolesByName(loadProperties.get(DiscordProperties.ADMIN_ROLE), true);
             if (Objects.requireNonNull(received.getMember()).getRoles().containsAll(adminRoles)) {
                 if (rawData.startsWith("clear")) {
-                    Commands.AdminCommands.clearMessages(received.getTextChannel());
+                    AtomicBoolean isWorking = new AtomicBoolean(true);
+                    OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
+
+                    new Thread(() -> {
+                        while (isWorking.get()) {
+                            List<Message> messages = received.getTextChannel().getHistory().retrievePast(50).complete();
+                            messages.removeIf(m -> m.getTimeCreated().isBefore(twoWeeksAgo));
+
+                            if (messages.isEmpty()) {
+                                isWorking.set(false);
+                                return;
+                            }
+
+                            try {
+                                received.getTextChannel().deleteMessages(messages).complete();
+                            } catch (java.lang.IllegalArgumentException e) {
+                                received.getTextChannel().sendMessage("Произошла **ошибка** при выполнении операции!\n\n" + "``" + e.getMessage() + "``").queue();
+                                return;
+                            }
+
+                        }
+                    }).start();
                 } else if (rawData.startsWith("text")) {
                     StringBuilder textChannelsString = new StringBuilder();
                     textChannelsString.append("Текстовые чаты на сервере **").append(received.getGuild().getName()).append("**.\n");
                     received.getGuild().getTextChannels().forEach(textChannel -> textChannelsString.append("- <#").append(textChannel.getId()).append(">\n"));
 
                     received.getChannel().sendMessage(
-                            Commands.Utilities.sendEmbedMessage(textChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
+                            sendEmbedMessage(textChannelsString.toString())).queue();
                 } else if (rawData.startsWith("voice")) {
                     StringBuilder voiceChannelsString = new StringBuilder();
                     voiceChannelsString.append("Голосовые комнаты на сервере **").append(received.getGuild().getName()).append("**.\n");
                     received.getGuild().getVoiceChannels().forEach(voiceChannel -> voiceChannelsString.append("- ").append(voiceChannel.getName()).append("\n"));
 
                     received.getChannel().sendMessage(
-                            Commands.Utilities.sendEmbedMessage(voiceChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
+                            sendEmbedMessage(voiceChannelsString.toString())).queue();
                 }
 
                 List<TextChannel> mentionedChannels = received.getMentionedChannels();
@@ -112,7 +133,7 @@ public class DiscordBot {
                         }
 
                         for (TextChannel mentionedChannel : mentionedChannels) {
-                            mentionedChannel.sendMessage(Commands.Utilities.sendEmbedMessage(messageText, loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue(
+                            mentionedChannel.sendMessage(sendEmbedMessage(messageText)).queue(
                                     success -> received.getChannel().sendMessage("Сообщение в чат <#" + mentionedChannel.getId() + "> **успешно** отправлено!").queue());
                         }
                     }
@@ -121,44 +142,50 @@ public class DiscordBot {
                 List<Member> mentionedMembers = received.getMentionedMembers();
                 if (!mentionedMembers.isEmpty()) {
                     if (rawData.startsWith("warn")) {
-                        for (Member memberToWarn : mentionedMembers) {
-                            Commands.AdminCommands.warnUser(memberToWarn);
-                            received.getChannel().sendMessage(String.format("<@%s> получил **варн**!", memberToWarn.getId())).queue();
+                        for (Member member : mentionedMembers) {
+                            List<Role> addWarns = member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("warn") && !member.getRoles().contains(role)).collect(Collectors.toList());
+                            if (!addWarns.isEmpty()) {
+                                member.getGuild().addRoleToMember(member.getUser().getId(), addWarns.get(addWarns.size() - 1)).queue();
+                            } else {
+                                member.getRoles().stream().filter(role -> !role.getName().toLowerCase().contains("ban")).forEach(role -> member.getGuild().removeRoleFromMember(member.getUser().getId(), role).queue());
+                                received.getChannel().sendMessage(String.format("<@%s> получил **временный** бан! (снятие ролей)", member.getId())).queue();
+                            }
+                            received.getChannel().sendMessage(String.format("<@%s> получил **варн**!", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("ban")) {
-                        for (Member memberToTimeBan : mentionedMembers) {
-                            Commands.AdminCommands.timeBan(memberToTimeBan);
-                            received.getChannel().sendMessage(String.format("<@%s> получил **временный** бан! (снятие ролей)", memberToTimeBan.getId())).queue();
+                        for (Member member : mentionedMembers) {
+                            member.getRoles().stream().filter(role -> !role.getName().toLowerCase().contains("ban")).forEach(role -> member.getGuild().removeRoleFromMember(member.getUser().getId(), role).queue());
+                            received.getChannel().sendMessage(String.format("<@%s> получил **временный** бан! (снятие ролей)", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("permban")) {
-                        for (Member memberToPermBan : mentionedMembers) {
-                            Commands.AdminCommands.permBan(memberToPermBan);
-                            received.getChannel().sendMessage(String.format("<@%s> получил **перманентный** бан!", memberToPermBan.getId())).queue();
+                        for (Member member : mentionedMembers) {
+                            member.ban(1, "WARNS").queue();
+                            received.getChannel().sendMessage(String.format("<@%s> получил **перманентный** бан!", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("verify")) {
-                        for (Member memberToVerify : mentionedMembers) {
-                            Commands.AdminCommands.verify(memberToVerify);
-                            received.getChannel().sendMessage(String.format("<@%s> прошел **верефикацию**.", memberToVerify.getId())).queue();
+                        for (Member member : mentionedMembers) {
+                            member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("verified")).forEach(role -> member.getGuild().addRoleToMember(member.getUser().getId(), role).queue());
+                            received.getChannel().sendMessage(String.format("<@%s> прошел **верефикацию**.", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("unwarn")) {
-                        for (Member memberToUnWarn : mentionedMembers) {
-                            Commands.AdminCommands.unWarn(memberToUnWarn);
-                            received.getChannel().sendMessage(String.format("У <@%s> сняты **все** варны.", memberToUnWarn.getId())).queue();
+                        for (Member member : mentionedMembers) {
+                            member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("warn")).forEach(role -> member.getGuild().removeRoleFromMember(member.getUser().getId(), role).queue());
+                            received.getChannel().sendMessage(String.format("У <@%s> сняты **все** варны.", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("mute")) {
-                        for (Member memberToMute : mentionedMembers) {
+                        for (Member member : mentionedMembers) {
                             try {
-                                received.getGuild().mute(memberToMute, true).queue(success -> received.getChannel().sendMessage("<@" + memberToMute.getId() + "> получил **мут**!").queue());
+                                received.getGuild().mute(member, true).queue(success -> received.getChannel().sendMessage("<@" + member.getId() + "> получил **мут**!").queue());
                             } catch (java.lang.IllegalStateException e) {
-                                received.getChannel().sendMessage("Пользователю <@" + memberToMute.getId() + "> **невозможно** выдать мут. Пользователь не в голосовом канале.").queue();
+                                received.getChannel().sendMessage("Пользователю <@" + member.getId() + "> **невозможно** выдать мут. Пользователь не в голосовом канале.").queue();
                             }
                         }
                     } else if (rawData.startsWith("unmute")) {
-                        for (Member memberToMute : mentionedMembers) {
+                        for (Member member : mentionedMembers) {
                             try {
-                                received.getGuild().mute(memberToMute, false).queue(success -> received.getChannel().sendMessage("<@" + memberToMute.getId() + "> получил **размут**!").queue());
+                                received.getGuild().mute(member, false).queue(success -> received.getChannel().sendMessage("<@" + member.getId() + "> получил **размут**!").queue());
                             } catch (java.lang.IllegalStateException e) {
-                                received.getChannel().sendMessage("Пользователя <@" + memberToMute.getId() + "> **невозможно** размутить. Пользователь не в голосовом канале.").queue();
+                                received.getChannel().sendMessage("Пользователя <@" + member.getId() + "> **невозможно** размутить. Пользователь не в голосовом канале.").queue();
                             }
                         }
                     } else {
@@ -167,68 +194,13 @@ public class DiscordBot {
                 }
             }
         }
-    }
 
-    private static class Commands {
-        private static class Utilities {
-            private static MessageEmbed sendEmbedMessage(String text, String color) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setDescription(text);
-                builder.setColor(Color.decode(color));
+        private MessageEmbed sendEmbedMessage(String text) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setDescription(text);
+            builder.setColor(Color.decode(loadProperties.get(DiscordProperties.MESSAGES_COLOR)));
 
-                return builder.build();
-            }
-        }
-
-        private static class AdminCommands {
-            private static void warnUser(Member member) {
-                List<Role> addWarns = member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("warn") && !member.getRoles().contains(role)).collect(Collectors.toList());
-
-                if (!addWarns.isEmpty())
-                    member.getGuild().addRoleToMember(member.getUser().getId(), addWarns.get(addWarns.size() - 1)).queue();
-                else timeBan(member);
-            }
-
-            private static void timeBan(Member member) {
-                member.getRoles().stream().filter(role -> !role.getName().toLowerCase().contains("ban")).forEach(role -> member.getGuild().removeRoleFromMember(member.getUser().getId(), role).queue());
-            }
-
-            private static void permBan(Member member) {
-                member.ban(1, "WARNS").queue();
-            }
-
-            private static void verify(Member member) {
-                member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("verified")).forEach(role -> member.getGuild().addRoleToMember(member.getUser().getId(), role).queue());
-            }
-
-            private static void unWarn(Member member) {
-                member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("warn")).forEach(role -> member.getGuild().removeRoleFromMember(member.getUser().getId(), role).queue());
-            }
-
-            private static void clearMessages(TextChannel channel) {
-                AtomicBoolean isWorking = new AtomicBoolean(true);
-                OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
-
-                new Thread(() -> {
-                    while (isWorking.get()) {
-                        List<Message> messages = channel.getHistory().retrievePast(50).complete();
-                        messages.removeIf(m -> m.getTimeCreated().isBefore(twoWeeksAgo));
-
-                        if (messages.isEmpty()) {
-                            isWorking.set(false);
-                            return;
-                        }
-
-                        try {
-                            channel.deleteMessages(messages).complete();
-                        } catch (java.lang.IllegalArgumentException e) {
-                            channel.sendMessage("Произошла **ошибка** при выполнении операции!\n\n" + "``" + e.getMessage() + "``").queue();
-                            return;
-                        }
-
-                    }
-                }).start();
-            }
+            return builder.build();
         }
     }
 }
