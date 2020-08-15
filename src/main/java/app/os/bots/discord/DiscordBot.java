@@ -85,20 +85,19 @@ public class DiscordBot {
             // admin commands
             List<Role> adminRoles = received.getGuild().getRolesByName(loadProperties.get(DiscordProperties.ADMIN_ROLE), true);
             if (Objects.requireNonNull(received.getMember()).getRoles().containsAll(adminRoles)) {
-
                 if (rawData.startsWith("clear")) {
                     Commands.AdminCommands.clearMessages(received.getTextChannel());
                 } else if (rawData.startsWith("text")) {
                     StringBuilder textChannelsString = new StringBuilder();
                     textChannelsString.append("Текстовые чаты на сервере **").append(received.getGuild().getName()).append("**.\n");
-                    received.getGuild().getTextChannels().forEach(textChannel -> textChannelsString.append("> <#").append(textChannel.getId()).append(">\n"));
+                    received.getGuild().getTextChannels().forEach(textChannel -> textChannelsString.append("- <#").append(textChannel.getId()).append(">\n"));
 
                     received.getChannel().sendMessage(
                             Commands.Utilities.sendEmbedMessage(textChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
                 } else if (rawData.startsWith("voice")) {
                     StringBuilder voiceChannelsString = new StringBuilder();
                     voiceChannelsString.append("Голосовые комнаты на сервере **").append(received.getGuild().getName()).append("**.\n");
-                    received.getGuild().getVoiceChannels().forEach(voiceChannel -> voiceChannelsString.append("> <#").append(voiceChannel.getId()).append(">\n"));
+                    received.getGuild().getVoiceChannels().forEach(voiceChannel -> voiceChannelsString.append("- ").append(voiceChannel.getName()).append("\n"));
 
                     received.getChannel().sendMessage(
                             Commands.Utilities.sendEmbedMessage(voiceChannelsString.toString(), loadProperties.get(DiscordProperties.MESSAGES_COLOR))).queue();
@@ -145,6 +144,22 @@ public class DiscordBot {
                         for (Member memberToUnWarn : mentionedMembers) {
                             Commands.AdminCommands.unWarn(memberToUnWarn);
                             received.getChannel().sendMessage(String.format("У <@%s> сняты **все** варны.", memberToUnWarn.getId())).queue();
+                        }
+                    } else if (rawData.startsWith("mute")) {
+                        for (Member memberToMute : mentionedMembers) {
+                            try {
+                                received.getGuild().mute(memberToMute, true).queue(success -> received.getChannel().sendMessage("<@" + memberToMute.getId() + "> получил **мут**!").queue());
+                            } catch (java.lang.IllegalStateException e) {
+                                received.getChannel().sendMessage("Пользователю <@" + memberToMute.getId() + "> **невозможно** выдать мут. Пользователь не в голосовом канале.").queue();
+                            }
+                        }
+                    } else if (rawData.startsWith("unmute")) {
+                        for (Member memberToMute : mentionedMembers) {
+                            try {
+                                received.getGuild().mute(memberToMute, false).queue(success -> received.getChannel().sendMessage("<@" + memberToMute.getId() + "> получил **размут**!").queue());
+                            } catch (java.lang.IllegalStateException e) {
+                                received.getChannel().sendMessage("Пользователя <@" + memberToMute.getId() + "> **невозможно** размутить. Пользователь не в голосовом канале.").queue();
+                            }
                         }
                     } else {
                         received.getChannel().sendMessage("**Неизвестная** команда!").queue();
