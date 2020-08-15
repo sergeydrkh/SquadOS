@@ -15,4 +15,4 @@
 
 
 
-<h3>In 5th version will create auto installation.</h3>
+<h3>In 1st stable version will create auto installation.</h3>
