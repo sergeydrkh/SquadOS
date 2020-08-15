@@ -4,8 +4,7 @@ public enum DiscordProperties {
     BOT_USERNAME("username"),
     BOT_NAME("name"),
     BOT_TOKEN("token"),
-    BOT_PREFIX("prefix"),
-    BOT_ADDITIONAL_PREFIX("additionalPrefix");
+    BOT_PREFIX("prefix");
 
     private final String key;
 

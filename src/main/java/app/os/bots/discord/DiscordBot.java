@@ -1,6 +1,8 @@
 package app.os.bots.discord;
 
 import app.os.ConsoleHelper;
+import app.os.OS;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -12,6 +14,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -21,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class DiscordBot {
-    public static final String VERSION = "0.3.4_stable";
+
     private final Map<DiscordProperties, String> loadProp;
 
     public DiscordBot(Map<DiscordProperties, String> loadProp) {
@@ -50,14 +53,25 @@ public class DiscordBot {
             String[] args = rawData.split(" ");
 
             try {
-                if (!rawData.startsWith(loadProp.get(DiscordProperties.BOT_PREFIX)) || !rawData.startsWith(loadProp.get(DiscordProperties.BOT_ADDITIONAL_PREFIX)))
+                if (!rawData.startsWith(loadProp.get(DiscordProperties.BOT_PREFIX)))
                     return;
             } catch (NullPointerException e) {
                 ConsoleHelper.errln("No prefix founded in config file!");
             }
 
-            if (rawData.contains("link"))
+            if (rawData.contains("link")) {
                 received.getChannel().sendMessage(String.format("**Ссылка для приглашения:** %n%n%s%n%s%n%s", getInviteLink(), getInviteLink(), getInviteLink())).queue();
+            } else if (rawData.contains("info")) {
+                EmbedBuilder infoMsg = new EmbedBuilder();
+
+                infoMsg.setTitle("Information");
+                infoMsg.setColor(new Color(86, 86, 86));
+
+                infoMsg.addField("name", loadProp.get(DiscordProperties.BOT_NAME), true);
+                infoMsg.addField("ver.", OS.OS_VERSION, true);
+
+                received.getChannel().sendMessage(infoMsg.build()).queue();
+            }
 
             // process data
             List<Role> adminRoles = received.getGuild().getRolesByName("admin", true);
