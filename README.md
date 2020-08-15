@@ -15,4 +15,6 @@
 
 
 
-<h3>In 1st stable version will create auto installation.</h3>
+<h3>In release version will create auto installation.</h3>
+
+<h2>Telegram: @s3r3zz</h2>
