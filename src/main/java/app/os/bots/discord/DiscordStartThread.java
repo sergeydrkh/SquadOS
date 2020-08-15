@@ -1,14 +1,17 @@
 package app.os.bots.discord;
 
-import app.os.ConsoleHelper;
-import app.os.OS;
+import app.os.main.OS;
+import app.os.utilities.ConsoleHelper;
 
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 public class DiscordStartThread extends Thread {
     @Override
@@ -17,18 +20,23 @@ public class DiscordStartThread extends Thread {
 
         try {
             Path file = Paths.get(OS.DIR_DATA + "ds.properties");
-            if (Files.notExists(file))
+            if (Files.notExists(file)) {
                 Files.createFile(file);
+                Properties create = new Properties();
+                for (DiscordProperties createProp : DiscordProperties.values())
+                    create.put(createProp.getKey(), "insert data");
 
-            FileReader reader = new FileReader(file.toFile());
-            Properties fileProps = new Properties();
-            fileProps.load(reader);
+                create.store(new FileWriter(file.toFile()), "insert data to use!");
+            } else {
+                FileReader reader = new FileReader(file.toFile());
+                Properties fileProps = new Properties();
+                fileProps.load(reader);
 
-            for (Map.Entry<Object, Object> prop : fileProps.entrySet())
-                for (DiscordProperties checkProp : DiscordProperties.values())
-                    if (checkProp.getKey().contains((String) prop.getKey()))
-                        loadProp.put(checkProp, (String) prop.getValue());
-
+                for (Map.Entry<Object, Object> prop : fileProps.entrySet())
+                    for (DiscordProperties checkProp : DiscordProperties.values())
+                        if (checkProp.getKey().contains((String) prop.getKey()))
+                            loadProp.put(checkProp, (String) prop.getValue());
+            }
         } catch (IOException e) {
             ConsoleHelper.errln("Ошибка! " + e.getMessage());
             return;

@@ -1,6 +1,6 @@
 package app;
 
-import app.os.MainThread;
+import app.os.main.OS;
 
 public class Start {
     public static void main(String[] args) {
@@ -8,7 +8,7 @@ public class Start {
     }
 
     private void run() {
-        Thread mainThread = new MainThread();
+        OS mainThread = new OS();
         mainThread.start();
     }
 }
