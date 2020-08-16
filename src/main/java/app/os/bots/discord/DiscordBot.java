@@ -138,7 +138,7 @@ public class DiscordBot {
 
                             try {
                                 received.getTextChannel().deleteMessages(messages).complete();
-                            } catch (java.lang.IllegalArgumentException e) {
+                            } catch (IllegalArgumentException e) {
                                 received.getTextChannel().sendMessage("Произошла **ошибка** при выполнении операции!\n\n" + "``" + e.getMessage() + "``").queue();
                                 return;
                             }
@@ -228,7 +228,7 @@ public class DiscordBot {
                         for (Member member : mentionedMembers) {
                             try {
                                 received.getGuild().mute(member, true).queue(success -> received.getChannel().sendMessage("<@" + member.getId() + "> получил **мут**!").queue());
-                            } catch (java.lang.IllegalStateException e) {
+                            } catch (IllegalStateException e) {
                                 received.getChannel().sendMessage("Пользователю <@" + member.getId() + "> **невозможно** выдать мут. Пользователь не в голосовом канале.").queue();
                             }
                         }
@@ -236,7 +236,7 @@ public class DiscordBot {
                         for (Member member : mentionedMembers) {
                             try {
                                 received.getGuild().mute(member, false).queue(success -> received.getChannel().sendMessage("<@" + member.getId() + "> получил **размут**!").queue());
-                            } catch (java.lang.IllegalStateException e) {
+                            } catch (IllegalStateException e) {
                                 received.getChannel().sendMessage("Пользователя <@" + member.getId() + "> **невозможно** размутить. Пользователь не в голосовом канале.").queue();
                             }
                         }

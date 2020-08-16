@@ -19,7 +19,7 @@ a
 1src/main/java/app/os/bots/discord/DiscordBot.java,1\b\1bf01aeef9b5474c0cce87efdfbcfe7773a2a76b
 a
 1src/main/java/app/os/utilities/ConsoleHelper.java,2\e\2eb906ab5c4d49ba8291efc8474173cfb7728951
-h
-8src/main/java/app/os/bots/discord/DiscordProperties.java,e\2\e22aa3a1eb8d9e0db833c98ebc05ba18f697f8d7
 Q
 !src/main/java/app/os/main/OS.java,3\9\39d89a47479309c376010f6b598990f266049aeb
+l
+<src/main/java/app/os/bots/discord/DiscordLoadProperties.java,5\9\5974990a7a356c6617cc48460ab7afd0adb65d31

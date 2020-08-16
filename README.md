@@ -10,7 +10,7 @@
 2. launch app<br>
 3. find file C:\\squados\\data\\ds.properties<br>
 4. fill data<br>
-5. launch app and use bot!<br>
+5. launch app and use os!<br>
 
 
 
