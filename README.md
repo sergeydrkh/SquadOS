@@ -1,4 +1,5 @@
 <h1>SquadOS</h1>
+<h5>light discord bot for server managment.</h5>
 <br>
 <br>
 <br>
