@@ -16,14 +16,14 @@ import java.util.Properties;
 public class DiscordStartThread extends Thread {
     @Override
     public void run() {
-        Map<DiscordProperties, String> loadProp = new HashMap<>();
+        Map<DiscordLoadProperties, String> loadProp = new HashMap<>();
 
         try {
             Path file = Paths.get(OS.DIR_DATA + "ds.properties");
             if (Files.notExists(file)) {
                 Files.createFile(file);
                 Properties create = new Properties();
-                for (DiscordProperties createProp : DiscordProperties.values())
+                for (DiscordLoadProperties createProp : DiscordLoadProperties.values())
                     create.put(createProp.getKey(), "insert data");
 
                 create.store(new FileWriter(file.toFile()), "insert data to use!");
@@ -33,7 +33,7 @@ public class DiscordStartThread extends Thread {
                 fileProps.load(reader);
 
                 for (Map.Entry<Object, Object> prop : fileProps.entrySet())
-                    for (DiscordProperties checkProp : DiscordProperties.values())
+                    for (DiscordLoadProperties checkProp : DiscordLoadProperties.values())
                         if (checkProp.getKey().contains((String) prop.getKey()))
                             loadProp.put(checkProp, (String) prop.getValue());
             }

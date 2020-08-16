@@ -5,8 +5,9 @@ import app.os.bots.discord.DiscordStartThread;
 public class OS {
     public static final String DIR_MAIN = "C:\\squados\\";
     public static final String DIR_DATA = DIR_MAIN + "data\\";
+    public static final String DIR_CONFIGS = DIR_MAIN + "servers\\";
 
-    public static final String VERSION = "0.3.7-stable";
+    public static final String VERSION = "0.4-stable";
 
     public void start() {
         // DS thread

@@ -1,13 +1,13 @@
 package app.os.bots.discord;
 
-public enum DiscordProperties {
+public enum DiscordLoadProperties {
     BOT_USERNAME("username"),
     BOT_NAME("name"),
     BOT_TOKEN("token"),
     BOT_PREFIX("prefix"),
-    ADMIN_ROLE("adminRole"),
     MESSAGES_COLOR("msgColor"),
-    DATE_FORMAT("dateFormat");
+    DATE_FORMAT("dateFormat"),
+    SERVER_NAME("serverName");
 
     private final String key;
 
@@ -15,7 +15,7 @@ public enum DiscordProperties {
         return key;
     }
 
-    DiscordProperties(String key) {
+    DiscordLoadProperties(String key) {
         this.key = key;
     }
 }

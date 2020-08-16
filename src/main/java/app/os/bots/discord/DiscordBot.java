@@ -12,26 +12,30 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class DiscordBot {
-    private final Map<DiscordProperties, String> loadProperties;
+    private final Map<DiscordLoadProperties, String> loadProperties;
 
-    public DiscordBot(Map<DiscordProperties, String> loadProperties) {
+    public DiscordBot(Map<DiscordLoadProperties, String> loadProperties) {
         this.loadProperties = loadProperties;
     }
 
     public void launch() {
         try {
-            JDA api = JDABuilder.createDefault(loadProperties.get(DiscordProperties.BOT_TOKEN)).build();
+            JDA api = JDABuilder.createDefault(loadProperties.get(DiscordLoadProperties.BOT_TOKEN)).build();
             api.awaitReady();
             api.addEventListener(new MainListener());
 
@@ -48,9 +52,36 @@ public class DiscordBot {
             Message received = event.getMessage();
             String rawData = received.getContentRaw();
 
+            // load server config
+            Path serverConfigFile = Paths.get(OS.DIR_CONFIGS + event.getGuild().getIdLong() + ".config");
+            if (Files.notExists(serverConfigFile)) {
+                try {
+                    Files.createFile(serverConfigFile);
+
+                    Properties newProperties = new Properties();
+                    newProperties.put("adminRole", "admin");
+
+                    newProperties.store(new FileWriter(serverConfigFile.toFile()), "generated");
+                } catch (IOException e) {
+                    ConsoleHelper.errln("Не удалось создать файл конфига! " + e.getMessage());
+                    event.getChannel().sendMessage("``" + e.getMessage() + "``").queue();
+                }
+            }
+
+            Properties serverConfig = new Properties();
+            try {
+                serverConfig.load(new FileReader(serverConfigFile.toFile()));
+            } catch (IOException e) {
+                ConsoleHelper.errln("Не удалось загрузить конфиг!");
+                event.getChannel().sendMessage("``" + e.getMessage() + "``").queue();
+            }
+
+
+            // ----
+
 
             try {
-                if (!rawData.startsWith(loadProperties.get(DiscordProperties.BOT_PREFIX)))
+                if (!rawData.startsWith(loadProperties.get(DiscordLoadProperties.BOT_PREFIX)))
                     return;
                 else
                     rawData = rawData.substring(1);
@@ -63,15 +94,17 @@ public class DiscordBot {
                 EmbedBuilder infoMsg = new EmbedBuilder();
 
                 Date currentDate = new Date();
-                infoMsg.setColor(Color.decode(loadProperties.get(DiscordProperties.MESSAGES_COLOR)));
+                infoMsg.setColor(Color.decode(loadProperties.get(DiscordLoadProperties.MESSAGES_COLOR)));
 
-                infoMsg.addField("Date", new SimpleDateFormat(loadProperties.get(DiscordProperties.DATE_FORMAT)).format(currentDate), false);
-                infoMsg.addField("Name", loadProperties.get(DiscordProperties.BOT_NAME), true);
-                infoMsg.addField("ver.", "v" + OS.VERSION, true);
+                infoMsg.addField("Server's name", loadProperties.get(DiscordLoadProperties.SERVER_NAME), true);
+                infoMsg.addField("Date", new SimpleDateFormat(loadProperties.get(DiscordLoadProperties.DATE_FORMAT)).format(currentDate), true);
+                infoMsg.addField("<<>>", "<<>>", false);
+                infoMsg.addField("Name", loadProperties.get(DiscordLoadProperties.BOT_NAME), true);
+                infoMsg.addField("Ver.", "v" + OS.VERSION, true);
 
                 received.getChannel().sendMessage(infoMsg.build()).queue(success -> {
                     long ping = event.getMessage().getTimeCreated().until(success.getTimeCreated(), ChronoUnit.MILLIS);
-                    infoMsg.addField("Ping", String.valueOf(ping), false);
+                    infoMsg.addField("Ping", String.valueOf(ping), true);
                     success.getChannel().editMessageById(success.getId(), infoMsg.build()).queue();
                 });
             } else if (rawData.startsWith("ping")) {
@@ -83,8 +116,12 @@ public class DiscordBot {
 
 
             // admin commands
-            List<Role> adminRoles = received.getGuild().getRolesByName(loadProperties.get(DiscordProperties.ADMIN_ROLE), true);
-            if (Objects.requireNonNull(received.getMember()).getRoles().containsAll(adminRoles)) {
+            List<Role> adminRoles = received.getGuild().getRoles()
+                    .stream()
+                    .filter(role -> role.getName().toLowerCase().contains(serverConfig.getProperty("adminRole").toLowerCase()))
+                    .collect(Collectors.toList());
+
+                    if (Objects.requireNonNull(received.getMember()).isOwner() || (Objects.requireNonNull(received.getMember()).getRoles().containsAll(adminRoles) && !adminRoles.isEmpty())) {
                 if (rawData.startsWith("clear")) {
                     AtomicBoolean isWorking = new AtomicBoolean(true);
                     OffsetDateTime twoWeeksAgo = OffsetDateTime.now().minus(2, ChronoUnit.WEEKS);
@@ -122,6 +159,21 @@ public class DiscordBot {
 
                     received.getChannel().sendMessage(
                             sendEmbedMessage(voiceChannelsString.toString())).queue();
+                } else if (rawData.startsWith("admin")) {
+                    if (rawData.split(" ").length >= 2) {
+                        String adminRole = rawData.substring((loadProperties.get(DiscordLoadProperties.BOT_PREFIX) + "admin").length());
+                        try {
+                            String buff = serverConfig.getProperty("adminRole");
+
+                            serverConfig.setProperty("adminRole", adminRole);
+                            serverConfig.store(new FileWriter(serverConfigFile.toFile()), "changed");
+
+                            event.getChannel().sendMessage("Роль администратора изменена с **" + buff + "** на **" + serverConfig.getProperty("adminRole") + "**.").queue();
+                        } catch (IOException e) {
+                            ConsoleHelper.errln("Не удалось изменить файл конфига! " + e.getMessage());
+                            event.getChannel().sendMessage("``" + e.getMessage() + "``").queue();
+                        }
+                    }
                 }
 
                 List<TextChannel> mentionedChannels = received.getMentionedChannels();
@@ -165,7 +217,7 @@ public class DiscordBot {
                     } else if (rawData.startsWith("verify")) {
                         for (Member member : mentionedMembers) {
                             member.getGuild().getRoles().stream().filter(role -> role.getName().toLowerCase().contains("verified")).forEach(role -> member.getGuild().addRoleToMember(member.getUser().getId(), role).queue());
-                            received.getChannel().sendMessage(String.format("<@%s> прошел **верефикацию**.", member.getId())).queue();
+                            received.getChannel().sendMessage(String.format("<@%s> прошел **верификацию**.", member.getId())).queue();
                         }
                     } else if (rawData.startsWith("unwarn")) {
                         for (Member member : mentionedMembers) {
@@ -198,7 +250,7 @@ public class DiscordBot {
         private MessageEmbed sendEmbedMessage(String text) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setDescription(text);
-            builder.setColor(Color.decode(loadProperties.get(DiscordProperties.MESSAGES_COLOR)));
+            builder.setColor(Color.decode(loadProperties.get(DiscordLoadProperties.MESSAGES_COLOR)));
 
             return builder.build();
         }
