@@ -1,4 +1,4 @@
-<h1>SquadOS</h1>
+<h1>SquadOS v0.5.1</h1>
 light discord bot for server managment.
 <br>
 <br>
