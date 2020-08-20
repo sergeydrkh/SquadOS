@@ -3,9 +3,11 @@ light discord bot for server managment.
 <br>
 <br>
 <h1>Installation guide</h1>
+0. unzip install.rar
+<br>
 1. launch install.bat
 <br>
-2. lanuch squadOS
+2. lanuch start.bat
 <br>
 3. fill C:\\squados\\data\\ds.properties
 <br>
