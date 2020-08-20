@@ -49,6 +49,7 @@ public class DiscordBot {
             commands.addCommand(new Ban());
             commands.addCommand(new Mute());
             commands.addCommand(new UnMute());
+            commands.addCommand(new Clear());
 
             api.addEventListener(commands.build());
         } catch (LoginException | InterruptedException e) {
