@@ -27,6 +27,9 @@ public class DiscordStartThread extends Thread {
                     create.put(createProp.getKey(), "insert data");
 
                 create.store(new FileWriter(file.toFile()), "insert data to use!");
+
+                ConsoleHelper.println("Заполните поля файла " + file.toString() + " для использования бота!");
+                return;
             } else {
                 FileReader reader = new FileReader(file.toFile());
                 Properties fileProps = new Properties();
@@ -38,7 +41,8 @@ public class DiscordStartThread extends Thread {
                             loadProp.put(checkProp, (String) prop.getValue());
             }
         } catch (IOException e) {
-            ConsoleHelper.errln("Ошибка! " + e.getMessage());
+            ConsoleHelper.errln("Ошибка! " + e);
+            ConsoleHelper.println("Запустите install.bat для корректной работы!");
             return;
         }
 
