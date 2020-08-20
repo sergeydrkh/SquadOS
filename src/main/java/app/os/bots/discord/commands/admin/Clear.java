@@ -13,6 +13,7 @@ public class Clear extends Command {
     public Clear() {
         this.name = "clear";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
+        this.help = "clear messages from chat";
         this.cooldown = 10;
     }
 
@@ -25,7 +26,7 @@ public class Clear extends Command {
                 List<Message> messages = commandEvent.getChannel().getHistory().retrievePast(50).complete();
                 messages.removeIf(m -> m.getTimeCreated().isBefore(twoWeeksAgo));
 
-                if (messages.isEmpty())
+                if (messages.isEmpty() || messages.size() < 2)
                     return;
 
                 commandEvent.getTextChannel().deleteMessages(messages).complete();
