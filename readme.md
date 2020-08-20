@@ -11,8 +11,7 @@ light discord bot for server managment.
 <br>
 3. fill C:\\squados\\data\\ds.properties
 <br>
-4. launch again and enjoy!
+4. launch start.bat and enjoy!
 <br>
-
 
 <h4>Telegram: @s3r3zz</h4>
