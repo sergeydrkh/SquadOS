@@ -1,6 +1,6 @@
 package app;
 
-import app.os.main.OS;
+import app.os.thread.OS;
 
 public class Start {
     public static void main(String[] args) {

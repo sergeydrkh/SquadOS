@@ -13,13 +13,7 @@ i
 9src/main/java/app/os/bots/discord/DiscordStartThread.java,d\e\deac4ced4fa74179a0f2c8dcba97b7c1ad07aaf8
 L
 src/main/java/app/Start.java,5\e\5e3017dee1cdcb2e097ee9a592959486298c8a27
-Y
-)src/main/java/app/os/META-INF/MANIFEST.MF,f\3\f3e99b1261670c534e647a27cf06a9008d1044c7
 a
 1src/main/java/app/os/bots/discord/DiscordBot.java,1\b\1bf01aeef9b5474c0cce87efdfbcfe7773a2a76b
 a
 1src/main/java/app/os/utilities/ConsoleHelper.java,2\e\2eb906ab5c4d49ba8291efc8474173cfb7728951
-Q
-!src/main/java/app/os/main/OS.java,3\9\39d89a47479309c376010f6b598990f266049aeb
-l
-<src/main/java/app/os/bots/discord/DiscordLoadProperties.java,5\9\5974990a7a356c6617cc48460ab7afd0adb65d31
