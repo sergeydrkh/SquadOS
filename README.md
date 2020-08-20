@@ -2,8 +2,6 @@
 light discord bot for server managment.
 <br>
 <br>
-<br>
-
 <h1>Installation guide</h1>
 1. launch install.bat
 <br>
