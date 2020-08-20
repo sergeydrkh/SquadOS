@@ -1,4 +1,4 @@
-<h1>SquadOS v0.5.1</h1>
+<h1>SquadOS v0.5.1_FINAL</h1>
 light discord bot for server managment.
 <br>
 <br>
@@ -13,5 +13,9 @@ light discord bot for server managment.
 <br>
 4. launch start.bat and enjoy!
 <br>
+<br>
+The SquadOS project has been completely finalized and only minor improvements will come out further, welcome your ideas in issues
+<br>
+<be>
 
 <h4>Telegram: @s3r3zz</h4>
