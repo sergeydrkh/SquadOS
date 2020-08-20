@@ -48,5 +48,7 @@ public class DiscordStartThread extends Thread {
 
         DiscordBot bot = new DiscordBot(loadProp);
         bot.launch();
+
+
     }
 }
