@@ -1,4 +1,4 @@
-package app.os.bots.discord.commands.users;
+package app.os.discord.commands.users;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;

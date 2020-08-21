@@ -1,4 +1,4 @@
-package app.os.bots.discord;
+package app.os.discord;
 
 public enum DiscordProperties {
     BOT_TOKEN("token"),

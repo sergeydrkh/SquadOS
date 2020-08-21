@@ -1,11 +1,12 @@
-package app.os.bots.discord;
+package app.os.discord;
 
-import app.os.bots.discord.commands.admin.*;
-import app.os.bots.discord.commands.users.Info;
-import app.os.bots.discord.commands.users.Ping;
-import app.os.thread.OS;
+import app.os.discord.commands.admin.*;
+import app.os.discord.commands.users.Info;
+import app.os.discord.commands.users.Ping;
+import app.os.discord.events.EventListener;
+import app.os.discord.events.EventThread;
+import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
-
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -52,6 +53,12 @@ public class DiscordBot {
             commands.addCommand(new Clear());
 
             api.addEventListener(commands.build());
+            api.addEventListener(new EventListener());
+
+            // start events thread
+            Thread events = new EventThread(api.getGuilds());
+            events.start();
+
         } catch (LoginException | InterruptedException e) {
             ConsoleHelper.errln("Ошибка! " + e + ".");
         }

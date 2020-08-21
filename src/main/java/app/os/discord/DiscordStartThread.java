@@ -1,6 +1,6 @@
-package app.os.bots.discord;
+package app.os.discord;
 
-import app.os.thread.OS;
+import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
 
 import java.io.FileReader;
@@ -48,7 +48,5 @@ public class DiscordStartThread extends Thread {
 
         DiscordBot bot = new DiscordBot(loadProp);
         bot.launch();
-
-
     }
 }

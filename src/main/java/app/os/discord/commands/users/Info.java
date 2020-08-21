@@ -1,6 +1,6 @@
-package app.os.bots.discord.commands.users;
+package app.os.discord.commands.users;
 
-import app.os.thread.OS;
+import app.os.main.OS;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;

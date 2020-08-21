@@ -1,6 +1,6 @@
-package app.os.bots.discord.commands.admin;
+package app.os.discord.commands.admin;
 
-import app.os.bots.discord.DiscordBot;
+import app.os.discord.DiscordBot;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Member;

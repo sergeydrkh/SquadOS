@@ -1,6 +1,6 @@
-package app.os.bots.discord.commands.admin;
+package app.os.discord.commands.admin;
 
-import app.os.bots.discord.DiscordBot;
+import app.os.discord.DiscordBot;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Member;
@@ -8,11 +8,11 @@ import net.dv8tion.jda.api.entities.Message;
 
 import java.util.List;
 
-public class Mute extends Command {
-    public Mute() {
-        this.name = "mute";
+public class Ban extends Command {
+    public Ban() {
+        this.name = "ban";
         this.arguments = "[users]";
-        this.help = "замутить пользователей";
+        this.help = "выдать бан (снятие ролей)";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
     }
 
@@ -27,8 +27,10 @@ public class Mute extends Command {
         }
 
         for (Member mentioned : mentionedMembers) {
-            commandEvent.getGuild().mute(mentioned, true)
-                    .queue(success -> received.getChannel().sendMessage(String.format("<@%s> выдан мут!", mentioned.getId())).queue());
+            mentioned.getRoles()
+                    .forEach(role -> commandEvent.getGuild().removeRoleFromMember(mentioned.getId(), role).queue());
+
+            received.getChannel().sendMessage(String.format("<@%s> выдан **бан**! *(снятие ролей)*", mentioned.getId())).queue();
         }
     }
 }
