@@ -1,13 +1,13 @@
-package app.os.discord.events;
+package app.os.discord.callback;
 
-public enum EventType {
+public enum CallbackType {
     TIME("time"),
     MESSAGE("message");
 
 
     private final String eventName;
 
-    EventType(String eventName) {
+    CallbackType(String eventName) {
         this.eventName = eventName;
     }
 

@@ -1,4 +1,4 @@
-package app.os.discord.events;
+package app.os.discord.callback;
 
 import app.os.main.OS;
 
@@ -8,19 +8,19 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
-public class EventManager {
-    public static Event generateEvent(Map<EventProperties, String> args) {
-        if (args.size() != EventProperties.values().length)
+public class CallbackManager {
+    public static Callback generateEvent(Map<CallbackProperties, String> args) {
+        if (args.size() != CallbackProperties.values().length)
             return null;
 
         Properties properties = new Properties();
-        for (Map.Entry<EventProperties, String> arg : args.entrySet())
+        for (Map.Entry<CallbackProperties, String> arg : args.entrySet())
             properties.put(arg.getKey().getPropName(), arg.getValue());
 
         Path file;
 
         do
-            file = Paths.get(OS.DIR_EVENTS + properties.getProperty(EventProperties.ID.getPropName()) + "." + System.currentTimeMillis() + ".event");
+            file = Paths.get(OS.DIR_CALLBACK + properties.getProperty(CallbackProperties.ID.getPropName()) + "." + System.currentTimeMillis() + ".event");
         while (Files.exists(file));
 
         try {
@@ -28,7 +28,7 @@ public class EventManager {
             OutputStream out = Files.newOutputStream(file);
 
             properties.store(out, OS.DEFAULT_DATE_FORMAT.format(new Date()));
-            return new Event(file, properties);
+            return new Callback(file, properties);
         } catch (IOException e) {
             System.out.println("ERR");
             return null;
@@ -36,18 +36,18 @@ public class EventManager {
     }
 
 
-    public static boolean createEvent(Event event) {
+    public static boolean createEvent(Callback callback) {
         try {
-            Files.createFile(event.getFile());
+            Files.createFile(callback.getFile());
             return true;
         } catch (IOException e) {
             return false;
         }
     }
 
-    public static List<Event> getEvents() {
-        List<Event> result = new ArrayList<>();
-        Path dir = Paths.get(OS.DIR_EVENTS);
+    public static List<Callback> getEvents() {
+        List<Callback> result = new ArrayList<>();
+        Path dir = Paths.get(OS.DIR_CALLBACK);
 
         try {
             Files.walkFileTree(dir, new FileVisitor<Path>() {
@@ -61,7 +61,7 @@ public class EventManager {
                     Properties temp = new Properties();
                     temp.load(Files.newInputStream(file));
 
-                    result.add(new Event(file, temp));
+                    result.add(new Callback(file, temp));
                     return FileVisitResult.CONTINUE;
                 }
 

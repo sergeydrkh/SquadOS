@@ -1,13 +1,13 @@
-package app.os.discord.events;
+package app.os.discord.callback;
 
-public enum EventProperties {
+public enum CallbackProperties {
     ID("guildID"),
     TYPE("type"),
     CONTENT("content");
 
     private final String propName;
 
-    EventProperties(String propName) {
+    CallbackProperties(String propName) {
         this.propName = propName;
     }
 

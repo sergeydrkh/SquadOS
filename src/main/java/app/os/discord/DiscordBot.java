@@ -3,8 +3,8 @@ package app.os.discord;
 import app.os.discord.commands.admin.*;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
-import app.os.discord.events.EventListener;
-import app.os.discord.events.EventThread;
+import app.os.discord.callback.CallbackListener;
+import app.os.discord.callback.CallbackThread;
 import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -53,10 +53,10 @@ public class DiscordBot {
             commands.addCommand(new Clear());
 
             api.addEventListener(commands.build());
-            api.addEventListener(new EventListener());
+            api.addEventListener(new CallbackListener());
 
             // start events thread
-            Thread events = new EventThread(api.getGuilds());
+            Thread events = new CallbackThread(api.getGuilds());
             events.start();
 
         } catch (LoginException | InterruptedException e) {

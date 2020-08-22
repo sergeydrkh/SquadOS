@@ -1,13 +1,13 @@
-package app.os.discord.events;
+package app.os.discord.callback;
 
 import java.nio.file.Path;
 import java.util.Properties;
 
-public class Event {
+public class Callback {
     private final Path file;
     private final Properties properties;
 
-    public Event(Path file, Properties properties) {
+    public Callback(Path file, Properties properties) {
         this.file = file;
         this.properties = properties;
     }
