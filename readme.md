@@ -1,3 +1,5 @@
+<img src="https://sun9-32.userapi.com/y2Bhtmpmv84Moc_3cMLCAUdVxvZQpp9YcLXjVA/ogKcTeIZ41A.jpg">
+
 <h1>SquadOS v0.5.1_FINAL</h1>
 light discord bot for server managment.
 <br>
