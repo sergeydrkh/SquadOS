@@ -51,3 +51,5 @@ o
 ?src/main/java/app/os/discord/commands/admin/CreateCallback.java,4\1\41f0fde6941eae0bf72f16a6d9123ef53623c68e
 o
 ?src/main/java/app/os/discord/commands/admin/RemoveCallback.java,f\a\fa709dce12159468604f2c71a4692ed4ec9fd5b7
+_
+/src/main/java/app/os/discord/callback/readme.md,0\c\0cd0f5f77ec9f10f406f810aa5ff63a8bffc3015
