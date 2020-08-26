@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class Admins extends Command {
     public Admins() {
         this.name = "admins";
-        this.help = "get all admins";
+        this.help = "получить список администраторов";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
     }
 

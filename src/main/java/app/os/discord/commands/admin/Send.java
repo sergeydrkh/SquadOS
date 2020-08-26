@@ -40,10 +40,7 @@ public class Send extends Command {
             mentionedChannel.sendMessage(
                     new EmbedBuilder()
                             .setDescription(messageText)
-                            .setColor(OS.DEFAULT_COLOR).build()).queue(s -> {
-
-                received.getChannel().sendMessage((String.format("Сообщение в чат <#%s> **успешно** отправлено!", mentionedChannel.getId()))).queue();
-            });
+                            .setColor(OS.DEFAULT_COLOR).build()).queue(s -> received.getChannel().sendMessage((String.format("Сообщение в чат <#%s> **успешно** отправлено!", mentionedChannel.getId()))).queue());
         }
 
     }

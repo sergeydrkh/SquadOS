@@ -1,10 +1,11 @@
 package app.os.discord;
 
 import app.os.discord.commands.admin.*;
+import app.os.discord.commands.creator.GetGuild;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.callback.CallbackListener;
-import app.os.discord.callback.CallbackThread;
+import app.os.discord.callback.CallbackUpdateThread;
 import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -23,6 +24,7 @@ public class DiscordBot {
     }
 
     public static final String ADMIN_ROLES = "admin";
+    public static final String CREATOR_ROLE = "creator";
     public static final String WARN_ROLES = "warn";
 
     public void launch() {
@@ -51,12 +53,15 @@ public class DiscordBot {
             commands.addCommand(new Mute());
             commands.addCommand(new UnMute());
             commands.addCommand(new Clear());
+            commands.addCommand(new CreateCallback());
+            commands.addCommand(new RemoveCallback());
+            commands.addCommand(new GetGuild());
 
             api.addEventListener(commands.build());
             api.addEventListener(new CallbackListener());
 
             // start events thread
-            Thread events = new CallbackThread(api.getGuilds());
+            Thread events = new CallbackUpdateThread(api.getGuilds());
             events.start();
 
         } catch (LoginException | InterruptedException e) {
