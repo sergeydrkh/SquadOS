@@ -4,8 +4,6 @@ import app.os.discord.commands.admin.*;
 import app.os.discord.commands.creator.GetGuild;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
-import app.os.discord.callback.CallbackListener;
-import app.os.discord.callback.CallbackUpdateThread;
 import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -58,11 +56,13 @@ public class DiscordBot {
             commands.addCommand(new GetGuild());
 
             api.addEventListener(commands.build());
-            api.addEventListener(new CallbackListener());
 
-            // start events thread
-            Thread events = new CallbackUpdateThread(api.getGuilds());
-            events.start();
+//            api.addEventListener(new CallbackListener());
+//
+//            // start events thread
+//            Thread events = new CallbackUpdateThread(api.getGuilds());
+//            events.start();
+            // in development
 
         } catch (LoginException | InterruptedException e) {
             ConsoleHelper.errln("Ошибка! " + e + ".");
