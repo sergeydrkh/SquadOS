@@ -1,18 +1,18 @@
 package app.os.discord.callback.arguments.decision;
 
-import app.os.discord.callback.Callback;
+import app.os.discord.callback.arguments.decision.commands.CBan;
+import app.os.discord.callback.arguments.decision.commands.CWarn;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CallbackDecisionBuilder {
-    private final List<CallbackDecision> callbackCommands = new ArrayList<>();
+    public static List<CallbackDecision> getAllCommands() {
+        List<CallbackDecision> callbackDecision = new ArrayList<>();
 
-    public void addCommand(CallbackDecision callbackCommand) {
-        callbackCommands.add(callbackCommand);
-    }
+        callbackDecision.add(new CBan());
+        callbackDecision.add(new CWarn());
 
-    public List<Callback> build() {
-        return null;
+        return callbackDecision;
     }
 }

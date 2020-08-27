@@ -1,5 +1,7 @@
 package app.os.discord.callback.arguments.condition;
 
+import app.os.discord.callback.CallbackEvent;
+
 public abstract class CallbackCondition {
     public final String name;
     public final String args;
@@ -10,4 +12,6 @@ public abstract class CallbackCondition {
         this.args = args;
         this.help = help;
     }
+
+    public abstract boolean check(CallbackEvent event);
 }
