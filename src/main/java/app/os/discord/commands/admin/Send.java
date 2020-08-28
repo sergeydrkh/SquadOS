@@ -14,7 +14,7 @@ public class Send extends Command {
     public Send() {
         this.name = "send";
         this.arguments = "[channels] [text]";
-        this.help = "send text to mentioned chats";
+        this.help = "отправить сообщение от имени бота в текстовый канал";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
     }
 

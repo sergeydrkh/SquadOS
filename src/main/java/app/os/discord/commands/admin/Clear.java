@@ -13,7 +13,7 @@ public class Clear extends Command {
     public Clear() {
         this.name = "clear";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
-        this.help = "clear messages from chat";
+        this.help = "удалить все сообщения за последнюю неделю";
         this.cooldown = 10;
     }
 

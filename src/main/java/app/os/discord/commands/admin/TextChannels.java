@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 public class TextChannels extends Command {
     public TextChannels() {
         this.name = "text";
-        this.help = "get text chats on server";
+        this.help = "получить все текстовые чаты на сервере";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
     }
 

@@ -7,6 +7,7 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 public class GetGuild extends Command {
     public GetGuild() {
         this.name = "guildInfo";
+        this.help = "получить информацию о Guild";
         this.requiredRole = DiscordBot.CREATOR_ROLE;
     }
 

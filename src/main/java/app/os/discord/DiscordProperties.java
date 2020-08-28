@@ -1,7 +1,7 @@
 package app.os.discord;
 
 public enum DiscordProperties {
-    BOT_TOKEN("token"),
+    BOT_TOKEN("apiToken"),
     BOT_PREFIX_MAIN("mainPrefix"),
     BOT_PREFIX_ADDITIONAL("additionalPrefix"),
     BOT_HELP_WORD("helpWord"),

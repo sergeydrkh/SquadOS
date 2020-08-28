@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 public class Ping extends Command {
     public Ping() {
         this.name = "ping";
+        this.help = "получить пинг бота";
     }
 
     @Override

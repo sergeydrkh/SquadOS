@@ -1,9 +1,11 @@
 package app.os.discord;
 
 import app.os.discord.commands.admin.*;
+import app.os.discord.commands.creator.GetConfigs;
 import app.os.discord.commands.creator.GetGuild;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
+import app.os.discord.server_config.ConfigListener;
 import app.os.main.OS;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
@@ -22,8 +24,8 @@ public class DiscordBot {
     }
 
     public static final String ADMIN_ROLES = "admin";
-    public static final String CREATOR_ROLE = "creator";
     public static final String WARN_ROLES = "warn";
+    public static final String CREATOR_ROLE = "creator";
 
     public void launch() {
         try {
@@ -51,18 +53,12 @@ public class DiscordBot {
             commands.addCommand(new Mute());
             commands.addCommand(new UnMute());
             commands.addCommand(new Clear());
-            commands.addCommand(new CreateCallback());
-            commands.addCommand(new RemoveCallback());
             commands.addCommand(new GetGuild());
+            commands.addCommand(new GetConfigs());
 
             api.addEventListener(commands.build());
+            api.addEventListener(new ConfigListener());
 
-//            api.addEventListener(new CallbackListener());
-//
-//            // start events thread
-//            Thread events = new CallbackUpdateThread(api.getGuilds());
-//            events.start();
-            // in development
 
         } catch (LoginException | InterruptedException e) {
             ConsoleHelper.errln("Ошибка! " + e + ".");

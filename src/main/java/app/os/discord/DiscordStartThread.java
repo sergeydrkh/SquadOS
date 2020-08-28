@@ -42,7 +42,7 @@ public class DiscordStartThread extends Thread {
             }
         } catch (IOException e) {
             ConsoleHelper.errln("Ошибка! " + e);
-            ConsoleHelper.println("Запустите install.bat для корректной работы!");
+            ConsoleHelper.println("Запустите install.bat, который лежит в установщике, для корректной работы!");
             return;
         }
 

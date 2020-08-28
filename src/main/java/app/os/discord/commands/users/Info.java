@@ -11,7 +11,7 @@ import java.util.Date;
 public class Info extends Command {
     public Info() {
         this.name = "info";
-        this.help = "get info about bot";
+        this.help = "получить информацию о боте";
         this.cooldown = 50;
     }
 
