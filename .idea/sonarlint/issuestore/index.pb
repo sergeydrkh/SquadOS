@@ -53,7 +53,7 @@ p
 @src/main/java/app/os/discord/server_config/ConfigProperties.java,a\7\a77a62a0fea376927ce307cba48368436345e8ce
 m
 =src/main/java/app/os/discord/commands/creator/GetConfigs.java,f\d\fd1ec7a1f8120a3be30421fcbc7fb157cb4e4cb8
-V
-&src/main/java/app/META-INF/MANIFEST.MF,1\a\1a778f8a0b43795f304a7fd2dedbc9f4caca7817
 n
 >src/main/java/app/os/discord/server_config/ConfigListener.java,e\7\e71045827465651ccfca6eb6bd7cf4c7b94f6d0e
+i
+9src/main/java/app/os/discord/commands/admin/BanWords.java,6\6\665028229fdbd01b495e2ec7d6e4ad8480e39648

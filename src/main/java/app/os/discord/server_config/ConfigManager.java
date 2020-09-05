@@ -13,6 +13,16 @@ import java.util.Properties;
 public class ConfigManager {
     private static final String FILE_EXTENSION = ".properties";
 
+    public static Properties getConfigByID(long guildID) {
+        for (Properties config : getAllConfigs()) {
+            if (Long.parseLong(config.getProperty(ConfigProperties.GUILD_ID.getKey())) == guildID) {
+                return config;
+            }
+        }
+
+        return createConfig(guildID);
+    }
+
     public static List<Properties> getAllConfigs() {
         List<Properties> result = new ArrayList<>();
 
@@ -58,7 +68,7 @@ public class ConfigManager {
         return false;
     }
 
-    public static void createConfig(long guildID) {
+    public static Properties createConfig(long guildID) {
         if (!isExists(guildID)) {
             try {
                 Path newFile = Files.createFile(Paths.get(OS.DIR_CONFIGS + guildID + FILE_EXTENSION));
@@ -66,14 +76,19 @@ public class ConfigManager {
                 toStore.setProperty(ConfigProperties.GUILD_ID.getKey(), String.valueOf(guildID));
 
                 toStore.store(Files.newOutputStream(newFile), "generated");
+                return toStore;
             } catch (IOException ignored) {
             }
         }
+
+        return null;
     }
 
     public static boolean saveConfig(Properties config) {
-        try(OutputStream out = Files.newOutputStream(Paths.get(OS.DIR_CONFIGS + config.getProperty(ConfigProperties.GUILD_ID.getKey() + FILE_EXTENSION)))) {
+        Path toSave = Paths.get(OS.DIR_CONFIGS + config.getProperty(ConfigProperties.GUILD_ID.getKey()) + FILE_EXTENSION);
+        try (OutputStream out = Files.newOutputStream(toSave)) {
             config.store(out, "saved");
+
             return true;
         } catch (IOException e) {
             return false;

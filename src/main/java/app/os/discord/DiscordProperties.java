@@ -5,7 +5,10 @@ public enum DiscordProperties {
     BOT_PREFIX_MAIN("mainPrefix"),
     BOT_PREFIX_ADDITIONAL("additionalPrefix"),
     BOT_HELP_WORD("helpWord"),
-    OWNER_ID("ownerId");
+    OWNER_ID("ownerId"),
+    SERVER_IP("serverIp"),
+    SERVER_PORT("serverPort"),
+    SERVER_ENABLE("serverEnable");
 
     private final String key;
 

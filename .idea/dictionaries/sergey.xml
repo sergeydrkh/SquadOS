@@ -2,6 +2,7 @@
   <dictionary name="sergey">
     <words>
       <w>addkey</w>
+      <w>banwords</w>
       <w>cooldown</w>
       <w>errln</w>
       <w>guildinf</w>

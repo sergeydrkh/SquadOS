@@ -7,6 +7,7 @@ import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.server_config.ConfigListener;
 import app.os.main.OS;
+import app.os.server.Server;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -55,9 +56,25 @@ public class DiscordBot {
             commands.addCommand(new Clear());
             commands.addCommand(new GetGuild());
             commands.addCommand(new GetConfigs());
+            commands.addCommand(new BanWords());
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());
+
+            // start server
+
+            try {
+                if (Boolean.parseBoolean(loadProperties.get(DiscordProperties.SERVER_ENABLE))) {
+                    Thread server = new Server(
+                            loadProperties.get(DiscordProperties.SERVER_IP),
+                            Integer.parseInt(loadProperties.get(DiscordProperties.SERVER_PORT))
+                    );
+
+                    server.start();
+                }
+            } catch (Exception e) {
+                ConsoleHelper.errln("Произошла ошибка при создании сервера! Он будет отключен до следующего перезапуска. Ошибка: " + e.getMessage());
+            }
 
 
         } catch (LoginException | InterruptedException e) {
