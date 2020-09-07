@@ -1,4 +1,4 @@
-package app.os.discord.server_config;
+package app.os.discord.configs;
 
 import app.os.main.OS;
 

@@ -1,4 +1,4 @@
-package app.os.discord.server_config;
+package app.os.discord.configs;
 
 public enum ConfigProperties {
     GUILD_ID("guildID"),

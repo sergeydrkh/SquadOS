@@ -1,7 +1,7 @@
 package app.os.discord.commands.creator;
 
-import app.os.discord.server_config.ConfigManager;
-import app.os.discord.server_config.ConfigProperties;
+import app.os.discord.configs.ConfigManager;
+import app.os.discord.configs.ConfigProperties;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 

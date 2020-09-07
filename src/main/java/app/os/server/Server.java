@@ -1,11 +1,20 @@
 package app.os.server;
 
+import app.os.main.OS;
+import app.os.server.commands.GetGuilds;
+import app.os.server.commands.ThreadsCount;
 import app.os.utilities.ConsoleHelper;
+import net.dv8tion.jda.api.JDA;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server extends Thread {
     private ServerSocket serverSocket;
@@ -15,7 +24,15 @@ public class Server extends Thread {
     private final String ip;
     private final int port;
 
-    public Server(String ip, int port) {
+    private final List<ServerCommand> commands = new ArrayList<>();
+    private final JDA api;
+
+    public Server(String ip, int port, JDA api) {
+        commands.add(new GetGuilds());
+        commands.add(new ThreadsCount());
+
+        this.api = api;
+
         this.ip = ip;
         this.port = port;
     }
@@ -32,10 +49,22 @@ public class Server extends Thread {
                     out = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
 
                     String message = in.readLine();
+                    String[] args = message.split(OS.DEFAULT_MESSAGE_DELIMITER);
                     ConsoleHelper.println("new message from server: " + message);
 
+                    StringBuilder answer = new StringBuilder();
 
-                    out.write(message + "\n");
+                    ServerExecutor executor = new ServerExecutor(api, args);
+
+                    if (args[0].equals("help"))
+                        answer.append(getHelp());
+                    else
+                        commands.forEach(command -> {
+                            if (args[0].equalsIgnoreCase(command.getName()))
+                                command.execute(executor);
+                        });
+
+                    out.write(answer.toString());
                     out.flush();
                 } finally {
                     in.close();
@@ -44,9 +73,19 @@ public class Server extends Thread {
             } finally {
                 ConsoleHelper.println("Server stopped");
                 serverSocket.close();
+                new Server(ip, port, api).start();
             }
         } catch (Exception e) {
             ConsoleHelper.errln(e.getMessage());
         }
+    }
+
+    private String getHelp() {
+        StringBuilder helpMessage = new StringBuilder();
+
+        helpMessage.append("All commands: ");
+        commands.forEach(command -> helpMessage.append(command.getName()).append(" - ").append(command.getHelp()).append("\n"));
+
+        return helpMessage.toString();
     }
 }

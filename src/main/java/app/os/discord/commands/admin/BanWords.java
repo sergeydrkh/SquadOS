@@ -1,7 +1,7 @@
 package app.os.discord.commands.admin;
 
-import app.os.discord.server_config.ConfigManager;
-import app.os.discord.server_config.ConfigProperties;
+import app.os.discord.configs.ConfigManager;
+import app.os.discord.configs.ConfigProperties;
 import app.os.main.OS;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
@@ -37,7 +37,7 @@ public class BanWords extends Command {
                     String.valueOf(!Boolean.parseBoolean(serverConfig.getProperty(ConfigProperties.BAN_WORDS_STATE.getKey())))
             );
         } else {
-            List<String> banWordsList = Arrays.asList(serverConfig.getProperty(ConfigProperties.BAN_WORDS_LIST.getKey()).split(OS.DEFAULT_DELIMITER));
+            List<String> banWordsList = Arrays.asList(serverConfig.getProperty(ConfigProperties.BAN_WORDS_LIST.getKey()).split(OS.DEFAULT_ARGS_DELIMITER));
 
             if (args[1].equals("add")) {
                 banWordsList.add(args[2]);

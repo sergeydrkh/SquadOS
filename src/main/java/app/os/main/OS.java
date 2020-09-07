@@ -10,7 +10,8 @@ public class OS extends Thread {
     public static final String DIR_DATA = DIR_MAIN + "data\\";
     public static final String DIR_CONFIGS = DIR_MAIN + "configs\\";
 
-    public static final String DEFAULT_DELIMITER = ",";
+    public static final String DEFAULT_ARGS_DELIMITER = ",";
+    public static final String DEFAULT_MESSAGE_DELIMITER = " ";
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     public static final Color DEFAULT_COLOR = Color.decode("#666666");
 
