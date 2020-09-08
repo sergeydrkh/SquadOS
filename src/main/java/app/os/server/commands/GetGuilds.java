@@ -17,6 +17,7 @@ public class GetGuilds extends ServerCommand {
         StringBuilder answer = new StringBuilder();
 
         answer.append("All guilds: \n");
+        System.out.println(allGuilds);
         allGuilds.forEach(guild -> answer.append(guild.getName()).append("\n"));
 
         return answer.toString();

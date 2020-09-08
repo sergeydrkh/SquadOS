@@ -60,8 +60,10 @@ public class Server extends Thread {
                         answer.append(getHelp());
                     else
                         commands.forEach(command -> {
-                            if (args[0].equalsIgnoreCase(command.getName()))
-                                command.execute(executor);
+                            System.out.println(command.getName());
+                            System.out.println(args[0]);
+                            if (args[0].equals(command.getName()))
+                                answer.append(command.execute(executor)).append("\n");
                         });
 
                     out.write(answer.toString());
