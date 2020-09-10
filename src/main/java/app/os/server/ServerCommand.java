@@ -1,5 +1,7 @@
 package app.os.server;
 
+import org.json.JSONObject;
+
 public abstract class ServerCommand {
     private final String name;
     private final String help;
@@ -25,5 +27,5 @@ public abstract class ServerCommand {
         return help;
     }
 
-    public abstract String execute(ServerExecutor executor);
+    public abstract JSONObject execute(ServerExecutor executor);
 }

@@ -1,6 +1,8 @@
-package app.os.server;
+package app.os.server.general;
 
 import app.os.main.OS;
+import app.os.server.ServerCommand;
+import app.os.server.ServerExecutor;
 import app.os.server.commands.GetGuilds;
 import app.os.server.commands.ThreadsCount;
 import app.os.utilities.ConsoleHelper;
@@ -16,7 +18,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server extends Thread {
+public class OldServer extends Thread {
     private ServerSocket serverSocket;
     private BufferedReader in;
     private BufferedWriter out;
@@ -27,7 +29,7 @@ public class Server extends Thread {
     private final List<ServerCommand> commands = new ArrayList<>();
     private final JDA api;
 
-    public Server(String ip, int port, JDA api) {
+    public OldServer(String ip, int port, JDA api) {
         commands.add(new GetGuilds());
         commands.add(new ThreadsCount());
 
@@ -75,7 +77,7 @@ public class Server extends Thread {
             } finally {
                 ConsoleHelper.println("Server stopped");
                 serverSocket.close();
-                new Server(ip, port, api).start();
+                new OldServer(ip, port, api).start();
             }
         } catch (Exception e) {
             ConsoleHelper.errln(e.getMessage());

@@ -2,9 +2,8 @@ package app.os.server.commands;
 
 import app.os.server.ServerCommand;
 import app.os.server.ServerExecutor;
-import net.dv8tion.jda.api.entities.Guild;
-
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class GetGuilds extends ServerCommand {
     public GetGuilds() {
@@ -12,14 +11,14 @@ public class GetGuilds extends ServerCommand {
     }
 
     @Override
-    public String execute(ServerExecutor executor) {
-        List<Guild> allGuilds = executor.getApi().getGuilds();
-        StringBuilder answer = new StringBuilder();
+    public JSONObject execute(ServerExecutor executor) {
+        JSONObject answer = new JSONObject();
 
-        answer.append("All guilds: \n");
-        System.out.println(allGuilds);
-        allGuilds.forEach(guild -> answer.append(guild.getName()).append("\n"));
+        JSONArray guilds = new JSONArray();
+        executor.getApi().getGuilds().forEach(guild -> guilds.put(guild.getName()));
 
-        return answer.toString();
+        answer.put("guilds", guilds);
+
+        return answer;
     }
 }

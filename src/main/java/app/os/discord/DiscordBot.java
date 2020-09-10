@@ -7,7 +7,7 @@ import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
 import app.os.main.OS;
-import app.os.server.Server;
+import app.os.server.general.MultiThreadServer;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -65,7 +65,7 @@ public class DiscordBot {
 
             try {
                 if (Boolean.parseBoolean(loadProperties.get(DiscordProperties.SERVER_ENABLE))) {
-                    Thread server = new Server(
+                    Thread server = new MultiThreadServer(
                             loadProperties.get(DiscordProperties.SERVER_IP),
                             Integer.parseInt(loadProperties.get(DiscordProperties.SERVER_PORT)),
                             api

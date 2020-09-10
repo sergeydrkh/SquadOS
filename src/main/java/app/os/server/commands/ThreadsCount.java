@@ -2,6 +2,7 @@ package app.os.server.commands;
 
 import app.os.server.ServerCommand;
 import app.os.server.ServerExecutor;
+import org.json.JSONObject;
 
 public class ThreadsCount extends ServerCommand {
     public ThreadsCount() {
@@ -9,7 +10,10 @@ public class ThreadsCount extends ServerCommand {
     }
 
     @Override
-    public String execute(ServerExecutor executor) {
-        return "Active threads: " + Thread.activeCount();
+    public JSONObject execute(ServerExecutor executor) {
+        JSONObject answer = new JSONObject();
+        answer.put("activeThreads_count", Thread.activeCount());
+
+        return answer;
     }
 }
