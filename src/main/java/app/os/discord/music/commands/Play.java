@@ -56,8 +56,6 @@ public class Play extends Command {
             }
         }
 
-        System.out.println(link);
-
         MusicManager musicManager = MusicManager.getInstance();
         musicManager.loadAndPlay(received.getTextChannel(), link);
 
