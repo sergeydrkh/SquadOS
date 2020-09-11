@@ -41,7 +41,7 @@ public class Play extends Command {
             new URL(args[1]);
             link = args[1];
         } catch (MalformedURLException malformedURLException) {
-            String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=snippet&q=%s&type=video&maxResults=10&key=%s",
+            String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=100&key=%s",
                     received.getContentRaw().substring(args[0].length()).trim(),
                     googleApiKey);
 
@@ -52,12 +52,12 @@ public class Play extends Command {
                 link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
             } catch (Exception exception) {
                 received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
+                exception.printStackTrace();
                 return;
             }
         }
 
         MusicManager musicManager = MusicManager.getInstance();
         musicManager.loadAndPlay(received.getTextChannel(), link);
-
     }
 }

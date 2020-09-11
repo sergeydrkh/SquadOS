@@ -2,7 +2,10 @@ package app.os.utilities;
 
 import org.json.JSONObject;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -16,10 +19,12 @@ public class JSONReader {
         return sb.toString();
     }
 
-    public static JSONObject readJsonFromUrl(String url) throws IOException {
-        try (InputStream is = new URL(url).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            String jsonText = readAll(rd);
+    public static JSONObject readJsonFromUrl(String urlString) throws IOException {
+        if(urlString.contains(" "))
+            urlString = urlString.replace(" ", "%20");
+
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader((new URL(urlString)).openConnection().getInputStream(), StandardCharsets.UTF_8));) {
+            String jsonText = readAll(reader);
             return new JSONObject(jsonText);
         }
     }
