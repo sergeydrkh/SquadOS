@@ -41,18 +41,18 @@ public class ServerState extends Command {
         int minutes = Math.max((int) (milliseconds / (60 * 1000)) - (hours * 60), 0);
         int seconds = Math.max((int) (milliseconds / (1000)) - (minutes * 60), 0);
 
-        stateMessage.addField("Time",
-                String.format(" - Now: %s%n - Working time: %s",
-                        OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                        hours + "h" + " " + minutes + "m" + " " + seconds + "s"),
-                true);
-
         stateMessage.addField(
                 "RAM",
                 String.format(" - Used: %s%n - Free: %s%n - Total: %s",
                         byteToMiB(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()),
                         byteToMiB(Runtime.getRuntime().freeMemory()),
                         byteToMiB(Runtime.getRuntime().totalMemory())),
+                true);
+
+        stateMessage.addField("Time",
+                String.format(" - Now: %s%n - Working time: %s",
+                        OS.DEFAULT_DATE_FORMAT.format(new Date()),
+                        hours + "h" + " " + minutes + "m" + " " + seconds + "s"),
                 true);
 
         stateMessage.addField("", "", false);

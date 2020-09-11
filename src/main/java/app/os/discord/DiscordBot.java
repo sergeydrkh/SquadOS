@@ -7,6 +7,8 @@ import app.os.discord.commands.creator.ServerState;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
+import app.os.discord.music.commands.Play;
+import app.os.discord.music.commands.Skip;
 import app.os.main.OS;
 import app.os.server.Server;
 import app.os.utilities.ConsoleHelper;
@@ -29,6 +31,7 @@ public class DiscordBot {
     public static final String ADMIN_ROLES = "admin";
     public static final String WARN_ROLES = "warn";
     public static final String CREATOR_ROLE = "creator";
+    public static final String DJ_ROLE = "dj";
 
     public void launch() {
         try {
@@ -60,6 +63,9 @@ public class DiscordBot {
             commands.addCommand(new GetConfigs());
             commands.addCommand(new BanWords());
             commands.addCommand(new ServerState(new Date()));
+
+            commands.addCommand(new Play());
+            commands.addCommand(new Skip());
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());
