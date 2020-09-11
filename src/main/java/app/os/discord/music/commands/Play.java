@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public class Play extends Command {
     private final String googleApiKey;
@@ -54,8 +55,8 @@ public class Play extends Command {
                 new URL(args[1]);
                 link = args[1];
             } catch (MalformedURLException malformedURLException) {
-                String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=100&key=%s",
-                        received.getContentRaw().substring(args[0].length()).trim(),
+                String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=1&key=%s",
+                        new String(received.getContentRaw().substring(args[0].length()).trim().getBytes(), Charset.defaultCharset()),
                         googleApiKey);
 
                 try {

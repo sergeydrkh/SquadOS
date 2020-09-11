@@ -54,13 +54,13 @@ public class MusicManager {
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage(String.format("Добавление в очередь **%s**.", track.getInfo().title)).queue();
+                channel.sendMessage(String.format("Добавление в очередь: **%s**.", track.getInfo().title)).queue();
                 play(channel.getGuild(), musicManager, track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                channel.sendMessage(String.format("Добавление плейлиста **%s** в очередь.", playlist.getName())).queue();
+                channel.sendMessage(String.format("Добавление плейлиста: **%s** в очередь.", playlist.getName())).queue();
                 playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track));
             }
 
