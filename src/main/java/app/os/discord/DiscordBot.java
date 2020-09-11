@@ -68,6 +68,7 @@ public class DiscordBot {
             commands.addCommand(new Volume());
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
+            commands.addCommand(new GetQueue());
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());

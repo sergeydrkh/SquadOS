@@ -34,30 +34,44 @@ public class Play extends Command {
             return;
         }
 
-        // Never Gonna Give You Up
-        String link = "";
+        new Thread(new Task(received, args)).start();
+    }
 
-        try {
-            new URL(args[1]);
-            link = args[1];
-        } catch (MalformedURLException malformedURLException) {
-            String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=100&key=%s",
-                    received.getContentRaw().substring(args[0].length()).trim(),
-                    googleApiKey);
+    private class Task implements Runnable {
+        private final Message received;
+        private final String[] args;
 
-            try {
-                JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
-                JSONArray videos = allData.getJSONArray("items");
-
-                link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
-            } catch (Exception exception) {
-                received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
-                exception.printStackTrace();
-                return;
-            }
+        public Task(Message received, String[] args) {
+            this.received = received;
+            this.args = args;
         }
 
-        MusicManager musicManager = MusicManager.getInstance();
-        musicManager.loadAndPlay(received.getTextChannel(), link);
+        @Override
+        public void run() {
+            String link;
+
+            try {
+                new URL(args[1]);
+                link = args[1];
+            } catch (MalformedURLException malformedURLException) {
+                String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=100&key=%s",
+                        received.getContentRaw().substring(args[0].length()).trim(),
+                        googleApiKey);
+
+                try {
+                    JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
+                    JSONArray videos = allData.getJSONArray("items");
+
+                    link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
+                } catch (Exception exception) {
+                    received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
+                    exception.printStackTrace();
+                    return;
+                }
+            }
+
+            MusicManager musicManager = MusicManager.getInstance();
+            musicManager.loadAndPlay(received.getTextChannel(), link);
+        }
     }
 }

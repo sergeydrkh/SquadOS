@@ -54,29 +54,24 @@ public class MusicManager {
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage("Adding to queue " + track.getInfo().title).queue();
+                channel.sendMessage(String.format("Добавление в очередь **%s**.", track.getInfo().title)).queue();
                 play(channel.getGuild(), musicManager, track);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack firstTrack = playlist.getSelectedTrack();
-
-                if (firstTrack == null)
-                    firstTrack = playlist.getTracks().get(0);
-
-                channel.sendMessage("Adding to queue " + firstTrack.getInfo().title + " (first track of playlist " + playlist.getName() + ")").queue();
-                play(channel.getGuild(), musicManager, firstTrack);
+                channel.sendMessage(String.format("Добавление плейлиста **%s** в очередь.", playlist.getName())).queue();
+                playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track));
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage("Nothing found by " + trackUrl).queue();
+                channel.sendMessage(String.format("Ничего не найдено по ссылке: %s", trackUrl)).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage("Could not play: " + exception.getMessage()).queue();
+                channel.sendMessage(String.format("Не удалось воспроизвести.%nОшибка: ``%s``", exception.getMessage())).queue();
             }
         });
     }
@@ -89,9 +84,9 @@ public class MusicManager {
 
     public void skipTrack(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
-        musicManager.scheduler.nextTrack();
+        AudioTrack next = musicManager.scheduler.nextTrack();
 
-        channel.sendMessage("Skipped to next track.").queue();
+        channel.sendMessage(String.format("Следующий трэк: **%s**#", next.getInfo().title)).queue();
     }
 
     private static void connectToFirstVoiceChannel(AudioManager audioManager) {

@@ -1,10 +1,10 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
+import app.os.discord.music.GuildMusicManager;
 import app.os.discord.music.MusicManager;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Message;
 
 public class Stop extends Command {
@@ -18,8 +18,9 @@ public class Stop extends Command {
     protected void execute(CommandEvent commandEvent) {
         Message received = commandEvent.getMessage();
 
-        AudioPlayer player = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild()).player;
-        player.stopTrack();
+        GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild());
+        guildMusicManager.scheduler.resetQueue();
+        guildMusicManager.player.stopTrack();
 
         received.getChannel().sendMessage("Плеер **остановлен**.").queue();
     }
