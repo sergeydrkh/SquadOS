@@ -1,8 +1,5 @@
-package app.os.server.general;
+package app.os.server;
 
-import app.os.server.ServerCommand;
-import app.os.server.commands.GetGuilds;
-import app.os.server.commands.ThreadsCount;
 import net.dv8tion.jda.api.JDA;
 
 import java.io.BufferedReader;
@@ -11,32 +8,27 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
  * @author mercenery
- *
  */
-public class MultiThreadServer extends Thread {
+public class Server extends Thread {
     static ExecutorService executeIt = Executors.newFixedThreadPool(2);
 
     private final String ip;
     private final int port;
 
-    private final List<ServerCommand> commands = new ArrayList<>();
     private final JDA api;
 
-    public MultiThreadServer(String ip, int port, JDA api) {
-        commands.add(new GetGuilds());
-        commands.add(new ThreadsCount());
-
-        this.api = api;
+    public Server(String ip, int port, JDA api) {
+        setDaemon(true);
+        setName("Server");
 
         this.ip = ip;
         this.port = port;
+        this.api = api;
     }
 
     @Override
@@ -60,7 +52,7 @@ public class MultiThreadServer extends Thread {
 
                 Socket client = server.accept();
 
-                executeIt.execute(new MonoThreadServer(client));
+                executeIt.execute(new TaskExecutor(client, api));
                 System.out.print("Connection accepted.");
             }
 

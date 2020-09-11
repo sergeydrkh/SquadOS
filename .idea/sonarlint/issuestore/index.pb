@@ -51,8 +51,6 @@ m
 =src/main/java/app/os/discord/commands/creator/GetConfigs.java,f\d\fd1ec7a1f8120a3be30421fcbc7fb157cb4e4cb8
 i
 9src/main/java/app/os/discord/commands/admin/BanWords.java,6\6\665028229fdbd01b495e2ec7d6e4ad8480e39648
-W
-'src/main/java/app/os/server/Server.java,7\8\7846e9bbdd33cfc295048ada4bf71068c2cc9e56
 c
 3src/main/java/app/os/server/commands/GetGuilds.java,5\7\5744a6b0747b0d6f4205dcb8ee9ebfdfd3284df5
 h

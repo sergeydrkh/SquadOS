@@ -3,11 +3,12 @@ package app.os.discord;
 import app.os.discord.commands.admin.*;
 import app.os.discord.commands.creator.GetConfigs;
 import app.os.discord.commands.creator.GetGuild;
+import app.os.discord.commands.creator.ServerState;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
 import app.os.main.OS;
-import app.os.server.general.MultiThreadServer;
+import app.os.server.Server;
 import app.os.utilities.ConsoleHelper;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -15,6 +16,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
+import java.util.Date;
 import java.util.Map;
 
 public class DiscordBot {
@@ -57,6 +59,7 @@ public class DiscordBot {
             commands.addCommand(new GetGuild());
             commands.addCommand(new GetConfigs());
             commands.addCommand(new BanWords());
+            commands.addCommand(new ServerState(new Date()));
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());
@@ -65,7 +68,7 @@ public class DiscordBot {
 
             try {
                 if (Boolean.parseBoolean(loadProperties.get(DiscordProperties.SERVER_ENABLE))) {
-                    Thread server = new MultiThreadServer(
+                    Thread server = new Server(
                             loadProperties.get(DiscordProperties.SERVER_IP),
                             Integer.parseInt(loadProperties.get(DiscordProperties.SERVER_PORT)),
                             api

@@ -14,6 +14,10 @@ import java.util.Map;
 import java.util.Properties;
 
 public class DiscordStartThread extends Thread {
+    public DiscordStartThread() {
+        setName("DiscordBot Starter");
+    }
+
     @Override
     public void run() {
         Map<DiscordProperties, String> loadProp = new HashMap<>();
