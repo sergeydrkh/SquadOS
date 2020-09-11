@@ -7,8 +7,7 @@ import app.os.discord.commands.creator.ServerState;
 import app.os.discord.commands.users.Info;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
-import app.os.discord.music.commands.Play;
-import app.os.discord.music.commands.Skip;
+import app.os.discord.music.commands.*;
 import app.os.main.OS;
 import app.os.server.Server;
 import app.os.utilities.ConsoleHelper;
@@ -64,14 +63,16 @@ public class DiscordBot {
             commands.addCommand(new BanWords());
             commands.addCommand(new ServerState(new Date()));
 
-            commands.addCommand(new Play());
+            commands.addCommand(new Play(loadProperties.get(DiscordProperties.YOUTUBE_DATA_API_KEY)));
             commands.addCommand(new Skip());
+            commands.addCommand(new Volume());
+            commands.addCommand(new Pause());
+            commands.addCommand(new Stop());
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());
 
             // start server
-
             try {
                 if (Boolean.parseBoolean(loadProperties.get(DiscordProperties.SERVER_ENABLE))) {
                     Thread server = new Server(
