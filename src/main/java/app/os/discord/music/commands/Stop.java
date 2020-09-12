@@ -22,6 +22,6 @@ public class Stop extends Command {
         guildMusicManager.scheduler.resetQueue();
         guildMusicManager.player.stopTrack();
 
-        received.getChannel().sendMessage("Плеер **остановлен**.").queue();
+        received.getChannel().sendMessage("Очередь очищена.").queue();
     }
 }

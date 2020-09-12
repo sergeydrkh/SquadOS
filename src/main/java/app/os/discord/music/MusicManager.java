@@ -66,12 +66,12 @@ public class MusicManager {
 
             @Override
             public void noMatches() {
-                channel.sendMessage(String.format("Ничего не найдено по ссылке: %s", trackUrl)).queue();
+                channel.sendMessage(String.format("Ничего не найдено по ссылке: %s.", trackUrl)).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage(String.format("Не удалось воспроизвести.%nОшибка: ``%s``", exception.getMessage())).queue();
+                channel.sendMessage(String.format("Не удалось воспроизвести.%nОшибка: ``%s``.", exception.getMessage())).queue();
             }
         });
     }
@@ -86,7 +86,7 @@ public class MusicManager {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioTrack next = musicManager.scheduler.nextTrack();
         try {
-            channel.sendMessage(String.format("Следующий трэк: **%s**#", next.getInfo().title)).queue();
+            channel.sendMessage(String.format("Следующий трэк: **%s**.", next.getInfo().title)).queue();
         } catch (NullPointerException e) {
             channel.sendMessage("Очередь пуста.").queue();
         }
