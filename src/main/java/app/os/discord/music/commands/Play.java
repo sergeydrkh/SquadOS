@@ -22,7 +22,7 @@ public class Play extends Command {
 
         this.name = "play";
         this.help = "включить музыку";
-        this.arguments = "{ссылка}";
+        this.arguments = "{ссылка/название}";
         this.requiredRole = DiscordBot.DJ_ROLE;
     }
 

@@ -68,6 +68,8 @@ public class DiscordBot {
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
             commands.addCommand(new Queue());
+//            commands.addCommand(new Repeat()); NOW WORKING
+            commands.addCommand(new Player());
 
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());

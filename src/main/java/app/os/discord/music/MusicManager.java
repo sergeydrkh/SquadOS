@@ -86,7 +86,7 @@ public class MusicManager {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioTrack next = musicManager.scheduler.nextTrack();
         try {
-            channel.sendMessage(String.format("Следующий трэк: **%s**.", next.getInfo().title)).queue();
+            channel.sendMessage(String.format("Следующий трек: **%s**.", next.getInfo().title)).queue();
         } catch (NullPointerException e) {
             channel.sendMessage("Очередь пуста.").queue();
         }
