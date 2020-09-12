@@ -60,7 +60,6 @@ public class DiscordBot {
             commands.addCommand(new Clear());
             commands.addCommand(new GetGuild());
             commands.addCommand(new GetConfigs());
-            commands.addCommand(new BanWords());
             commands.addCommand(new ServerState(new Date()));
 
             commands.addCommand(new Play(loadProperties.get(DiscordProperties.YOUTUBE_DATA_API_KEY)));
