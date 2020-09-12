@@ -15,7 +15,7 @@ public class OS extends Thread {
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     public static final Color DEFAULT_COLOR = Color.decode("#666666");
 
-    public static final String VERSION = "0.5.5";
+    public static final String VERSION = "0.5.6";
 
     @Override
     public void run() {
