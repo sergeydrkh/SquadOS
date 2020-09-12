@@ -85,3 +85,5 @@ f
 6src/main/java/app/os/discord/music/TrackScheduler.java,0\7\0707cf463d86f544f8890ba0af2f08e732d63178
 i
 9src/main/java/app/os/discord/music/commands/GetQueue.java,4\0\40542955c166eeb3b829bee36346ee1c5120825d
+V
+&src/main/java/app/META-INF/MANIFEST.MF,1\a\1a778f8a0b43795f304a7fd2dedbc9f4caca7817

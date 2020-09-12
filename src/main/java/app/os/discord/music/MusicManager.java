@@ -85,8 +85,11 @@ public class MusicManager {
     public void skipTrack(TextChannel channel) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
         AudioTrack next = musicManager.scheduler.nextTrack();
-
-        channel.sendMessage(String.format("Следующий трэк: **%s**#", next.getInfo().title)).queue();
+        try {
+            channel.sendMessage(String.format("Следующий трэк: **%s**#", next.getInfo().title)).queue();
+        } catch (NullPointerException e) {
+            channel.sendMessage("Очередь пуста.").queue();
+        }
     }
 
     private static void connectToFirstVoiceChannel(AudioManager audioManager) {

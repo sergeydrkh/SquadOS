@@ -20,7 +20,12 @@ public class Volume extends Command {
     protected void execute(CommandEvent commandEvent) {
         Message received = commandEvent.getMessage();
         String[] args = received.getContentRaw().split(OS.DEFAULT_MESSAGE_DELIMITER);
-        if (args.length != 2) {
+
+        if (args.length == 1) {
+            AudioPlayer player = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild()).player;
+            received.getChannel().sendMessage(String.format("Текущая громкость: **%d%%**", player.getVolume())).queue();
+            return;
+        } else if (args.length != 2) {
             received.getChannel().sendMessage(String.format("**Ошибка!** Используйте: %s.", this.arguments)).queue();
             return;
         }
