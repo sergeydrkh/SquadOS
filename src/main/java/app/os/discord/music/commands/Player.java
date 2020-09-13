@@ -78,7 +78,6 @@ public class Player extends Command {
         @Override
         public void run() {
             while (active) {
-                System.out.println("UPDATE " + Thread.currentThread().getName());
                 try {
                     StringBuilder toSend = new StringBuilder();
 
