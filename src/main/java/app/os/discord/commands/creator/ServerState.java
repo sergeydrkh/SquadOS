@@ -36,11 +36,6 @@ public class ServerState extends Command {
 
         stateMessage.addField("", "", false);
 
-        long milliseconds = new Date().getTime() - launchDate.getTime();
-        int hours = (int) (milliseconds / (60 * 60 * 1000));
-        int minutes = Math.max((int) (milliseconds / (60 * 1000)) - (hours * 60), 0);
-        int seconds = Math.max((int) (milliseconds / (1000)) - (minutes * 60), 0);
-
         stateMessage.addField(
                 "RAM",
                 String.format(" - Used: %s%n - Free: %s%n - Total: %s",
@@ -52,7 +47,7 @@ public class ServerState extends Command {
         stateMessage.addField("Time",
                 String.format(" - Now: %s%n - Working time: %s",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                        hours + "h" + " " + minutes + "m" + " " + seconds + "s"),
+                       timeToString(new Date().getTime() - launchDate.getTime() / (1000))),
                 true);
 
         stateMessage.addField("", "", false);
@@ -75,6 +70,13 @@ public class ServerState extends Command {
 
                     q.editMessage(stateMessage.build()).queue();
                 });
+    }
+
+    private String timeToString(long secs) {
+        long hour = secs / 3600,
+                min = secs / 60 % 60,
+                sec = secs % 60;
+        return String.format("%02d:%02d:%02d", hour, min, sec);
     }
 
     public static String byteToMiB(long bytes) {
