@@ -1,12 +1,16 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
+import app.os.discord.configs.ConfigManager;
+import app.os.discord.configs.ConfigProperties;
 import app.os.discord.music.MusicManager;
 import app.os.main.OS;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Message;
+
+import java.util.Properties;
 
 public class Volume extends Command {
     public Volume() {
@@ -35,6 +39,14 @@ public class Volume extends Command {
 
             int newVolume = Integer.parseInt(args[1]);
             int oldVolume = player.getVolume();
+
+            try {
+                Properties config = ConfigManager.getConfigByID(commandEvent.getGuild().getIdLong());
+                config.setProperty(ConfigProperties.PLAYER_VOLUME.getKey(), String.valueOf(newVolume));
+
+                ConfigManager.saveConfig(config);
+            } catch (Exception ignored) {
+            }
 
             player.setVolume(newVolume);
             received.getChannel().sendMessage(String.format("Громкость изменена с **%d%%** на **%d%%**.", oldVolume, newVolume)).queue();

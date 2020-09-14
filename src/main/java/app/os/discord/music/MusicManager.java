@@ -77,9 +77,10 @@ public class MusicManager {
     }
 
     public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
-        connectToFirstVoiceChannel(guild.getAudioManager());
-
-        musicManager.scheduler.queue(track);
+        if (!connectToFirstVoiceChannel(guild.getAudioManager()))
+            musicManager.scheduler.resetQueue();
+        else
+            musicManager.scheduler.queue(track);
     }
 
     public void skipTrack(TextChannel channel) {
@@ -92,14 +93,16 @@ public class MusicManager {
         }
     }
 
-    private static void connectToFirstVoiceChannel(AudioManager audioManager) {
+    private static boolean connectToFirstVoiceChannel(AudioManager audioManager) {
         if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 if (!voiceChannel.getMembers().isEmpty()) {
                     audioManager.openAudioConnection(voiceChannel);
-                    break;
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 }

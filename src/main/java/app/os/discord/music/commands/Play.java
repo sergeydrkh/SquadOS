@@ -1,11 +1,14 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
+import app.os.discord.configs.ConfigManager;
+import app.os.discord.configs.ConfigProperties;
 import app.os.discord.music.MusicManager;
 import app.os.main.OS;
 import app.os.utilities.JSONReader;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,22 +38,24 @@ public class Play extends Command {
             return;
         }
 
-        new Thread(new Task(received, args)).start();
+        new Thread(new Task(received, args, commandEvent.getGuild())).start();
     }
 
     private class Task implements Runnable {
         private final Message received;
         private final String[] args;
+        private final Guild guild;
 
-        public Task(Message received, String[] args) {
+        public Task(Message received, String[] args, Guild guild) {
             this.received = received;
             this.args = args;
+            this.guild = guild;
         }
 
         @Override
         public void run() {
+            // load music
             String link;
-
             try {
                 new URL(args[1]);
                 link = args[1];
@@ -71,7 +76,18 @@ public class Play extends Command {
                 }
             }
 
+
+            // load volume
+            int volume;
+            try {
+                volume = Integer.parseInt(ConfigManager.getConfigByID(guild.getIdLong()).getProperty(ConfigProperties.PLAYER_VOLUME.getKey()));
+            } catch (Exception ignored) {
+                volume = 100;
+            }
+
+            // create player
             MusicManager musicManager = MusicManager.getInstance();
+            musicManager.getGuildAudioPlayer(guild).player.setVolume(volume);
             musicManager.loadAndPlay(received.getTextChannel(), link);
         }
     }

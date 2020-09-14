@@ -49,8 +49,6 @@ k
 ;src/main/java/app/os/discord/commands/creator/GetGuild.java,7\2\729556dc4db0efc4687be4278e7f8519f560da1c
 m
 =src/main/java/app/os/discord/commands/creator/GetConfigs.java,f\d\fd1ec7a1f8120a3be30421fcbc7fb157cb4e4cb8
-i
-9src/main/java/app/os/discord/commands/admin/BanWords.java,6\6\665028229fdbd01b495e2ec7d6e4ad8480e39648
 h
 8src/main/java/app/os/discord/configs/ConfigListener.java,4\b\4b3aa67d60b3a496398e686b2b409ea55e6adab4
 g
@@ -83,7 +81,5 @@ e
 5src/main/java/app/os/discord/music/commands/Stop.java,1\1\11b83b3be78d9753a8a15640554c86afed1b1b5f
 f
 6src/main/java/app/os/discord/music/TrackScheduler.java,0\7\0707cf463d86f544f8890ba0af2f08e732d63178
-i
-9src/main/java/app/os/discord/music/commands/GetQueue.java,4\0\40542955c166eeb3b829bee36346ee1c5120825d
 V
 &src/main/java/app/META-INF/MANIFEST.MF,1\a\1a778f8a0b43795f304a7fd2dedbc9f4caca7817
