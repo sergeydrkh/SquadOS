@@ -47,7 +47,7 @@ public class ServerState extends Command {
         stateMessage.addField("Time",
                 String.format(" - Now: %s%n - Working time: %s",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                        timeToString(launchDate.getTime() / 1000)),
+                        launchDate.getTime() / 1000),
                 true);
 
         stateMessage.addField("", "", false);
