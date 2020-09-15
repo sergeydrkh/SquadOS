@@ -47,14 +47,14 @@ public class ServerState extends Command {
         stateMessage.addField("Time",
                 String.format(" - Now: %s%n - Working time: %s",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                       timeToString(new Date().getTime() - launchDate.getTime() / (1000))),
+                        timeToString(launchDate.getTime() / 1000)),
                 true);
 
         stateMessage.addField("", "", false);
 
         stateMessage.addField(
                 "Errors",
-                String.format(" - Count: %d" , ConsoleHelper.getErrors()),
+                String.format(" - Count: %d", ConsoleHelper.getErrors()),
                 true
         );
 
