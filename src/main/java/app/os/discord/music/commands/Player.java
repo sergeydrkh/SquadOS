@@ -76,15 +76,14 @@ public class Player extends Command {
 
         private void setButtons(Message message) {
             try {
-                message.addReaction("\u25AB").queue(); // ▫
-                message.addReaction("\u23EE").queue(); // ⏭
-                message.addReaction("\u25FD").queue(); // ◽
                 message.addReaction("\u23EF").queue(); // ⏯
-                message.addReaction("\u25FB").queue(); // ◻
-                message.addReaction("\u23ED").queue(); // ⏮
-                message.addReaction("\u2B1C").queue(); // ⬜
+                message.addReaction("\u23ED").queue(); // ⏭
             } catch (Exception ignored) {
             }
+        }
+
+        private void removeButtons() {
+
         }
 
         @Override

@@ -10,6 +10,7 @@ import app.os.discord.commands.users.Link;
 import app.os.discord.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
 import app.os.discord.music.commands.*;
+import app.os.discord.music.reaction.ReactionListener;
 import app.os.main.OS;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -79,6 +80,7 @@ public class DiscordBot {
 //            commands.addCommand(new Repeat()); NOW WORKING
             commands.addCommand(new Player());
 
+            api.addEventListener(new ReactionListener());
             api.addEventListener(commands.build());
             api.addEventListener(new ConfigListener());
 
