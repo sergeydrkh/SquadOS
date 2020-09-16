@@ -54,10 +54,10 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (repeat)
-            queue.add(track);
-
-        else if (endReason.mayStartNext)
+        if (endReason.mayStartNext) {
             nextTrack();
+        } else {
+            //TODO
+        }
     }
 }

@@ -6,9 +6,6 @@ public enum DiscordProperties {
     BOT_PREFIX_ADDITIONAL("additionalPrefix"),
     BOT_HELP_WORD("helpWord"),
     OWNER_ID("ownerId"),
-    SERVER_IP("serverIp"),
-    SERVER_PORT("serverPort"),
-    SERVER_ENABLE("serverEnable"),
     YOUTUBE_DATA_API_KEY("youtube_dataApiKey");
 
     private final String key;

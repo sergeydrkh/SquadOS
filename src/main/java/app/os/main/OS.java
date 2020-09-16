@@ -1,5 +1,6 @@
 package app.os.main;
 
+import app.os.console.ConsoleListener;
 import app.os.discord.DiscordStartThread;
 
 import java.awt.*;
@@ -15,12 +16,13 @@ public class OS extends Thread {
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy hh:mm");
     public static final Color DEFAULT_COLOR = Color.decode("#666666");
 
-    public static final String VERSION = "0.5.7";
+    public static final String NAME = "SquadOS";
+    public static final String VERSION = "0.6-beta";
+    public static final String DESCRIPTION = "SquadOS - a simple and easy to use multifunctional Discord bot. Music, moderation, fun - ez!";
 
     @Override
     public void run() {
-        // DS thread
-        Thread discordThread = new DiscordStartThread();
-        discordThread.start();
+        new ConsoleListener().start();
+        new DiscordStartThread().start();
     }
 }

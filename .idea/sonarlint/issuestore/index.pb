@@ -11,8 +11,6 @@ O
 	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 L
 src/main/java/app/Start.java,5\e\5e3017dee1cdcb2e097ee9a592959486298c8a27
-a
-1src/main/java/app/os/utilities/ConsoleHelper.java,2\e\2eb906ab5c4d49ba8291efc8474173cfb7728951
 g
 7src/main/java/app/os/discord/commands/admin/Admins.java,7\6\769de5d142bee3c1067929ad156514a29b50b355
 d
@@ -55,10 +53,6 @@ g
 7src/main/java/app/os/discord/configs/ConfigManager.java,d\5\d5b937deafed788167dc1df39534a0cf244c92d2
 j
 :src/main/java/app/os/discord/configs/ConfigProperties.java,a\d\ada3c2eb923cff35538d41256c6ed1e3d8942613
-W
-'src/main/java/app/os/server/Server.java,7\8\7846e9bbdd33cfc295048ada4bf71068c2cc9e56
-]
--src/main/java/app/os/server/TaskExecutor.java,f\5\f57295233ce0c22770faeb215be342f325e8f6cd
 n
 >src/main/java/app/os/discord/commands/creator/ServerState.java,f\5\f5ffec328ed15f6e5706eb78764e5187c6aebcde
 g
@@ -85,3 +79,11 @@ V
 &src/main/java/app/META-INF/MANIFEST.MF,1\a\1a778f8a0b43795f304a7fd2dedbc9f4caca7817
 g
 7src/main/java/app/os/discord/music/commands/Player.java,f\f\ff2463e240fd66aada511514f97c3d783241da61
+a
+1src/main/java/app/os/console/ConsoleListener.java,c\0\c05a1fc1a95ca1bc676520295962cbb97d144f74
+_
+/src/main/java/app/os/console/ConsoleHelper.java,2\4\24e8397b4bd3e5d2906175a8ff155626fd582fa7
+b
+2src/main/java/app/os/discord/commands/Command.java,1\a\1a171760530b3853fd8dc390929a900b46cd0106
+V
+&src/main/java/app/os/language/todo.txt,4\a\4a0b3011a1610d5bca1b2c5d8df4bd2d318d916e

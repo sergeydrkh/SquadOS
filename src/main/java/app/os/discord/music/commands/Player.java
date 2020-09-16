@@ -45,7 +45,6 @@ public class Player extends Command {
     }
 
 
-
     private static class UpdateBar extends Thread {
         private final GuildMusicManager guildMusicManager;
         private final Message toUpdate;
@@ -75,6 +74,19 @@ public class Player extends Command {
             return String.format("%02d:%02d:%02d", hour, min, sec);
         }
 
+        private void setButtons(Message message) {
+            try {
+                message.addReaction("\u25AB").queue(); // ▫
+                message.addReaction("\u23EE").queue(); // ⏭
+                message.addReaction("\u25FD").queue(); // ◽
+                message.addReaction("\u23EF").queue(); // ⏯
+                message.addReaction("\u25FB").queue(); // ◻
+                message.addReaction("\u23ED").queue(); // ⏮
+                message.addReaction("\u2B1C").queue(); // ⬜
+            } catch (Exception ignored) {
+            }
+        }
+
         @Override
         public void run() {
             while (active) {
@@ -85,7 +97,7 @@ public class Player extends Command {
                     int endSeconds = (int) (guildMusicManager.player.getPlayingTrack().getInfo().length / 1000);
                     int nowSeconds = (int) (guildMusicManager.player.getPlayingTrack().getPosition() / 1000);
 
-                    char[] bar = "━━━━━━━━━━━━".toCharArray();
+                    char[] bar = "━━━━━━━━━━━━━━━━━━".toCharArray();
                     try {
                         bar[(int) Math.ceil((((double) nowSeconds / endSeconds) * 100) / (bar.length - 3))] = '●';
                     } catch (Exception e) {
@@ -94,11 +106,11 @@ public class Player extends Command {
 
                     toSend.append("**").append(guildMusicManager.player.getPlayingTrack().getInfo().title).append("**").append("\n");
                     toSend.append(String.format("%s %s %s%n", startSeconds, new String(bar), timeToString(endSeconds)));
-                    toSend.append("  ⇆ㅤㅤㅤ◁ㅤ❚❚ㅤ▷ㅤㅤㅤ↻\n");
 
-                    toUpdate.editMessage(toSend.toString()).queue();
+                    toUpdate.editMessage(toSend.toString()).queue(this::setButtons);
                 } catch (Exception e) {
                     toUpdate.editMessage("Воспроизведение завершено.").queue();
+                    toUpdate.getReactions().forEach(reaction -> toUpdate.removeReaction(reaction.getReactionEmote().getEmote()).queue());
                     break;
                 }
 

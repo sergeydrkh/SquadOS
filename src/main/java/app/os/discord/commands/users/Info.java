@@ -5,7 +5,6 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class Info extends Command {
@@ -22,16 +21,15 @@ public class Info extends Command {
         Date currentDate = new Date();
         infoMsg.setColor(OS.DEFAULT_COLOR);
 
-        infoMsg.addField("Server's name", commandEvent.getGuild().getName(), true);
-        infoMsg.addField("Date", OS.DEFAULT_DATE_FORMAT.format(currentDate), true);
-        infoMsg.addField("", "", false);
+        infoMsg.setTitle(String.format("%s (Revision %s)", OS.NAME, OS.VERSION));
+        infoMsg.setDescription(OS.DESCRIPTION);
+        infoMsg.setImage("https://sun9-32.userapi.com/y2Bhtmpmv84Moc_3cMLCAUdVxvZQpp9YcLXjVA/ogKcTeIZ41A.jpg");
+        infoMsg.setFooter("© 2020 SquadOS, Inc.", "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1000px-Apple_logo_black.svg.png");
+
         infoMsg.addField("Name", "SquadOS", true);
         infoMsg.addField("Ver.", "v" + OS.VERSION, true);
+        infoMsg.addField("Guilds", String.valueOf(commandEvent.getJDA().getGuilds().size()), true);
 
-        commandEvent.getChannel().sendMessage(infoMsg.build()).queue(success -> {
-            infoMsg.addField("Ping", String.valueOf(commandEvent.getMessage().getTimeCreated().until(success.getTimeCreated(), ChronoUnit.MILLIS)), true);
-
-            success.getChannel().editMessageById(success.getId(), infoMsg.build()).queue();
-        });
+        commandEvent.getChannel().sendMessage(infoMsg.build()).queue();
     }
 }

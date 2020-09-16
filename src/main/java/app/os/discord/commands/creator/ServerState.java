@@ -2,7 +2,7 @@ package app.os.discord.commands.creator;
 
 import app.os.discord.DiscordBot;
 import app.os.main.OS;
-import app.os.utilities.ConsoleHelper;
+import app.os.console.ConsoleHelper;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -45,9 +45,9 @@ public class ServerState extends Command {
                 true);
 
         stateMessage.addField("Time",
-                String.format(" - Now: %s%n - Working time: %s",
+                String.format(" - Now: %s%n - Server update: %s",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                        launchDate.getTime() / 1000),
+                        "00:00 GMT"),
                 true);
 
         stateMessage.addField("", "", false);

@@ -77,10 +77,8 @@ public class MusicManager {
     }
 
     public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
-        if (!connectToFirstVoiceChannel(guild.getAudioManager()))
-            musicManager.scheduler.resetQueue();
-        else
-            musicManager.scheduler.queue(track);
+        connectToFirstVoiceChannel(guild.getAudioManager());
+        musicManager.scheduler.queue(track);
     }
 
     public void skipTrack(TextChannel channel) {
