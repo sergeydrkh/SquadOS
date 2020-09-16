@@ -45,9 +45,10 @@ public class ServerState extends Command {
                 true);
 
         stateMessage.addField("Time",
-                String.format(" - Now: %s%n - Server update: %s",
+                String.format(" - Now: %s%n - Uptime: %sd",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                        "00:00 GMT"),
+                        (new Date().getTime() - OS.DATE_LAUNCH.getTime()) / (24 * 60 * 60 * 1000)
+                ),
                 true);
 
         stateMessage.addField("", "", false);
