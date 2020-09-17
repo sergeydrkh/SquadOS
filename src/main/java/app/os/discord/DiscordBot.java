@@ -22,17 +22,17 @@ import java.util.Date;
 
 public class DiscordBot {
     // final
-//    private static final String BOT_TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XpWk0w.VZkL9fq0y6LT7m--j_3aDlc0_r4";
-//    private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyDk2LVOWntGsPaxTF7W_M4yKBlZ7GHTifY"};
-//    private static final String HELP_WORD = "help";
-//    private static final String PREFIX = "!";
-//    private static final String OWNER_ID = "662324806187745290";
-
-    private static final String BOT_TOKEN = "NzU1NTcxMzA4ODc5ODA2NDg0.X2FOnQ.M-7K6XpClA_NyT0xbfD40OiSvvo"; // beta
+    private static final String BOT_TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XpWk0w.VZkL9fq0y6LT7m--j_3aDlc0_r4";
     private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyDk2LVOWntGsPaxTF7W_M4yKBlZ7GHTifY"};
-    private static final String HELP_WORD = "b_help";
-    private static final String PREFIX = "b!";
+    private static final String HELP_WORD = "help";
+    private static final String PREFIX = "!";
     private static final String OWNER_ID = "662324806187745290";
+
+//    private static final String BOT_TOKEN = "NzU1NTcxMzA4ODc5ODA2NDg0.X2FOnQ.M-7K6XpClA_NyT0xbfD40OiSvvo"; // beta
+//    private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyDk2LVOWntGsPaxTF7W_M4yKBlZ7GHTifY"};
+//    private static final String HELP_WORD = "b_help";
+//    private static final String PREFIX = "b!";
+//    private static final String OWNER_ID = "662324806187745290";
 
     public static final String INVITE_URL = "https://discord.com/api/oauth2/authorize?client_id=699588783405793323&permissions=0&scope=bot";
 

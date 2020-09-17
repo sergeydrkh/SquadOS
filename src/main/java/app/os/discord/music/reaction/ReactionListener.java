@@ -21,8 +21,6 @@ public class ReactionListener extends ListenerAdapter {
     }
 
     private void execute(String emote, Guild guild, User user) {
-        System.out.println(emote);
-
         MusicManager musicManager = MusicManager.getInstance();
         GuildMusicManager guildMusicManager = musicManager.getGuildAudioPlayer(guild);
 
