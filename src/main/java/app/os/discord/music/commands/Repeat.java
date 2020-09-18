@@ -3,8 +3,8 @@ package app.os.discord.music.commands;
 import app.os.discord.DiscordBot;
 import app.os.discord.music.GuildMusicManager;
 import app.os.discord.music.MusicManager;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 
 public class Repeat extends Command {
     public Repeat() {

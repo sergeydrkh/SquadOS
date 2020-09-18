@@ -1,18 +1,18 @@
 package app.os.discord;
 
 import app.os.console.ConsoleHelper;
-import app.os.discord.commands.admin.*;
-import app.os.discord.commands.creator.GetConfigs;
-import app.os.discord.commands.creator.GetGuild;
-import app.os.discord.commands.creator.ServerState;
-import app.os.discord.commands.users.Info;
-import app.os.discord.commands.users.Link;
-import app.os.discord.commands.users.Ping;
+import app.os.discord.commands.all.admin.*;
+import app.os.discord.commands.all.creator.GetConfigs;
+import app.os.discord.commands.all.creator.GetGuild;
+import app.os.discord.commands.all.creator.ServerState;
+import app.os.discord.commands.all.users.Info;
+import app.os.discord.commands.all.users.Link;
+import app.os.discord.commands.all.users.Ping;
+import app.os.discord.commands.tread.command.CommandClientBuilder;
 import app.os.discord.configs.ConfigListener;
 import app.os.discord.music.commands.*;
 import app.os.discord.music.reaction.ReactionListener;
 import app.os.main.OS;
-import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -31,7 +31,7 @@ public class DiscordBot {
     // beta
     private static final String BOT_TOKEN = "NzU1NTcxMzA4ODc5ODA2NDg0.X2FOnQ.M-7K6XpClA_NyT0xbfD40OiSvvo"; // beta
     private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyDk2LVOWntGsPaxTF7W_M4yKBlZ7GHTifY"};
-    private static final String HELP_WORD = "b_help";
+    private static final String HELP_WORD = "help";
     private static final String PREFIX = "b!";
     private static final String OWNER_ID = "662324806187745290";
 

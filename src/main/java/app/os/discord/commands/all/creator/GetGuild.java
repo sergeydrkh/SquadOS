@@ -1,8 +1,8 @@
-package app.os.discord.commands.creator;
+package app.os.discord.commands.all.creator;
 
 import app.os.discord.DiscordBot;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 
 public class GetGuild extends Command {
     public GetGuild() {

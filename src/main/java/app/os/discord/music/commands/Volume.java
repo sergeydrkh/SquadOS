@@ -5,8 +5,8 @@ import app.os.discord.configs.ConfigManager;
 import app.os.discord.configs.ConfigProperties;
 import app.os.discord.music.MusicManager;
 import app.os.main.OS;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Message;
 

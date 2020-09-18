@@ -6,7 +6,7 @@
 
     <groupId>com.s3r3zka</groupId>
     <artifactId>SquadOS</artifactId>
-    <version>0.6.1</version>
+    <version>0.6.5</version>
     <build>
         <plugins>
             <plugin>
@@ -40,6 +40,7 @@
         <jda.ver>4.2.0_204</jda.ver>
         <jda-utilities.ver>3.0.4</jda-utilities.ver>
         <reflections.ver>0.9.12</reflections.ver>
+        <org.json.ver>20200518</org.json.ver>
     </properties>
 
     <dependencies>
@@ -62,12 +63,19 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jagrosh</groupId>
-            <artifactId>jda-utilities</artifactId>
-            <version>${jda-utilities.ver}</version>
-            <scope>compile</scope>
-            <type>pom</type>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org.json.ver}</version>
         </dependency>
+
+
+        <!--        <dependency>-->
+<!--            <groupId>com.jagrosh</groupId>-->
+<!--            <artifactId>jda-utilities</artifactId>-->
+<!--            <version>${jda-utilities.ver}</version>-->
+<!--            <scope>compile</scope>-->
+<!--            <type>pom</type>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.reflections</groupId>

@@ -1,9 +1,9 @@
-package app.os.discord.commands.admin;
+package app.os.discord.commands.all.admin;
 
 import app.os.discord.DiscordBot;
 import app.os.main.OS;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 public class TextChannels extends Command {

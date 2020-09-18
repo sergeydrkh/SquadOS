@@ -1,8 +1,8 @@
-package app.os.discord.commands.admin;
+package app.os.discord.commands.all.admin;
 
 import app.os.discord.DiscordBot;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;

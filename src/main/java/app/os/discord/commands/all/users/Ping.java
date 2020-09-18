@@ -1,7 +1,7 @@
-package app.os.discord.commands.users;
+package app.os.discord.commands.all.users;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 
 import java.time.temporal.ChronoUnit;
 

@@ -1,18 +1,18 @@
-package app.os.discord.commands.admin;
+package app.os.discord.commands.all.admin;
 
 import app.os.discord.DiscordBot;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.List;
 
-public class Ban extends Command {
-    public Ban() {
-        this.name = "ban";
+public class UnMute extends Command {
+    public UnMute() {
+        this.name = "unmute";
         this.arguments = "[users]";
-        this.help = "выдать бан (снятие ролей)";
+        this.help = "снять мут пользователям";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
     }
 
@@ -27,10 +27,8 @@ public class Ban extends Command {
         }
 
         for (Member mentioned : mentionedMembers) {
-            mentioned.getRoles()
-                    .forEach(role -> commandEvent.getGuild().removeRoleFromMember(mentioned.getId(), role).queue());
-
-            received.getChannel().sendMessage(String.format("<@%s> выдан **бан**! *(снятие ролей)*", mentioned.getId())).queue();
+            commandEvent.getGuild().mute(mentioned, false)
+                    .queue(success -> received.getChannel().sendMessage(String.format("<@%s> снят мут!", mentioned.getId())).queue());
         }
     }
 }

@@ -1,10 +1,10 @@
-package app.os.discord.commands.creator;
+package app.os.discord.commands.all.creator;
 
 import app.os.discord.DiscordBot;
 import app.os.main.OS;
 import app.os.console.ConsoleHelper;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.*;

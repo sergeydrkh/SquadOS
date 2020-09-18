@@ -1,9 +1,9 @@
-package app.os.discord.commands.creator;
+package app.os.discord.commands.all.creator;
 
+import app.os.discord.commands.tread.command.Command;
+import app.os.discord.commands.tread.command.CommandEvent;
 import app.os.discord.configs.ConfigManager;
 import app.os.discord.configs.ConfigProperties;
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 
 import java.util.List;
 import java.util.Properties;
