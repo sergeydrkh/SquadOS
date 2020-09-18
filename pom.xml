@@ -50,12 +50,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.googlecode.json-simple</groupId>
-            <artifactId>json-simple</artifactId>
-            <version>${json-simple.ver}</version>
-        </dependency>
-
-        <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
             <version>${jda.ver}</version>
@@ -69,6 +63,13 @@
 <!--            <scope>compile</scope>-->
 <!--            <type>pom</type>-->
 <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${org.json.ver}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.reflections</groupId>
