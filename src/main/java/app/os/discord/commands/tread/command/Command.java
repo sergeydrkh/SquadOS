@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 public abstract class Command {
-    protected String name = "null";
+    protected String name = "commandNotInitialized";
     protected String help = "no help available";
     protected Category category = null;
     protected String arguments = null;
@@ -54,17 +54,18 @@ public abstract class Command {
     public final void run(CommandEvent event) {
         if (!event.getArgs().isEmpty()) {
             String[] parts = Arrays.copyOf(event.getArgs().split("\\s+", 2), 2);
+
             if (helpBiConsumer != null && parts[0].equalsIgnoreCase(event.getClient().getHelpWord())) {
                 helpBiConsumer.accept(event, this);
                 return;
             }
-            for (Command cmd : children) {
+
+            for (Command cmd : children)
                 if (cmd.isCommandFor(parts[0])) {
                     event.setArgs(parts[1] == null ? "" : parts[1]);
                     cmd.run(event);
                     return;
                 }
-            }
         }
 
         if (ownerCommand && !(event.isOwner())) {
@@ -94,22 +95,23 @@ public abstract class Command {
                     if (p.name().startsWith("VOICE")) {
                         GuildVoiceState gvc = event.getMember().getVoiceState();
                         VoiceChannel vc = gvc == null ? null : gvc.getChannel();
+
                         if (vc == null) {
                             terminate(event, event.getClient().getError() + " " + Localization.MUST_BE_IN_VOICE_CHANNEL_TO_USE);
                             return;
                         } else if (!event.getSelfMember().hasPermission(vc, p)) {
-                            terminate(event, String.format(Localization.BOT_PERMISSION, event.getClient().getError(), p.getName(), " " + Localization.VOICE_CHANNEL));
+                            terminate(event, String.format(Localization.BOT_PERMISSION, p.getName(), " " + Localization.VOICE_CHANNEL));
                             return;
                         }
                     } else {
                         if (!event.getSelfMember().hasPermission(event.getTextChannel(), p)) {
-                            terminate(event, String.format(Localization.BOT_PERMISSION, event.getClient().getError(), p.getName(), " " + Localization.TEXT_CHANNEL));
+                            terminate(event, String.format(Localization.BOT_PERMISSION, p.getName(), " " + Localization.TEXT_CHANNEL));
                             return;
                         }
                     }
                 } else {
                     if (!event.getSelfMember().hasPermission(p)) {
-                        terminate(event, String.format(Localization.BOT_PERMISSION, event.getClient().getError(), p.getName(), " " + Localization.GUILD));
+                        terminate(event, String.format(Localization.BOT_PERMISSION, p.getName(), " " + Localization.GUILD));
                         return;
                     }
                 }
@@ -118,12 +120,12 @@ public abstract class Command {
             for (Permission p : userPermissions) {
                 if (p.isChannel()) {
                     if (!event.getMember().hasPermission(event.getTextChannel(), p)) {
-                        terminate(event, String.format(Localization.USER_PERMISSION, event.getClient().getError(), p.getName(), " " + Localization.TEXT_CHANNEL));
+                        terminate(event, String.format(Localization.USER_PERMISSION, p.getName()));
                         return;
                     }
                 } else {
                     if (!event.getMember().hasPermission(p)) {
-                        terminate(event, String.format(Localization.USER_PERMISSION, event.getClient().getError(), p.getName(), " " + Localization.GUILD));
+                        terminate(event, String.format(Localization.USER_PERMISSION, p.getName()));
                         return;
                     }
                 }
@@ -136,6 +138,7 @@ public abstract class Command {
         if (cooldown > 0) {
             String key = getCooldownKey(event);
             int remaining = event.getClient().getRemainingCooldown(key);
+
             if (remaining > 0) {
                 terminate(event, getCooldownError(event, remaining));
                 return;
@@ -144,7 +147,7 @@ public abstract class Command {
 
         try {
             execute(event);
-        } catch (Throwable t) {
+        } catch (Exception t) {
             if (event.getClient().getListener() != null) {
                 event.getClient().getListener().onCommandException(event, this, t);
                 return;
