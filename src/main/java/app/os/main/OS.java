@@ -19,7 +19,7 @@ public class OS extends Thread {
 
     public static final Date DATE_LAUNCH = new Date();
     public static final String NAME = "SquadOS";
-    public static final String VERSION = "0.6.5";
+    public static final String VERSION = "0.6.7";
     public static final String DESCRIPTION = "SquadOS - простой и лёгкий в использовании многофункциональный Discord бот. Музыка, модерация и веселье - легко!";
 
     @Override

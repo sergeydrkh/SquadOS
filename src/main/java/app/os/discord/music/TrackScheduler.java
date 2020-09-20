@@ -37,7 +37,7 @@ public class TrackScheduler extends AudioEventAdapter {
         this.repeat = repeat;
     }
 
-    public void resetQueue() {
+    public void clearQueue() {
         queue.forEach(queue::remove);
     }
 

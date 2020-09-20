@@ -19,7 +19,7 @@ public class Stop extends Command {
         Message received = commandEvent.getMessage();
 
         GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild());
-        guildMusicManager.scheduler.resetQueue();
+        guildMusicManager.scheduler.clearQueue();
         guildMusicManager.player.stopTrack();
 
         received.getChannel().sendMessage("Очередь очищена.").queue();

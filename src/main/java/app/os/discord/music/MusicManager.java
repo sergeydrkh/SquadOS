@@ -92,7 +92,9 @@ public class MusicManager {
     }
 
     private static boolean connectToFirstVoiceChannel(AudioManager audioManager) {
-        if (!audioManager.isConnected() && !audioManager.isAttemptingToConnect()) {
+        if (!audioManager.isConnected()) {
+            AutoDisconnection.addGuild(audioManager.getGuild());
+
             for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
                 if (!voiceChannel.getMembers().isEmpty()) {
                     audioManager.openAudioConnection(voiceChannel);
