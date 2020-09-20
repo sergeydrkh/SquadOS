@@ -1,6 +1,7 @@
 package app.os.discord.commands.all.creator;
 
 import app.os.discord.DiscordBot;
+import app.os.discord.Emoji;
 import app.os.main.OS;
 import app.os.console.ConsoleHelper;
 import app.os.discord.commands.tread.command.Command;
@@ -32,20 +33,21 @@ public class ServerState extends Command {
         StringBuilder activeThreads = new StringBuilder();
         Thread.getAllStackTraces().keySet().forEach(thread -> activeThreads.append(" - ").append(thread.getName()).append("\n"));
 
-        stateMessage.addField(String.format("Active threads (%d)", Thread.activeCount()), activeThreads.toString(), false);
+        stateMessage.addField(Emoji.THREADS.getEmoji() + String.format("Активно потоков (%d)", Thread.activeCount()), activeThreads.toString(), false);
 
         stateMessage.addField("", "", false);
 
         stateMessage.addField(
-                "RAM",
-                String.format(" - Used: %s%n - Free: %s%n - Total: %s",
+                Emoji.GRAPH.getEmoji() + "Память",
+                String.format(" - Использовано: %s%n - Свободно: %s%n - Всего: %s",
                         byteToMiB(Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()),
                         byteToMiB(Runtime.getRuntime().freeMemory()),
                         byteToMiB(Runtime.getRuntime().totalMemory())),
                 true);
 
-        stateMessage.addField("Time",
-                String.format(" - Now: %s%n - Uptime: %sd",
+        stateMessage.addField(
+                Emoji.TIME.getEmoji() + "Время",
+                String.format(" - Сейчас: %s%n - Время работы: %sd",
                         OS.DEFAULT_DATE_FORMAT.format(new Date()),
                         (new Date().getTime() - OS.DATE_LAUNCH.getTime()) / (24 * 60 * 60 * 1000)
                 ),
@@ -54,15 +56,15 @@ public class ServerState extends Command {
         stateMessage.addField("", "", false);
 
         stateMessage.addField(
-                "Errors",
-                String.format(" - Count: %d", ConsoleHelper.getErrors()),
+                Emoji.RED_SQUARE.getEmoji() + "Ошибок",
+                String.format(" - Кол-во: %d", ConsoleHelper.getErrors()),
                 true
         );
 
         commandEvent.getChannel().sendMessage(stateMessage.build())
                 .queue(q -> {
                     stateMessage.addField(
-                            "Ping",
+                            Emoji.INTERNET.getEmoji() + "Пинг",
                             String.format(" - Gateway: %dms%n - Bot: %dms",
                                     commandEvent.getJDA().getGatewayPing(),
                                     commandEvent.getMessage().getTimeCreated().until(q.getTimeCreated(), ChronoUnit.MILLIS)),

@@ -17,7 +17,7 @@ public class Player extends Command {
         this.name = "player";
         this.help = "посмотреть текущий трек";
         this.requiredRole = DiscordBot.DJ_ROLE;
-        this.cooldown = 10;
+        this.cooldown = 50;
     }
 
     @Override
@@ -65,6 +65,7 @@ public class Player extends Command {
         public void stopUpdate() {
             toUpdate.editMessage("Плеер закрыт.").queue();
             this.active = false;
+            remove();
         }
 
         private String timeToString(long secs) {
@@ -82,10 +83,6 @@ public class Player extends Command {
             }
         }
 
-        private void removeButtons() {
-
-        }
-
         @Override
         public void run() {
             while (active) {
@@ -96,20 +93,13 @@ public class Player extends Command {
                     int endSeconds = (int) (guildMusicManager.player.getPlayingTrack().getInfo().length / 1000);
                     int nowSeconds = (int) (guildMusicManager.player.getPlayingTrack().getPosition() / 1000);
 
-                    char[] bar = "━━━━━━━━━━━━━━━━━━".toCharArray();
-                    try {
-                        bar[(int) Math.ceil((((double) nowSeconds / endSeconds) * 100) / (bar.length - 3))] = '●';
-                    } catch (Exception e) {
-                        bar[bar.length - 1] = '●';
-                    }
-
                     toSend.append("**").append(guildMusicManager.player.getPlayingTrack().getInfo().title).append("**").append("\n");
-                    toSend.append(String.format("%s %s %s%n", startSeconds, new String(bar), timeToString(endSeconds)));
+                    toSend.append(String.format("%ss / %ss", nowSeconds, endSeconds));
 
                     toUpdate.editMessage(toSend.toString()).queue(this::setButtons);
                 } catch (Exception e) {
                     toUpdate.editMessage("Воспроизведение завершено.").queue();
-                    toUpdate.getReactions().forEach(reaction -> toUpdate.removeReaction(reaction.getReactionEmote().getEmote()).queue());
+                    remove();
                     break;
                 }
 
@@ -119,8 +109,10 @@ public class Player extends Command {
                     return;
                 }
             }
+        }
 
-
+        public void remove() {
+            toUpdate.delete().queue();
         }
     }
 }

@@ -8,11 +8,11 @@ public class Link extends Command {
 
     public Link() {
         this.name = "link";
-        this.help = "get link to invite bot";
+        this.help = "получить ссылку на бота";
     }
 
     @Override
     protected void execute(CommandEvent commandEvent) {
-        commandEvent.getChannel().sendMessage(String.format("**Bot invite URL:** %s.", DiscordBot.INVITE_URL)).queue();
+        commandEvent.getChannel().sendMessage(String.format("**Ссылка на бота:** %s.", DiscordBot.INVITE_URL)).queue();
     }
 }

@@ -13,7 +13,7 @@ public class Ping extends Command {
 
     @Override
     protected void execute(CommandEvent commandEvent) {
-        commandEvent.getChannel().sendMessage("Calculating...")
-                .queue(s -> s.editMessage(String.format("Ping is **%dms**", commandEvent.getMessage().getTimeCreated().until(s.getTimeCreated(), ChronoUnit.MILLIS))).queue());
+        commandEvent.getChannel().sendMessage("Измерение...")
+                .queue(s -> s.editMessage(String.format("Пинг: **%dms**", commandEvent.getMessage().getTimeCreated().until(s.getTimeCreated(), ChronoUnit.MILLIS))).queue());
     }
 }
