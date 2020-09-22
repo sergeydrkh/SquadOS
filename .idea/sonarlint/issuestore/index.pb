@@ -1,6 +1,6 @@
 
 7
-pom.xml,4\4\442292b8a7efeabbe4cc176709b833b1792140ec
+pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec
 \
 ,.idea/inspectionProfiles/Project_Default.xml,4\9\496a238a6afa168dbaf6efd37bb459331589579c
 M
@@ -10,15 +10,15 @@ O
 9
 	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 L
-src/main/java/app/Start.java,5\e\5e3017dee1cdcb2e097ee9a592959486298c8a27
+src/main/java/app/Start.java,5/e/5e3017dee1cdcb2e097ee9a592959486298c8a27
 \
-,src/main/java/app/os/discord/DiscordBot.java,6\c\6c3327bb6393e4a23b38e8d0252a732f71ee86fd
+,src/main/java/app/os/discord/DiscordBot.java,6/c/6c3327bb6393e4a23b38e8d0252a732f71ee86fd
 c
-3src/main/java/app/os/discord/DiscordProperties.java,d\8\d81c841d38e48833d433cd13e3bf891f1298ac97
+3src/main/java/app/os/discord/DiscordProperties.java,d/8/d81c841d38e48833d433cd13e3bf891f1298ac97
 d
-4src/main/java/app/os/discord/DiscordStartThread.java,a\c\ac363da87c8626e559874960b5e4183cf4d8fddd
+4src/main/java/app/os/discord/DiscordStartThread.java,a/c/ac363da87c8626e559874960b5e4183cf4d8fddd
 Q
-!src/main/java/app/os/main/OS.java,3\9\39d89a47479309c376010f6b598990f266049aeb
+!src/main/java/app/os/main/OS.java,3/9/39d89a47479309c376010f6b598990f266049aeb
 h
 8src/main/java/app/os/discord/configs/ConfigListener.java,4\b\4b3aa67d60b3a496398e686b2b409ea55e6adab4
 g
@@ -30,7 +30,7 @@ g
 ^
 .src/main/java/app/os/utilities/JSONReader.java,6\2\62d99de0d3e30e0e851121aafc8e28728a31197d
 i
-9src/main/java/app/os/discord/music/GuildMusicManager.java,a\2\a2d27a0e5920155c3aa924275b0e9ff570f11a5b
+9src/main/java/app/os/discord/music/GuildMusicManager.java,a/2/a2d27a0e5920155c3aa924275b0e9ff570f11a5b
 f
 6src/main/java/app/os/discord/music/commands/Pause.java,d\b\db63b349a85d741d8fd8e6f2a0488e6624d8e0ad
 e
@@ -38,13 +38,13 @@ e
 n
 >src/main/java/app/os/discord/music/AudioPlayerSendHandler.java,3\8\387a7b1ada22b1d7832bb5f1a8a68ed0b2ddb94e
 d
-4src/main/java/app/os/discord/music/MusicManager.java,7\8\78d7d78b83cef2ec5b51ce010ab67c2cff19367d
+4src/main/java/app/os/discord/music/MusicManager.java,7/8/78d7d78b83cef2ec5b51ce010ab67c2cff19367d
 e
 5src/main/java/app/os/discord/music/commands/Play.java,2\b\2b096df1b6e61fb2e3a7b7f1d7331e492b5cf755
 e
-5src/main/java/app/os/discord/music/commands/Stop.java,1\1\11b83b3be78d9753a8a15640554c86afed1b1b5f
+5src/main/java/app/os/discord/music/commands/Stop.java,1/1/11b83b3be78d9753a8a15640554c86afed1b1b5f
 f
-6src/main/java/app/os/discord/music/TrackScheduler.java,0\7\0707cf463d86f544f8890ba0af2f08e732d63178
+6src/main/java/app/os/discord/music/TrackScheduler.java,0/7/0707cf463d86f544f8890ba0af2f08e732d63178
 V
 &src/main/java/app/META-INF/MANIFEST.MF,1\a\1a778f8a0b43795f304a7fd2dedbc9f4caca7817
 g
@@ -119,3 +119,5 @@ r
 Bsrc/main/java/app/os/discord/commands/all/admin/VoiceChannels.java,9\b\9be59147155a02a6efd0c09e4b695f62523aa881
 i
 9src/main/java/app/os/discord/commands/all/admin/Warn.java,4\b\4b8b0fad4e56e319194cdf1f1c108a054389d16b
+i
+9src/main/java/app/os/discord/music/AutoDisconnection.java,d/e/de77c884dbdcbb37ddeabfd4948eff14162b7cc0

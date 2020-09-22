@@ -18,7 +18,7 @@ public class AutoDisconnection extends Thread {
     private static final int LIMIT = 5000;
     private static final int RELOAD = 1000;
 
-    public synchronized static void addGuild(Guild guild) {
+    public static void addGuild(Guild guild) {
         if (!guilds.contains(guild))
             guilds.add(guild);
     }
@@ -35,7 +35,10 @@ public class AutoDisconnection extends Thread {
 
             try {
                 for (Guild guild : tempGuilds) {
+                    System.out.println("!");
                     AudioManager manager = guild.getAudioManager();
+
+                    System.out.println(timers.containsKey(guild));
                     if (timers.containsKey(guild)) {
                         if (isVoiceChannelEmpty(manager.getConnectedChannel())) {
                             int timerNow = timers.get(guild);
@@ -67,7 +70,6 @@ public class AutoDisconnection extends Thread {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
 
             try {

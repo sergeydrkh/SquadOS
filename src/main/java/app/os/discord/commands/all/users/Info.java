@@ -28,7 +28,7 @@ public class Info extends Command {
         infoMsg.addField("Название", "SquadOS", true);
         infoMsg.addField("Версия.", "v" + OS.VERSION, true);
         infoMsg.addField("Серверов", String.valueOf(commandEvent.getJDA().getGuilds().size()), true);
-        infoMsg.addField("Аптайм", String.format("%dh", (new Date().getTime() - OS.DATE_LAUNCH.getTime()) / (24 * 60 * 60 * 1000)), true);
+        infoMsg.addField("Аптайм", String.format("%dd", (new Date().getTime() - OS.DATE_LAUNCH.getTime()) / (24 * 60 * 60 * 1000)), true);
 
         String[] wishes = new String[]{"Удачного дня", "Доброе утро", "Хорошего настроения", "Не унывать"};
         infoMsg.addField("Пожелание", wishes[(int) (Math.random() * wishes.length)], true);

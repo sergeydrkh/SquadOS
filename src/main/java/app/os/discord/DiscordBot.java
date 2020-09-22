@@ -22,26 +22,12 @@ import javax.security.auth.login.LoginException;
 import java.util.Date;
 
 public class DiscordBot {
-    // server
-    private static final String BOT_TOKEN = "Njk5NTg4NzgzNDA1NzkzMzIz.XpWk0w.v4l_WfRZ78Ed9o4PQU4v89HFsY8";
-    private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyChb7vZJfn_viq6Y1phWp3ar9Lwfx_VRpk"};
-    private static final String HELP_WORD = "help";
-    private static final String PREFIX = "!";
-    private static final String OWNER_ID = "662324806187745290";
-
-    // beta
-//    private static final String BOT_TOKEN = "NzU1NTcxMzA4ODc5ODA2NDg0.X2FOnQ.eAzzhG4EHbLIbCHQYCQKQ-ZRtLU";
-//    private static final String[] YOUTUBE_API_KEYS = new String[]{"AIzaSyChb7vZJfn_viq6Y1phWp3ar9Lwfx_VRpk"};
-//    private static final String HELP_WORD = "help";
-//    private static final String PREFIX = "b!";
-//    private static final String OWNER_ID = "662324806187745290";
-
     // upload
-//    private static final String BOT_TOKEN = "";
-//    private static final String[] YOUTUBE_API_KEYS = new String[]{""};
-//    private static final String HELP_WORD = "";
-//    private static final String PREFIX = "";
-//    private static final String OWNER_ID = "";
+    private static final String BOT_TOKEN = "";
+    private static final String[] YOUTUBE_API_KEYS = new String[]{""};
+    private static final String HELP_WORD = "";
+    private static final String PREFIX = "";
+    private static final String OWNER_ID = "";
 
     public static final String INVITE_URL = "https://discord.com/api/oauth2/authorize?client_id=699588783405793323&permissions=0&scope=bot";
 
@@ -85,9 +71,12 @@ public class DiscordBot {
             commands.addCommand(new Volume());
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
-            commands.addCommand(new Queue());
 //            commands.addCommand(new Repeat()); NOW WORKING
             commands.addCommand(new Player());
+            commands.addCommand(new Queue.GetQueue());
+            commands.addCommand(new Queue.DeleteQueue());
+            commands.addCommand(new Queue.PlayQueue());
+            commands.addCommand(new Queue.SaveQueue());
 
             api.addEventListener(new ReactionListener());
             api.addEventListener(commands.build());
