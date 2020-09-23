@@ -9,7 +9,7 @@ import app.os.discord.commands.tread.command.CommandEvent;
 public class Repeat extends Command {
     public Repeat() {
         this.name = "repeat";
-        this.help = "повторять текущий трек";
+        this.help = "повторять текущий трек // в разработке";
         this.requiredRole = DiscordBot.DJ_ROLE;
     }
 

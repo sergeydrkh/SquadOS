@@ -13,7 +13,7 @@ public class Queue {
     public static class GetQueue extends Command {
         public GetQueue() {
             this.name = "queue";
-            this.help = "получить очередь музыки";
+            this.help = "получить список проигрываемой музыки";
             this.requiredRole = DiscordBot.DJ_ROLE;
         }
 
@@ -32,9 +32,9 @@ public class Queue {
                     allTracks.append(" - ").append(i).append(". ").append(track.getInfo().title).append("\n");
                 }
 
-                queueMessage.addField("Играет", " - " + guildMusicManager.player.getPlayingTrack().getInfo().title, false);
+                queueMessage.addField("Играет сейчас", " - " + guildMusicManager.player.getPlayingTrack().getInfo().title, false);
                 if (!allTracks.toString().equals(""))
-                    queueMessage.addField("Очередь", allTracks.toString(), false);
+                    queueMessage.addField("В очереди", allTracks.toString(), false);
 
                 commandEvent.getChannel().sendMessage(queueMessage.build()).queue();
             } catch (NullPointerException e) {

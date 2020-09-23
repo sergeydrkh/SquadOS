@@ -12,7 +12,7 @@ O
 L
 src/main/java/app/Start.java,5/e/5e3017dee1cdcb2e097ee9a592959486298c8a27
 \
-,src/main/java/app/os/discord/DiscordBot.java,6/c/6c3327bb6393e4a23b38e8d0252a732f71ee86fd
+,src/main/java/app/os/discord/DiscordBot.java,6\c\6c3327bb6393e4a23b38e8d0252a732f71ee86fd
 c
 3src/main/java/app/os/discord/DiscordProperties.java,d/8/d81c841d38e48833d433cd13e3bf891f1298ac97
 d

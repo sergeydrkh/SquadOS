@@ -25,7 +25,7 @@ public class AutoDisconnection extends Thread {
 
     public AutoDisconnection() {
         setDaemon(true);
-        setName("AutoDisconnect");
+        setName("Auto-Disconnect");
     }
 
     @Override

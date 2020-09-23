@@ -15,7 +15,7 @@ public class Player extends Command {
 
     public Player() {
         this.name = "player";
-        this.help = "посмотреть текущий трек";
+        this.help = "открыть плеер";
         this.requiredRole = DiscordBot.DJ_ROLE;
         this.cooldown = 50;
     }
