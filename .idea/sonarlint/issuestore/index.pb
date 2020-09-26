@@ -49,8 +49,6 @@ f
 6src/main/java/app/os/discord/music/commands/Queue.java,b\9\b927625d8faf5352841f02da29e4ca687a2ea807
 g
 7src/main/java/app/os/discord/music/commands/Repeat.java,0\3\033cdd959350db93e20da1c1855480cc345e9ddd
-G
-src/main/java/log4j.xml,3\9\39c219352939648d695c00199ebda11236f6ff97
 p
 @src/main/java/app/os/discord/commands/commands/admin/Admins.java,b\5\b57bda5ba2b39e641d3a45824139a114db20f7de
 w
