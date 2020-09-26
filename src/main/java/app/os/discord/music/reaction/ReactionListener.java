@@ -1,7 +1,7 @@
 package app.os.discord.music.reaction;
 
-import app.os.discord.music.GuildMusicManager;
-import app.os.discord.music.MusicManager;
+import app.os.discord.music.thread.GuildMusicManager;
+import app.os.discord.music.thread.MusicManager;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;

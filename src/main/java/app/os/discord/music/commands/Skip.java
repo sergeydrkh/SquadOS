@@ -1,9 +1,9 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
-import app.os.discord.music.MusicManager;
-import app.os.discord.commands.tread.command.Command;
-import app.os.discord.commands.tread.command.CommandEvent;
+import app.os.discord.music.thread.MusicManager;
+import app.os.discord.commands.command.Command;
+import app.os.discord.commands.command.CommandEvent;
 
 public class Skip extends Command {
     public Skip() {

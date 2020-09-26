@@ -4,11 +4,13 @@ import app.os.console.ConsoleListener;
 import app.os.discord.DiscordStartThread;
 
 import java.awt.*;
+import java.io.File;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OS extends Thread {
-    public static final String DIR_MAIN = "C:\\squados\\";
+    public static final String DIR_MAIN = File.listRoots()[0].getAbsolutePath() + "\\az\\";
     public static final String DIR_DATA = DIR_MAIN + "data\\";
     public static final String DIR_CONFIGS = DIR_MAIN + "configs\\";
 

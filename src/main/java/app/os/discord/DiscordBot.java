@@ -1,16 +1,16 @@
 package app.os.discord;
 
 import app.os.console.ConsoleHelper;
-import app.os.discord.commands.all.admin.*;
-import app.os.discord.commands.all.creator.GetConfigs;
-import app.os.discord.commands.all.creator.GetGuild;
-import app.os.discord.commands.all.creator.ServerState;
-import app.os.discord.commands.all.users.Info;
-import app.os.discord.commands.all.users.Link;
-import app.os.discord.commands.all.users.Ping;
-import app.os.discord.commands.tread.command.CommandClientBuilder;
+import app.os.discord.commands.self.admin.*;
+import app.os.discord.commands.self.creator.GetConfigs;
+import app.os.discord.commands.self.creator.GetGuild;
+import app.os.discord.commands.self.creator.ServerState;
+import app.os.discord.commands.self.users.Info;
+import app.os.discord.commands.self.users.Link;
+import app.os.discord.commands.self.users.Ping;
+import app.os.discord.commands.command.CommandClientBuilder;
 import app.os.discord.configs.ConfigListener;
-import app.os.discord.music.AutoDisconnection;
+import app.os.discord.music.thread.AutoDisconnection;
 import app.os.discord.music.commands.*;
 import app.os.discord.music.reaction.ReactionListener;
 import app.os.main.OS;
@@ -22,6 +22,8 @@ import javax.security.auth.login.LoginException;
 import java.util.Date;
 
 public class DiscordBot {
+
+
     // upload
     private static final String BOT_TOKEN = "";
     private static final String[] YOUTUBE_API_KEYS = new String[]{""};
