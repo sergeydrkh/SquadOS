@@ -1,12 +1,13 @@
 package app.os.discord;
 
-import app.os.console.ConsoleHelper;
-import app.os.discord.commands.self.CommandClientBuilder;
 import app.os.discord.commands.commands.admin.*;
+import app.os.discord.commands.commands.creator.GetConfigs;
+import app.os.discord.commands.commands.creator.GetGuild;
 import app.os.discord.commands.commands.creator.ServerState;
 import app.os.discord.commands.commands.users.Info;
 import app.os.discord.commands.commands.users.Link;
 import app.os.discord.commands.commands.users.Ping;
+import app.os.discord.commands.self.CommandClientBuilder;
 import app.os.discord.configs.ConfigListener;
 import app.os.discord.music.commands.*;
 import app.os.discord.music.reaction.ReactionListener;
@@ -15,12 +16,16 @@ import app.os.main.OS;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
 import java.util.Date;
 import java.util.Properties;
 
 public class DiscordBot {
+    private static final Logger logger = LoggerFactory.getLogger(DiscordBot.class.getName());
+
     public static final String ADMIN_ROLES = "admin";
     public static final String WARN_ROLES = "warn";
     public static final String CREATOR_ROLE = "creator";
@@ -32,13 +37,14 @@ public class DiscordBot {
             JDA jda = JDABuilder.createDefault(properties.getProperty(DiscordProperties.BOT_TOKEN.getKey())).build();
             jda.awaitReady();
 
-            // set commands
+            // create command builder
             CommandClientBuilder commands = new CommandClientBuilder()
-                    .setActivity(Activity.playing(OS.VERSION))
+                    .setActivity(Activity.listening(OS.VERSION))
                     .setPrefix(properties.getProperty(DiscordProperties.BOT_PREFIX.getKey()))
                     .setHelpWord(properties.getProperty(DiscordProperties.BOT_HELP_WORD.getKey()))
                     .setOwnerId(properties.getProperty(DiscordProperties.OWNER_ID.getKey()));
 
+            // add commands
             commands.addCommand(new Info());
             commands.addCommand(new Ping());
             commands.addCommand(new TextChannels());
@@ -51,8 +57,8 @@ public class DiscordBot {
             commands.addCommand(new Mute());
             commands.addCommand(new UnMute());
             commands.addCommand(new Clear());
-//            commands.addCommand(new GetGuild());
-//            commands.addCommand(new GetConfigs());
+            commands.addCommand(new GetGuild());
+            commands.addCommand(new GetConfigs());
             commands.addCommand(new ServerState(new Date()));
             commands.addCommand(new Link(properties.getProperty(DiscordProperties.INVITE_URL.getKey())));
 
@@ -68,13 +74,14 @@ public class DiscordBot {
             commands.addCommand(new Queue.PlayQueue());
             commands.addCommand(new Queue.SaveQueue());
 
+            // add listeners
             jda.addEventListener(new ReactionListener());
             jda.addEventListener(commands.build());
             jda.addEventListener(new ConfigListener());
 
             new AutoDisconnection(jda).start();
         } catch (LoginException | InterruptedException e) {
-            ConsoleHelper.errln("Ошибка! " + e + ".");
+            logger.error(e.getMessage());
         }
     }
 }

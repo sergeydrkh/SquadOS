@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class OS extends Thread {
-    public static final String DIR_MAIN = File.listRoots()[0].getAbsolutePath() + "\\az\\";
+    public static final String DIR_MAIN = File.listRoots()[0].getAbsolutePath() + "squados\\";
     public static final String DIR_DATA = DIR_MAIN + "data\\";
     public static final String DIR_CONFIGS = DIR_MAIN + "configs\\";
 
@@ -20,7 +20,7 @@ public class OS extends Thread {
 
     public static final Date DATE_LAUNCH = new Date();
     public static final String NAME = "SquadOS";
-    public static final String VERSION = "0.6.7";
+    public static final String VERSION = "0.7";
     public static final String DESCRIPTION = "SquadOS - простой и лёгкий в использовании многофункциональный Discord бот. Музыка, модерация и веселье - легко!";
 
     private final String[] args;
