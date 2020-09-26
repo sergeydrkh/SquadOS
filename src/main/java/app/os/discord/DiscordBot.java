@@ -1,18 +1,16 @@
 package app.os.discord;
 
 import app.os.console.ConsoleHelper;
-import app.os.discord.commands.self.admin.*;
-import app.os.discord.commands.self.creator.GetConfigs;
-import app.os.discord.commands.self.creator.GetGuild;
-import app.os.discord.commands.self.creator.ServerState;
-import app.os.discord.commands.self.users.Info;
-import app.os.discord.commands.self.users.Link;
-import app.os.discord.commands.self.users.Ping;
-import app.os.discord.commands.command.CommandClientBuilder;
+import app.os.discord.commands.self.CommandClientBuilder;
+import app.os.discord.commands.commands.admin.*;
+import app.os.discord.commands.commands.creator.ServerState;
+import app.os.discord.commands.commands.users.Info;
+import app.os.discord.commands.commands.users.Link;
+import app.os.discord.commands.commands.users.Ping;
 import app.os.discord.configs.ConfigListener;
-import app.os.discord.music.thread.AutoDisconnection;
 import app.os.discord.music.commands.*;
 import app.os.discord.music.reaction.ReactionListener;
+import app.os.discord.music.self.AutoDisconnection;
 import app.os.main.OS;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -20,36 +18,26 @@ import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
 import java.util.Date;
+import java.util.Properties;
 
 public class DiscordBot {
-
-
-    // upload
-    private static final String BOT_TOKEN = "";
-    private static final String[] YOUTUBE_API_KEYS = new String[]{""};
-    private static final String HELP_WORD = "";
-    private static final String PREFIX = "";
-    private static final String OWNER_ID = "";
-
-    public static final String INVITE_URL = "https://discord.com/api/oauth2/authorize?client_id=699588783405793323&permissions=0&scope=bot";
-
     public static final String ADMIN_ROLES = "admin";
     public static final String WARN_ROLES = "warn";
     public static final String CREATOR_ROLE = "creator";
     public static final String DJ_ROLE = "dj";
 
-    public void launch() {
+    public void launch(Properties properties) {
         try {
             // load api
-            JDA api = JDABuilder.createDefault(BOT_TOKEN).build();
-            api.awaitReady();
+            JDA jda = JDABuilder.createDefault(properties.getProperty(DiscordProperties.BOT_TOKEN.getKey())).build();
+            jda.awaitReady();
 
             // set commands
             CommandClientBuilder commands = new CommandClientBuilder()
                     .setActivity(Activity.playing(OS.VERSION))
-                    .setPrefix(PREFIX)
-                    .setHelpWord(HELP_WORD)
-                    .setOwnerId(OWNER_ID);
+                    .setPrefix(properties.getProperty(DiscordProperties.BOT_PREFIX.getKey()))
+                    .setHelpWord(properties.getProperty(DiscordProperties.BOT_HELP_WORD.getKey()))
+                    .setOwnerId(properties.getProperty(DiscordProperties.OWNER_ID.getKey()));
 
             commands.addCommand(new Info());
             commands.addCommand(new Ping());
@@ -63,28 +51,28 @@ public class DiscordBot {
             commands.addCommand(new Mute());
             commands.addCommand(new UnMute());
             commands.addCommand(new Clear());
-            commands.addCommand(new GetGuild());
-            commands.addCommand(new GetConfigs());
+//            commands.addCommand(new GetGuild());
+//            commands.addCommand(new GetConfigs());
             commands.addCommand(new ServerState(new Date()));
-            commands.addCommand(new Link());
+            commands.addCommand(new Link(properties.getProperty(DiscordProperties.INVITE_URL.getKey())));
 
-            commands.addCommand(new Play(YOUTUBE_API_KEYS[0]));
+            commands.addCommand(new Play(properties.getProperty(DiscordProperties.YOUTUBE_API_KEY.getKey())));
             commands.addCommand(new Skip());
             commands.addCommand(new Volume());
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
-//            commands.addCommand(new Repeat()); NOW WORKING
+//            commands.addCommand(new Repeat()); NOT WORKING (in progress)
             commands.addCommand(new Player());
             commands.addCommand(new Queue.GetQueue());
             commands.addCommand(new Queue.DeleteQueue());
             commands.addCommand(new Queue.PlayQueue());
             commands.addCommand(new Queue.SaveQueue());
 
-            api.addEventListener(new ReactionListener());
-            api.addEventListener(commands.build());
-            api.addEventListener(new ConfigListener());
+            jda.addEventListener(new ReactionListener());
+            jda.addEventListener(commands.build());
+            jda.addEventListener(new ConfigListener());
 
-            new AutoDisconnection().start();
+            new AutoDisconnection(jda).start();
         } catch (LoginException | InterruptedException e) {
             ConsoleHelper.errln("Ошибка! " + e + ".");
         }

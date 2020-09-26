@@ -1,11 +1,10 @@
 package app.os.main;
 
 import app.os.console.ConsoleListener;
-import app.os.discord.DiscordStartThread;
+import app.os.discord.DiscordStart;
 
 import java.awt.*;
 import java.io.File;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -24,9 +23,15 @@ public class OS extends Thread {
     public static final String VERSION = "0.6.7";
     public static final String DESCRIPTION = "SquadOS - простой и лёгкий в использовании многофункциональный Discord бот. Музыка, модерация и веселье - легко!";
 
+    private final String[] args;
+
+    public OS(String[] args) {
+        this.args = args;
+    }
+
     @Override
     public void run() {
         new ConsoleListener().start();
-        new DiscordStartThread().start();
+        new DiscordStart(args[0]).start();
     }
 }

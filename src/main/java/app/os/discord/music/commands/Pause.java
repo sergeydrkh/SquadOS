@@ -1,9 +1,9 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
-import app.os.discord.music.thread.MusicManager;
-import app.os.discord.commands.command.Command;
-import app.os.discord.commands.command.CommandEvent;
+import app.os.discord.music.self.MusicManager;
+import app.os.discord.commands.self.Command;
+import app.os.discord.commands.self.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.api.entities.Message;
 

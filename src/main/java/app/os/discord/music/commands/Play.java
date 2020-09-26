@@ -1,11 +1,11 @@
 package app.os.discord.music.commands;
 
 import app.os.discord.DiscordBot;
-import app.os.discord.commands.command.Command;
-import app.os.discord.commands.command.CommandEvent;
+import app.os.discord.commands.self.Command;
+import app.os.discord.commands.self.CommandEvent;
 import app.os.discord.configs.ConfigManager;
 import app.os.discord.configs.ConfigProperties;
-import app.os.discord.music.thread.MusicManager;
+import app.os.discord.music.self.MusicManager;
 import app.os.main.OS;
 import app.os.utilities.JSONReader;
 import net.dv8tion.jda.api.entities.Guild;
@@ -78,15 +78,16 @@ public class Play extends Command {
 
 
             // load volume
+            MusicManager musicManager = MusicManager.getInstance();
+
             int volume;
             try {
                 volume = Integer.parseInt(ConfigManager.getConfigByID(guild.getIdLong()).getProperty(ConfigProperties.PLAYER_VOLUME.getKey()));
             } catch (Exception ignored) {
-                volume = 100;
+                volume = musicManager.getGuildAudioPlayer(guild).player.getVolume();
             }
 
             // create player
-            MusicManager musicManager = MusicManager.getInstance();
             musicManager.getGuildAudioPlayer(guild).player.setVolume(volume);
             musicManager.loadAndPlay(received.getTextChannel(), link);
         }
