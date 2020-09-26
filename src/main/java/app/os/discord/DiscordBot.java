@@ -3,10 +3,8 @@ package app.os.discord;
 import app.os.discord.commands.bot_commands.admin.*;
 import app.os.discord.commands.bot_commands.creator.GetConfigs;
 import app.os.discord.commands.bot_commands.creator.GetGuild;
-import app.os.discord.commands.bot_commands.creator.ServerState;
 import app.os.discord.commands.bot_commands.users.Info;
-import app.os.discord.commands.bot_commands.users.Link;
-import app.os.discord.commands.bot_commands.users.Ping;
+import app.os.discord.commands.bot_commands.users.ChangeNickname;
 import app.os.discord.commands.command.CommandClientBuilder;
 import app.os.discord.commands.music_commands.*;
 import app.os.discord.configs.ConfigListener;
@@ -45,22 +43,23 @@ public class DiscordBot {
                     .setOwnerId(properties.getProperty(DiscordProperties.OWNER_ID.getKey()));
 
             // add commands
-            commands.addCommand(new Info());
-            commands.addCommand(new Ping());
-            commands.addCommand(new TextChannels());
-            commands.addCommand(new VoiceChannels());
-            commands.addCommand(new Send());
+            commands.addCommand(new Info.InfoCard());
+            commands.addCommand(new Info.Ping());
+            commands.addCommand(new Info.ServerState(new Date()));
+            commands.addCommand(new Info.BotLink(properties.getProperty(DiscordProperties.INVITE_URL.getKey())));
+            commands.addCommand(new Mute.GiveMute());
+            commands.addCommand(new Mute.RemoveMute());
+            commands.addCommand(new Channels.Send());
+            commands.addCommand(new Channels.Clear());
+            commands.addCommand(new Channels.TextChannels());
+            commands.addCommand(new Channels.VoiceChannels());
+            commands.addCommand(new Warn.GiveWarn());
+            commands.addCommand(new Warn.RemoveWarn());
             commands.addCommand(new Admins());
-            commands.addCommand(new Warn());
-            commands.addCommand(new UnWarn());
             commands.addCommand(new Ban());
-            commands.addCommand(new Mute());
-            commands.addCommand(new UnMute());
-            commands.addCommand(new Clear());
             commands.addCommand(new GetGuild());
             commands.addCommand(new GetConfigs());
-            commands.addCommand(new ServerState(new Date()));
-            commands.addCommand(new Link(properties.getProperty(DiscordProperties.INVITE_URL.getKey())));
+            commands.addCommand(new ChangeNickname());
 
             commands.addCommand(new Play(properties.getProperty(DiscordProperties.YOUTUBE_API_KEY.getKey())));
             commands.addCommand(new Skip());
