@@ -70,6 +70,7 @@ public class DiscordBot {
 //            commands.addCommand(new Repeat()); NOT WORKING (in progress)
             commands.addCommand(new Player());
             commands.addCommand(new Queue.GetQueue());
+            commands.addCommand(new Queue.RemoveTrack());
             commands.addCommand(new Queue.DeleteQueue());
             commands.addCommand(new Queue.PlayQueue());
             commands.addCommand(new Queue.SaveQueue());

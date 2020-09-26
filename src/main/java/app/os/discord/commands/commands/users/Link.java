@@ -4,7 +4,7 @@ import app.os.discord.commands.self.Command;
 import app.os.discord.commands.self.CommandEvent;
 
 public class Link extends Command {
-    private String inviteUrl;
+    private final String inviteUrl;
 
     public Link(String inviteUrl) {
         this.inviteUrl = inviteUrl;

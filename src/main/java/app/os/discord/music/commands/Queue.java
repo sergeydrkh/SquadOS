@@ -8,8 +8,12 @@ import app.os.discord.commands.self.Command;
 import app.os.discord.commands.self.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Queue {
+    private static final Logger logger = LoggerFactory.getLogger(Queue.class.getName());
+
     public static class GetQueue extends Command {
         public GetQueue() {
             this.name = "queue";
@@ -27,7 +31,7 @@ public class Queue {
                 GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild());
 
                 int i = 0;
-                for (AudioTrack track :  guildMusicManager.scheduler.getTracksInQueue()) {
+                for (AudioTrack track : guildMusicManager.scheduler.getTracksInQueue()) {
                     i++;
                     allTracks.append(" - ").append(i).append(". ").append(track.getInfo().title).append("\n");
                 }
@@ -48,6 +52,7 @@ public class Queue {
             this.name = "delq";
             this.help = "удалить плейлист";
             this.arguments = "[название]";
+            this.requiredRole = DiscordBot.DJ_ROLE;
         }
 
         @Override
@@ -61,6 +66,7 @@ public class Queue {
             this.name = "saveq";
             this.help = "сохранить текущий плейлист";
             this.arguments = "[название]";
+            this.requiredRole = DiscordBot.DJ_ROLE;
         }
 
         @Override
@@ -74,11 +80,35 @@ public class Queue {
             this.name = "playq";
             this.help = "воспроизвести сохраненный плейлист";
             this.arguments = "[название]";
+            this.requiredRole = DiscordBot.DJ_ROLE;
         }
 
         @Override
         protected void execute(CommandEvent event) {
             // playq
+        }
+    }
+
+    public static class RemoveTrack extends Command {
+        public RemoveTrack() {
+            this.name = "remove";
+            this.arguments = "[часть названия]";
+            this.help = "убрать трек с определённым индексом из очереди";
+            this.requiredRole = DiscordBot.DJ_ROLE;
+        }
+
+        @Override
+        protected void execute(CommandEvent event) {
+            MusicManager musicManager = MusicManager.getInstance();
+            GuildMusicManager guildMusic = musicManager.getGuildAudioPlayer(event.getGuild());
+
+            String partOfName = event.getMessage().getContentRaw().trim().substring(this.name.length() + 3);
+            AudioTrack removedTrack = guildMusic.scheduler.removeTrack(partOfName);
+
+            if (removedTrack != null)
+                event.getChannel().sendMessage(String.format("Убрано из очереди: **%s**.", removedTrack.getInfo().title)).complete();
+            else
+                event.getChannel().sendMessage("Трека с таким названием не было найдено!").complete();
         }
     }
 }

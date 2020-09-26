@@ -45,6 +45,22 @@ public class TrackScheduler extends AudioEventAdapter {
         return new ArrayList<>(queue);
     }
 
+    public AudioTrack removeTrack(String partOfName) {
+        if (queue.isEmpty())
+            return null;
+
+        AudioTrack toRemove = null;
+        for (AudioTrack temp : queue) {
+            if (temp.getInfo().title.toLowerCase().contains(partOfName.toLowerCase()))
+                toRemove = temp;
+        }
+
+        if (toRemove != null)
+            queue.remove(toRemove);
+
+        return toRemove;
+    }
+
     public AudioTrack nextTrack() {
         AudioTrack next = queue.poll();
         player.startTrack(next, false);
@@ -54,10 +70,7 @@ public class TrackScheduler extends AudioEventAdapter {
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        if (endReason.mayStartNext) {
+        if (endReason.mayStartNext)
             nextTrack();
-        } else {
-            //TODO
-        }
     }
 }

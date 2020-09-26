@@ -15,7 +15,7 @@ public class AutoDisconnection extends Thread {
     private static final Map<Guild, Integer> timers = new ConcurrentHashMap<>();
     private static final Logger logger = LoggerFactory.getLogger(AutoDisconnection.class);
 
-    private JDA jda;
+    private final JDA jda;
 
     private static final int LIMIT = 5000;
     private static final int RELOAD = 1000;
