@@ -56,6 +56,7 @@ public class Info {
             this.inviteUrl = inviteUrl;
             this.name = "link";
             this.help = "получить ссылку на бота";
+            this.cooldown = 10;
         }
 
         @Override
@@ -72,6 +73,7 @@ public class Info {
         public Ping() {
             this.name = "ping";
             this.help = "получить пинг бота";
+            this.cooldown = 2;
         }
 
         @Override
@@ -93,6 +95,7 @@ public class Info {
             this.name = "state";
             this.help = "получить информацию о состоянии сервера";
             this.requiredRole = DiscordBot.CREATOR_ROLE;
+            this.cooldown = 5;
         }
 
         @Override
@@ -119,7 +122,7 @@ public class Info {
                     Emoji.TIME.getEmoji() + "Время",
                     String.format(" - Сейчас: %s%n - Время работы: %sh",
                             OS.DEFAULT_DATE_FORMAT.format(new Date()),
-                            new Date().getTime() - OS.DATE_LAUNCH.getTime() / (60 * 60 * 1000)
+                            (new Date().getTime() - OS.DATE_LAUNCH.getTime()) / (60 * 60 * 1000)
                     ),
                     true);
 
@@ -130,7 +133,6 @@ public class Info {
                     String.format(" - Кол-во: %d", ConsoleHelper.getErrors()),
                     true
             );
-
             commandEvent.getChannel().sendMessage(stateMessage.build())
                     .queue(q -> {
                         stateMessage.addField(

@@ -18,6 +18,7 @@ public class Volume extends Command {
         this.help = "изменить громкость";
         this.arguments = "{громкость}";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override

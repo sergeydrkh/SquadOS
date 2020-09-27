@@ -12,6 +12,7 @@ public class Stop extends Command {
         this.name = "stop";
         this.help = "остановить проигрывание";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override

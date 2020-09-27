@@ -9,6 +9,7 @@ public class GetGuild extends Command {
         this.name = "guildInfo";
         this.help = "получить информацию о Guild";
         this.requiredRole = DiscordBot.CREATOR_ROLE;
+        this.cooldown = 10;
     }
 
     @Override

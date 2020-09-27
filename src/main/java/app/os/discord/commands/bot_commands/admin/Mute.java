@@ -16,6 +16,7 @@ public class Mute {
             this.arguments = "[users]";
             this.help = "замутить пользователей";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 3;
         }
 
         @Override
@@ -42,6 +43,7 @@ public class Mute {
             this.arguments = "[users]";
             this.help = "снять мут пользователям";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 3;
         }
 
         @Override

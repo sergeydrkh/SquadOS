@@ -18,6 +18,7 @@ public class Warn {
             this.arguments = "[users]";
             this.help = "выдать варн";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 5;
         }
 
         @Override
@@ -59,6 +60,7 @@ public class Warn {
             this.arguments = "[users]";
             this.help = "снять варны пользователям";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 5;
         }
 
         @Override

@@ -11,6 +11,7 @@ public class Repeat extends Command {
         this.name = "repeat";
         this.help = "повторять текущий трек // в разработке";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override

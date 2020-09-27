@@ -15,6 +15,7 @@ public class Admins extends Command {
         this.name = "admins";
         this.help = "получить список администраторов";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
+        this.cooldown = 3;
     }
 
     @Override

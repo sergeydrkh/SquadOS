@@ -10,6 +10,7 @@ public class Skip extends Command {
         this.name = "skip";
         this.help = "проскипать текущий трек";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override

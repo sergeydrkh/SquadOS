@@ -27,6 +27,7 @@ public class Play extends Command {
         this.help = "включить музыку";
         this.arguments = "{ссылка/название}";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class Play extends Command {
         Message received = commandEvent.getMessage();
         String[] args = received.getContentRaw().split(OS.DEFAULT_MESSAGE_DELIMITER);
         if (args.length < 2) {
-            received.getChannel().sendMessage(String.format("**Ошибка!** Используйте: %s.", this.arguments)).queue();
+            received.getChannel().sendMessage(String.format("**Ошибка!** Используйте: ``%s %s``.", this.name, this.arguments)).queue();
             return;
         }
 
@@ -55,24 +56,26 @@ public class Play extends Command {
         @Override
         public void run() {
             // load music
-            String link;
-            try {
-                new URL(args[1]);
-                link = args[1];
-            } catch (MalformedURLException malformedURLException) {
-                String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=1&key=%s",
-                        new String(received.getContentRaw().substring(args[0].length()).trim().getBytes(), Charset.defaultCharset()),
-                        googleApiKey);
-
+            // 3 attempts
+            String link = "";
+            for (int i = 0; i < 3; i++) {
                 try {
-                    JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
-                    JSONArray videos = allData.getJSONArray("items");
+                    new URL(args[1]);
+                    link = args[1];
+                } catch (MalformedURLException malformedURLException) {
+                    String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=1&key=%s",
+                            new String(received.getContentRaw().substring(args[0].length()).trim().getBytes(), Charset.defaultCharset()),
+                            googleApiKey);
+                    try {
+                        JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
+                        JSONArray videos = allData.getJSONArray("items");
 
-                    link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
-                } catch (Exception exception) {
-                    received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
-                    exception.printStackTrace();
-                    return;
+                        link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
+                        break;
+                    } catch (Exception exception) {
+                        received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
+                        return;
+                    }
                 }
             }
 

@@ -19,6 +19,7 @@ public class Channels {
             this.requiredRole = DiscordBot.ADMIN_ROLES;
             this.help = "удалить все сообщения за последнюю неделю";
             this.cooldown = 10;
+            this.cooldown = 20;
         }
 
         @Override
@@ -45,6 +46,7 @@ public class Channels {
             this.arguments = "[channels] [text]";
             this.help = "отправить сообщение от имени бота в текстовый канал";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 5;
         }
 
         @Override
@@ -81,6 +83,7 @@ public class Channels {
             this.name = "text";
             this.help = "получить все текстовые чаты на сервере";
             this.requiredRole = DiscordBot.ADMIN_ROLES;
+            this.cooldown = 20;
         }
 
         @Override

@@ -13,6 +13,7 @@ public class GetConfigs extends Command {
         this.name = "config";
         this.arguments = "{тип: all/this}";
         this.help = "получить конфиг";
+        this.cooldown = 10;
     }
 
     @Override

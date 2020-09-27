@@ -9,6 +9,7 @@ public class ChangeNickname extends Command {
         this.name = "name";
         this.help = "установить никнейм";
         this.arguments = "[новый никнейм]";
+        this.cooldown = 10;
     }
 
     @Override

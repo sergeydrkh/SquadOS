@@ -68,11 +68,11 @@ public class DiscordBot {
             commands.addCommand(new Stop());
 //            commands.addCommand(new Repeat()); NOT WORKING (in progress)
             commands.addCommand(new Player());
-            commands.addCommand(new Queue.GetQueue());
-            commands.addCommand(new Queue.RemoveTrack());
-            commands.addCommand(new Queue.DeleteQueue());
-            commands.addCommand(new Queue.PlayQueue());
-            commands.addCommand(new Queue.SaveQueue());
+            commands.addCommand(new TrackQueue.GetQueue());
+            commands.addCommand(new TrackQueue.RemoveTrack());
+            commands.addCommand(new TrackQueue.DeleteQueue());
+            commands.addCommand(new TrackQueue.PlayQueue());
+            commands.addCommand(new TrackQueue.SaveQueue());
 
             // add listeners
             jda.addEventListener(new ReactionListener());

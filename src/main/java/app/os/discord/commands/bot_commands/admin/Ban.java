@@ -14,6 +14,7 @@ public class Ban extends Command {
         this.arguments = "[users]";
         this.help = "выдать бан (снятие ролей)";
         this.requiredRole = DiscordBot.ADMIN_ROLES;
+        this.cooldown = 2;
     }
 
     @Override

@@ -12,6 +12,7 @@ public class Pause extends Command {
         this.name = "pause";
         this.help = "поставить на паузу";
         this.requiredRole = DiscordBot.DJ_ROLE;
+        this.cooldown = 1;
     }
 
     @Override

@@ -1,18 +1,20 @@
 package app.os.discord.commands.music_commands;
 
 import app.os.discord.DiscordBot;
+import app.os.discord.commands.command.Command;
+import app.os.discord.commands.command.CommandEvent;
 import app.os.discord.music.player.GuildMusicManager;
 import app.os.discord.music.player.MusicManager;
 import app.os.main.OS;
-import app.os.discord.commands.command.Command;
-import app.os.discord.commands.command.CommandEvent;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Queue {
-    private static final Logger logger = LoggerFactory.getLogger(Queue.class.getName());
+import java.util.List;
+
+public class TrackQueue {
+    private static final Logger logger = LoggerFactory.getLogger(TrackQueue.class.getName());
 
     public static class GetQueue extends Command {
         public GetQueue() {
@@ -57,6 +59,7 @@ public class Queue {
 
         @Override
         protected void execute(CommandEvent event) {
+
             // delq
         }
     }
@@ -71,6 +74,8 @@ public class Queue {
 
         @Override
         protected void execute(CommandEvent event) {
+            List<AudioTrack> toSave = MusicManager.getInstance().getGuildAudioPlayer(event.getGuild()).scheduler.getTracksInQueue();
+            logger.debug(toSave.toString());
             // saveq
         }
     }
