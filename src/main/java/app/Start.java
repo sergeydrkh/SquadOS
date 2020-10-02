@@ -9,7 +9,11 @@ public class Start {
     private static final Logger logger = LoggerFactory.getLogger(Start.class);
 
     public static void main(String[] args) {
-        BasicConfigurator.configure(); // configure logger
+        try {
+            BasicConfigurator.configure(); // configure logger
+        } catch (Exception e) {
+            System.err.println("Logger doesn't loaded!");
+        }
         new Start().run(args);
     }
 
