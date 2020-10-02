@@ -66,7 +66,7 @@ public class DiscordBot {
             commands.addCommand(new Volume());
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
-//            commands.addCommand(new Repeat()); NOT WORKING (in progress)
+            commands.addCommand(new Repeat());
             commands.addCommand(new Player());
             commands.addCommand(new TrackQueue.GetQueue());
             commands.addCommand(new TrackQueue.RemoveTrack());
