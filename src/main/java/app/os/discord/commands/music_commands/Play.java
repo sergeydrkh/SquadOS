@@ -70,7 +70,7 @@ public class Play extends Command {
                         JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
                         JSONArray videos = allData.getJSONArray("items");
 
-                        link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
+                        link = "https://www.youtu.be/" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
                         break;
                     } catch (Exception exception) {
                         received.getChannel().sendMessage("**Не удалось** найти видео!").queue();

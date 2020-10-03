@@ -5,6 +5,7 @@ import app.os.discord.commands.command.Command;
 import app.os.discord.commands.command.CommandEvent;
 import app.os.discord.music.player.GuildMusicManager;
 import app.os.discord.music.player.MusicManager;
+import app.os.discord.music.utils.TrackInfo;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class Player extends Command {
         public void stopUpdate() {
             toUpdate.editMessage("Плеер закрыт.").queue();
             this.active = false;
-            remove();
+            removeMessage();
         }
 
         private String timeToString(long secs) {
@@ -89,17 +90,13 @@ public class Player extends Command {
                 try {
                     StringBuilder toSend = new StringBuilder();
 
-                    int startSeconds = 0;
-                    int endSeconds = (int) (guildMusicManager.player.getPlayingTrack().getInfo().length / 1000);
-                    int nowSeconds = (int) (guildMusicManager.player.getPlayingTrack().getPosition() / 1000);
-
                     toSend.append("**").append(guildMusicManager.player.getPlayingTrack().getInfo().title).append("**").append("\n");
-                    toSend.append(String.format("%ss / %ss", nowSeconds, endSeconds));
+                    toSend.append(TrackInfo.Duration.getStringRange(guildMusicManager.player.getPlayingTrack()));
 
                     toUpdate.editMessage(toSend.toString()).queue(this::setButtons);
                 } catch (Exception e) {
                     toUpdate.editMessage("Воспроизведение завершено.").queue();
-                    remove();
+                    removeMessage();
                     break;
                 }
 
@@ -111,7 +108,7 @@ public class Player extends Command {
             }
         }
 
-        public void remove() {
+        public void removeMessage() {
             toUpdate.delete().queue();
         }
     }

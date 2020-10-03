@@ -5,6 +5,7 @@ import app.os.discord.commands.command.Command;
 import app.os.discord.commands.command.CommandEvent;
 import app.os.discord.music.player.GuildMusicManager;
 import app.os.discord.music.player.MusicManager;
+import app.os.discord.music.utils.TrackInfo;
 import app.os.main.OS;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -32,13 +33,33 @@ public class TrackQueue {
                 StringBuilder allTracks = new StringBuilder();
                 GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(commandEvent.getGuild());
 
+                long allDuration = 0;
+
                 int i = 0;
                 for (AudioTrack track : guildMusicManager.scheduler.getTracksInQueue()) {
                     i++;
-                    allTracks.append(" - ").append(i).append(". ").append(track.getInfo().title).append("\n");
+                    allTracks
+                            .append(" - ")
+                            .append(i)
+                            .append(". ")
+                            .append(track.getInfo().title)
+                            .append(String.format(" [%.2f мин]", ((double) TrackInfo.Duration.getLength(track) / 60)))
+                            .append("\n");
+
+                    allDuration += TrackInfo.Duration.getLength(track);
                 }
 
-                queueMessage.addField("Играет сейчас", " - " + guildMusicManager.player.getPlayingTrack().getInfo().title, false);
+                AudioTrack playingTrack = guildMusicManager.player.getPlayingTrack();
+                allDuration += TrackInfo.Duration.getLength(playingTrack);
+
+                queueMessage.addField(String.format("Общая длительность: %.2f минут", ((double) allDuration / 60)),
+                        "",
+                        false);
+
+                queueMessage.addField("Играет сейчас", " - " +
+                                String.format("%s [%.2f мин]", playingTrack.getInfo().title, ((double) TrackInfo.Duration.getLength(playingTrack) / 60)),
+                        false);
+
                 if (!allTracks.toString().equals(""))
                     queueMessage.addField("В очереди", allTracks.toString(), false);
 

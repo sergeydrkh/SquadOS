@@ -43,6 +43,11 @@ public class AutoDisconnection extends Thread {
                     MusicManager musicManager = MusicManager.getInstance();
                     GuildMusicManager guildMusic = musicManager.getGuildAudioPlayer(guild);
 
+                    // reset queue
+                    if (!manager.isConnected()) {
+                        disconnect(manager);
+                    }
+
                     // check if connected
                     if (manager.isConnected()) {
                         if (isVoiceChannelEmpty(manager.getConnectedChannel())) {
@@ -62,6 +67,7 @@ public class AutoDisconnection extends Thread {
                         else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
                             disconnect(manager);
                         }
+
                         // add to timers
                         else {
                             timers.put(guild, 0);

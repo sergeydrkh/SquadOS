@@ -54,14 +54,14 @@ public class MusicManager {
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage(String.format("Добавление в очередь: **%s**.", track.getInfo().title)).queue();
-                play(channel.getGuild(), musicManager, track);
+                channel.sendMessage(String.format("Добавление в очередь: ``%s``.%n**Ссылка: **%s.", track.getInfo().title, track.getInfo().uri)).queue();
+                play(channel.getGuild(), musicManager, track, channel);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                channel.sendMessage(String.format("Добавление плейлиста: **%s** в очередь.", playlist.getName())).queue();
-                playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track));
+                channel.sendMessage(String.format("Добавление плейлиста: ``%s`` в очередь.", playlist.getName())).queue();
+                playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track, channel));
             }
 
             @Override
@@ -76,9 +76,48 @@ public class MusicManager {
         });
     }
 
-    public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track) {
-        connectToFirstVoiceChannel(guild.getAudioManager());
+    public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, TextChannel channel) {
+        AudioManager audioManager = guild.getAudioManager();
+        ConnectionResult result = connectToFirstVoiceChannel(audioManager);
+
+        if (result.isConnected())
+            channel.sendMessage(String.format("Подключение к каналу ``%s``.", result.getConnectedChannel().getName())).complete();
+        else
+            channel.sendMessage("**Не удалось** подключиться к голосовому каналу!").complete();
+
         musicManager.scheduler.queue(track);
+    }
+
+    private static ConnectionResult connectToFirstVoiceChannel(AudioManager audioManager) {
+        if (!audioManager.isConnected()) {
+            for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
+                if (!voiceChannel.getMembers().isEmpty()) {
+                    audioManager.openAudioConnection(voiceChannel);
+                    return new ConnectionResult(true, voiceChannel);
+                }
+            }
+        }
+
+        return new ConnectionResult(false, null);
+    }
+
+    private static class ConnectionResult {
+        private final boolean connected;
+        private final VoiceChannel connectedChannel;
+
+        public ConnectionResult(boolean success, VoiceChannel connectedChannel) {
+            this.connected = success;
+            this.connectedChannel = connectedChannel;
+        }
+
+        public boolean isConnected() {
+            return connected;
+        }
+
+        public VoiceChannel getConnectedChannel() {
+            return connectedChannel;
+        }
+
     }
 
     public void skipTrack(TextChannel channel) {
@@ -89,18 +128,5 @@ public class MusicManager {
         } catch (NullPointerException e) {
             channel.sendMessage("Очередь пуста.").queue();
         }
-    }
-
-    private static boolean connectToFirstVoiceChannel(AudioManager audioManager) {
-        if (!audioManager.isConnected()) {
-            for (VoiceChannel voiceChannel : audioManager.getGuild().getVoiceChannels()) {
-                if (!voiceChannel.getMembers().isEmpty()) {
-                    audioManager.openAudioConnection(voiceChannel);
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
