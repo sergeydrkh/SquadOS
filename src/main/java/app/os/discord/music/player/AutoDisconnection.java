@@ -17,7 +17,7 @@ public class AutoDisconnection extends Thread {
 
     private final JDA jda;
 
-    private static final int LIMIT = 5000;
+    private static final int LIMIT = 20000;
     private static final int RELOAD = 1000;
 
     public AutoDisconnection(JDA jda) {
@@ -51,8 +51,7 @@ public class AutoDisconnection extends Thread {
                                 int timerNow = timers.get(guild);
 
                                 if (timerNow >= LIMIT) {
-                                    manager.closeAudioConnection();
-                                    MusicManager.getInstance().getGuildAudioPlayer(guild).scheduler.clearQueue();
+                                    disconnect(manager);
                                     timers.remove(guild);
                                 } else {
                                     timers.put(guild, timerNow + RELOAD);
@@ -61,7 +60,7 @@ public class AutoDisconnection extends Thread {
                         }
                         // check queue is empty
                         else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
-                            manager.closeAudioConnection();
+                            disconnect(manager);
                         }
                         // add to timers
                         else {
@@ -85,7 +84,17 @@ public class AutoDisconnection extends Thread {
             }
 
         }
+    }
 
+    private void disconnect(AudioManager manager) {
+        GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(manager.getGuild());
+
+        if (!guildMusicManager.scheduler.getTracksInQueue().isEmpty())
+            guildMusicManager.scheduler.clearQueue();
+        if (guildMusicManager.player.getPlayingTrack() != null)
+            guildMusicManager.player.stopTrack();
+
+        manager.closeAudioConnection();
     }
 
     private boolean isVoiceChannelEmpty(VoiceChannel vc) {
