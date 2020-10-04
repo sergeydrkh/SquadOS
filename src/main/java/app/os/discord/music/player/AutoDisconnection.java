@@ -17,7 +17,7 @@ public class AutoDisconnection extends Thread {
 
     private final JDA jda;
 
-    private static final int LIMIT = 20000;
+    private static final int LIMIT = 5000;
     private static final int RELOAD = 1000;
 
     public AutoDisconnection(JDA jda) {
@@ -29,10 +29,7 @@ public class AutoDisconnection extends Thread {
     @Override
     public void run() {
         // close all connections
-        jda.getGuilds().forEach(guild -> {
-            if (guild.getAudioManager().isConnected())
-                guild.getAudioManager().closeAudioConnection();
-        });
+        jda.getGuilds().forEach(guild -> disconnect(guild.getAudioManager()));
 
         // check new connections
         while (true) {
@@ -42,11 +39,6 @@ public class AutoDisconnection extends Thread {
                     AudioManager manager = guild.getAudioManager();
                     MusicManager musicManager = MusicManager.getInstance();
                     GuildMusicManager guildMusic = musicManager.getGuildAudioPlayer(guild);
-
-                    // reset queue
-                    if (!manager.isConnected()) {
-                        disconnect(manager);
-                    }
 
                     // check if connected
                     if (manager.isConnected()) {
@@ -63,6 +55,7 @@ public class AutoDisconnection extends Thread {
                                 }
                             }
                         }
+
                         // check queue is empty
                         else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
                             disconnect(manager);

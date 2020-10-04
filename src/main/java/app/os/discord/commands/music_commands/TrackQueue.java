@@ -39,11 +39,9 @@ public class TrackQueue {
                 for (AudioTrack track : guildMusicManager.scheduler.getTracksInQueue()) {
                     i++;
                     allTracks
-                            .append(" - ")
-                            .append(i)
-                            .append(". ")
+                            .append(" > ")
+                            .append(String.format("**%.1f мин** - ", ((double) TrackInfo.Duration.getLength(track) / 60)))
                             .append(track.getInfo().title)
-                            .append(String.format(" [%.2f мин]", ((double) TrackInfo.Duration.getLength(track) / 60)))
                             .append("\n");
 
                     allDuration += TrackInfo.Duration.getLength(track);
@@ -52,12 +50,14 @@ public class TrackQueue {
                 AudioTrack playingTrack = guildMusicManager.player.getPlayingTrack();
                 allDuration += TrackInfo.Duration.getLength(playingTrack);
 
-                queueMessage.addField(String.format("Общая длительность: %.2f минут", ((double) allDuration / 60)),
-                        "",
+                queueMessage.addField(String.format("Общая длительность: %.1f минут", ((double) allDuration / 60)),
+                        String.format("Количество треков в очереди: %d", guildMusicManager.scheduler.getTracksInQueue().size()),
                         false);
 
-                queueMessage.addField("Играет сейчас", " - " +
-                                String.format("%s [%.2f мин]", playingTrack.getInfo().title, ((double) TrackInfo.Duration.getLength(playingTrack) / 60)),
+                queueMessage.addField("Играет сейчас",
+                                String.format("> **%.1f мин** - %s",
+                                        (double) TrackInfo.Duration.getLength(playingTrack) / 60,
+                                        playingTrack.getInfo().title),
                         false);
 
                 if (!allTracks.toString().equals(""))

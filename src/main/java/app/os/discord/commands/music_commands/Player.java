@@ -101,7 +101,7 @@ public class Player extends Command {
                 }
 
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1999);
                 } catch (InterruptedException e) {
                     return;
                 }

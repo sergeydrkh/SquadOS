@@ -7,11 +7,13 @@ import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,10 +82,17 @@ public class MusicManager {
         AudioManager audioManager = guild.getAudioManager();
         ConnectionResult result = connectToFirstVoiceChannel(audioManager);
 
-        if (result.isConnected())
-            channel.sendMessage(String.format("Подключение к каналу ``%s``.", result.getConnectedChannel().getName())).complete();
-        else
-            channel.sendMessage("**Не удалось** подключиться к голосовому каналу!").complete();
+        if (!audioManager.isConnected()) {
+            EmbedBuilder resultBuilder = new EmbedBuilder();
+            resultBuilder.setTitle("Результат подключения");
+
+            if (result.isConnected())
+                resultBuilder.setColor(Color.GREEN).setDescription(String.format("Подключение к голосовому каналу ``%s``.", result.getConnectedChannel().getName()));
+            else
+                resultBuilder.setColor(Color.RED).setDescription("Не удалось подключиться к голосовому каналу!");
+
+            channel.sendMessage(resultBuilder.build()).complete();
+        }
 
         musicManager.scheduler.queue(track);
     }
