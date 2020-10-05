@@ -3,10 +3,7 @@ package app.os.sql.drivers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.*;
 
 public class MySQLDriver extends SQLDriver {
@@ -79,17 +76,30 @@ public class MySQLDriver extends SQLDriver {
         columnsRef = columnsRef.substring(1);
         columnsRef = columnsRef.substring(0, columnsRef.length() - 1);
 
-        StringBuilder queueBuilder = new StringBuilder();
-        queueBuilder
+        StringBuilder valuesBuilder = new StringBuilder();
+        for (String val : insertData.getData())
+            valuesBuilder.append("'").append(val).append("'").append(",");
+
+        StringBuilder sqlBuilder = new StringBuilder();
+        sqlBuilder
                 .append("INSERT INTO ")
                 .append(tableName)
                 .append(" (")
                 .append(columnsRef)
-                .append(") VALUES (");
+                .append(") VALUES (")
+                .append(valuesBuilder.toString(), 0, valuesBuilder.toString().length() - 1)
+                .append(");");
 
 
-        return false;
+        try {
+            statement = null;
+            statement = connection.createStatement();
+            statement.execute(sqlBuilder.toString());
+            
+            return true;
+        } catch (Exception throwables) {
+            logger.error(String.format("Exception! Message: %s.", throwables.getMessage()));
+            return false;
+        }
     }
-
-
 }

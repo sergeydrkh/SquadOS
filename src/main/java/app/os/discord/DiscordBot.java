@@ -11,6 +11,8 @@ import app.os.discord.configs.ConfigListener;
 import app.os.discord.music.reactions.ReactionListener;
 import app.os.discord.music.player.AutoDisconnection;
 import app.os.main.OS;
+import app.os.sql.drivers.MySQLDriver;
+import app.os.sql.drivers.SQLDriver;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -29,8 +31,17 @@ public class DiscordBot {
     public static final String CREATOR_ROLE = "creator";
     public static final String DJ_ROLE = "dj";
 
+    public static SQLDriver sqlDriver;
+
     public void launch(Properties properties) {
         try {
+            // load database
+            sqlDriver = new MySQLDriver(
+                    properties.getProperty(DiscordProperties.DB_URL.getKey()),
+                    properties.getProperty(DiscordProperties.DB_USER.getKey()),
+                    properties.getProperty(DiscordProperties.DB_PASS.getKey())
+            );
+
             // load api
             JDA jda = JDABuilder.createDefault(properties.getProperty(DiscordProperties.BOT_TOKEN.getKey())).build();
             jda.awaitReady();
