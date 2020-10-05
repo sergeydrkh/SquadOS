@@ -42,9 +42,16 @@
         <org.json.ver>20200518</org.json.ver>
         <slf4j.ver>1.7.30</slf4j.ver>
         <log4j.ver>2.13.3</log4j.ver>
+        <mysql.connector.ver>8.0.21</mysql.connector.ver>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.connector.ver}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.sedmelluq</groupId>
             <artifactId>lavaplayer</artifactId>
@@ -69,19 +76,19 @@
             <version>${slf4j.ver}</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.ver}</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-jdk14</artifactId>-->
+<!--            <version>${slf4j.ver}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>${slf4j.ver}</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-nop</artifactId>-->
+<!--            <version>${slf4j.ver}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

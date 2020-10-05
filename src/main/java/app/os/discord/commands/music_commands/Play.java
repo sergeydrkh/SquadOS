@@ -7,7 +7,7 @@ import app.os.discord.configs.ConfigManager;
 import app.os.discord.configs.ConfigProperties;
 import app.os.discord.music.player.MusicManager;
 import app.os.main.OS;
-import app.os.utilities.JSONReader;
+import app.os.json.JSONReader;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import org.json.JSONArray;

@@ -1,4 +1,4 @@
-package app.os.utilities;
+package app.os.json;
 
 
 import org.json.JSONObject;

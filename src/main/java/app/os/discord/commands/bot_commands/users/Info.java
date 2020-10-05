@@ -4,7 +4,7 @@ import app.os.console.ConsoleHelper;
 import app.os.discord.DiscordBot;
 import app.os.discord.commands.command.Command;
 import app.os.discord.commands.command.CommandEvent;
-import app.os.discord.utils.Emoji;
+import app.os.utilities.Emoji;
 import app.os.main.OS;
 import net.dv8tion.jda.api.EmbedBuilder;
 

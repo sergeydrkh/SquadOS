@@ -1,4 +1,4 @@
-package app.os.discord.utils;
+package app.os.utilities;
 
 public enum  Emoji {
     INTERNET("\uD83C\uDF10"),
