@@ -73,6 +73,7 @@ public class DiscordBot {
             commands.addCommand(new TrackQueue.DeleteQueue());
             commands.addCommand(new TrackQueue.PlayQueue());
             commands.addCommand(new TrackQueue.SaveQueue());
+            commands.addCommand(new Disconnect());
 
             // add listeners
             jda.addEventListener(new ReactionListener());

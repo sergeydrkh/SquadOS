@@ -58,7 +58,19 @@ public class AutoDisconnection extends Thread {
 
                         // check queue is empty
                         else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
-                            disconnect(manager);
+                            new Thread(() -> {
+                                setDaemon(true);
+                                setName("CheckConnection-Thread");
+
+                                try {
+                                    Thread.sleep(500);
+                                } catch (InterruptedException ignored) {
+                                }
+
+                                if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null)
+                                    disconnect(manager);
+                            }).start();
+
                         }
 
                         // add to timers
@@ -85,7 +97,7 @@ public class AutoDisconnection extends Thread {
         }
     }
 
-    private void disconnect(AudioManager manager) {
+    public static void disconnect(AudioManager manager) {
         GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(manager.getGuild());
 
         if (!guildMusicManager.scheduler.getTracksInQueue().isEmpty())

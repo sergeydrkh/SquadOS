@@ -51,7 +51,7 @@ public class TrackQueue {
                 allDuration += TrackInfo.Duration.getLength(playingTrack);
 
                 queueMessage.addField(String.format("Общая длительность: %.1f минут", ((double) allDuration / 60)),
-                        String.format("Количество треков в очереди: %d", guildMusicManager.scheduler.getTracksInQueue().size()),
+                        String.format("Количество треков в очереди: **%d**", guildMusicManager.scheduler.getTracksInQueue().size()),
                         false);
 
                 queueMessage.addField("Играет сейчас",
