@@ -44,8 +44,19 @@ public class DiscordStart extends Thread {
 
         if (properties.size() != DiscordProperties.values().length) {
             logger.error("lacks properties! list of actual properties:");
-            for (DiscordProperties dsProperty : DiscordProperties.values())
-                logger.info(dsProperty.getKey());
+
+            StringBuilder propertiesDiff = new StringBuilder();
+            propertiesDiff.append("\n---------\nPROPERTIES LIST\n");
+            for (DiscordProperties dsProperty : DiscordProperties.values()) {
+                propertiesDiff.append(" > ").append(dsProperty.getKey()).append(" ");
+                if (!properties.containsKey(dsProperty.getKey()))
+                    propertiesDiff.append("[MISSING]");
+                propertiesDiff.append("\n");
+            }
+            propertiesDiff.append("---------\n");
+
+            System.out.println(propertiesDiff.toString());
+            properties = null;
             return;
         }
 
@@ -55,7 +66,11 @@ public class DiscordStart extends Thread {
 
     @Override
     public void run() {
-        DiscordBot bot = new DiscordBot();
-        bot.launch(properties);
+        if (properties != null) {
+            DiscordBot bot = new DiscordBot();
+            bot.launch(properties);
+        } else {
+            logger.error("Bad properties!");
+        }
     }
 }
