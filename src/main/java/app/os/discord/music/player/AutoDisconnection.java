@@ -29,7 +29,10 @@ public class AutoDisconnection extends Thread {
     @Override
     public void run() {
         // close all connections
-        jda.getGuilds().forEach(guild -> disconnect(guild.getAudioManager()));
+        jda.getGuilds().forEach(guild -> {
+            if (guild.getAudioManager().isConnected())
+                guild.getAudioManager().closeAudioConnection();
+        });
 
         // check new connections
         while (true) {
@@ -55,26 +58,13 @@ public class AutoDisconnection extends Thread {
                                 }
                             }
                         }
-
                         // check queue is empty
                         else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
-                            new Thread(() -> {
-                                setDaemon(true);
-                                setName("CheckConnection-Thread");
-
-                                try {
-                                    Thread.sleep(500);
-                                } catch (InterruptedException ignored) {
-                                }
-
-                                if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null)
-                                    disconnect(manager);
-                            }).start();
-
+                            disconnect(manager);
                         }
 
-                        // add to timers
                         else {
+                            disconnect(manager);
                             timers.put(guild, 0);
                         }
                     }
@@ -95,6 +85,17 @@ public class AutoDisconnection extends Thread {
             }
 
         }
+
+    }
+
+    private boolean isVoiceChannelEmpty(VoiceChannel vc) {
+        int connectedUsers = 0;
+        for (Member member : vc.getMembers())
+            if (!member.getUser().isBot()) {
+                connectedUsers++;
+            }
+
+        return connectedUsers == 0;
     }
 
     public static void disconnect(AudioManager manager) {
@@ -106,15 +107,5 @@ public class AutoDisconnection extends Thread {
             guildMusicManager.player.stopTrack();
 
         manager.closeAudioConnection();
-    }
-
-    private boolean isVoiceChannelEmpty(VoiceChannel vc) {
-        int connectedUsers = 0;
-        for (Member member : vc.getMembers())
-            if (!member.getUser().isBot()) {
-                connectedUsers++;
-            }
-
-        return connectedUsers == 0;
     }
 }

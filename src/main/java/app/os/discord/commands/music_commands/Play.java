@@ -5,17 +5,11 @@ import app.os.discord.commands.command.Command;
 import app.os.discord.commands.command.CommandEvent;
 import app.os.discord.configs.ConfigManager;
 import app.os.discord.configs.ConfigProperties;
+import app.os.discord.music.player.GetTrack;
 import app.os.discord.music.player.MusicManager;
 import app.os.main.OS;
-import app.os.json.JSONReader;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.charset.Charset;
 
 public class Play extends Command {
     private final String googleApiKey;
@@ -55,32 +49,6 @@ public class Play extends Command {
 
         @Override
         public void run() {
-            // load music
-            // 3 attempts
-            String link = "";
-            for (int i = 0; i < 3; i++) {
-                try {
-                    new URL(args[1]);
-                    link = args[1];
-                } catch (MalformedURLException malformedURLException) {
-                    String apiQuery = String.format("https://www.googleapis.com/youtube/v3/search?part=id,snippet&q=%s&type=video&maxResults=1&key=%s",
-                            new String(received.getContentRaw().substring(args[0].length()).trim().getBytes(), Charset.defaultCharset()),
-                            googleApiKey);
-                    try {
-                        JSONObject allData = JSONReader.readJsonFromUrl(apiQuery);
-                        JSONArray videos = allData.getJSONArray("items");
-
-                        link = "https://www.youtube.com/watch?v=" + videos.getJSONObject(0).getJSONObject("id").getString("videoId");
-                        break;
-                    } catch (Exception exception) {
-                        received.getChannel().sendMessage("**Не удалось** найти видео!").queue();
-                        return;
-                    }
-                }
-            }
-
-
-            // load volume
             MusicManager musicManager = MusicManager.getInstance();
 
             int volume;
@@ -92,7 +60,7 @@ public class Play extends Command {
 
             // create player
             musicManager.getGuildAudioPlayer(guild).player.setVolume(volume);
-            musicManager.loadAndPlay(received.getTextChannel(), link);
+            musicManager.loadAndPlay(received.getTextChannel(), true, GetTrack.getLink(args[1], googleApiKey));
         }
     }
 }

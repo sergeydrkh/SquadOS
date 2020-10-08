@@ -13,7 +13,7 @@ public class MySQLDriver extends SQLDriver {
     private Statement statement;
 
     public MySQLDriver(final String DB_URL, final String USERNAME, final String PASSWORD) {
-        super(DB_URL, USERNAME, PASSWORD);
+        super(DB_URL + "?useUnicode=true&serverTimezone=UTC", USERNAME, PASSWORD);
 
         // connect: success -> work, error -> return
         logger.info("Trying connect to database...");

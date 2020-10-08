@@ -9,7 +9,8 @@ public enum DiscordProperties {
     INVITE_URL("url_botInvite"),
     DB_URL("db_url"),
     DB_USER("db_user"),
-    DB_PASS("db_pass");
+    DB_PASS("db_pass"),
+    DB_TRACKS_TABLE("db_tracks_table_name");
 
     private final String key;
 

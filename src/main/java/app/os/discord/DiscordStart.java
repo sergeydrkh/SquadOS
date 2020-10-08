@@ -48,9 +48,10 @@ public class DiscordStart extends Thread {
             StringBuilder propertiesDiff = new StringBuilder();
             propertiesDiff.append("\n---------\nPROPERTIES LIST\n");
             for (DiscordProperties dsProperty : DiscordProperties.values()) {
-                propertiesDiff.append(" > ").append(dsProperty.getKey()).append(" ");
+                propertiesDiff.append(" >");
                 if (!properties.containsKey(dsProperty.getKey()))
-                    propertiesDiff.append("[MISSING]");
+                    propertiesDiff.append("! [MISSING] ");
+                propertiesDiff.append(dsProperty.getKey()).append(" ");
                 propertiesDiff.append("\n");
             }
             propertiesDiff.append("---------\n");

@@ -50,35 +50,39 @@ public class MusicManager {
         return musicManager;
     }
 
-    public void loadAndPlay(final TextChannel channel, final String trackUrl) {
+    public void loadAndPlay(final TextChannel channel, boolean notify, final String trackUrl) {
         GuildMusicManager musicManager = getGuildAudioPlayer(channel.getGuild());
 
         playerManager.loadItemOrdered(musicManager, trackUrl, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                channel.sendMessage(String.format("Добавление в очередь: ``%s``.%n**Ссылка: **%s.", track.getInfo().title, track.getInfo().uri)).queue();
-                play(channel.getGuild(), musicManager, track, channel);
+                if (notify)
+                    channel.sendMessage(String.format("Добавление в очередь: ``%s``.%n**Ссылка: **%s.", track.getInfo().title, track.getInfo().uri)).queue();
+                play(channel.getGuild(), musicManager, track, channel, notify);
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                channel.sendMessage(String.format("Добавление плейлиста: ``%s`` в очередь.", playlist.getName())).queue();
-                playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track, channel));
+                if (notify)
+                    channel.sendMessage(String.format("Добавление плейлиста: ``%s`` в очередь.", playlist.getName())).queue();
+                playlist.getTracks().forEach(track -> play(channel.getGuild(), musicManager, track, channel, notify));
             }
 
             @Override
             public void noMatches() {
-                channel.sendMessage(String.format("Ничего не найдено по ссылке: %s.", trackUrl)).queue();
+                if (notify)
+                    channel.sendMessage(String.format("Ничего не найдено по ссылке: %s.", trackUrl)).queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                channel.sendMessage(String.format("Не удалось воспроизвести.%nОшибка: ``%s``.", exception.getMessage())).queue();
+                if (notify)
+                    channel.sendMessage(String.format("Не удалось воспроизвести.%nОшибка: ``%s``.", exception.getMessage())).queue();
             }
         });
     }
 
-    public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, TextChannel channel) {
+    public void play(Guild guild, GuildMusicManager musicManager, AudioTrack track, TextChannel channel, boolean notify) {
         AudioManager audioManager = guild.getAudioManager();
         ConnectionResult result = connectToFirstVoiceChannel(audioManager);
 
@@ -91,7 +95,8 @@ public class MusicManager {
             else
                 resultBuilder.setColor(Color.RED).setDescription("Не удалось подключиться к голосовому каналу!");
 
-            channel.sendMessage(resultBuilder.build()).complete();
+            if (notify)
+                channel.sendMessage(resultBuilder.build()).complete();
         }
 
         musicManager.scheduler.queue(track);

@@ -79,11 +79,14 @@ public class DiscordBot {
             commands.addCommand(new Stop());
             commands.addCommand(new Repeat());
             commands.addCommand(new Player());
+
+            String tracksTable = properties.getProperty(DiscordProperties.DB_TRACKS_TABLE.getKey());
+            String googleApiKey = properties.getProperty(DiscordProperties.YOUTUBE_API_KEY.getKey());
             commands.addCommand(new TrackQueue.GetQueue());
-            commands.addCommand(new TrackQueue.RemoveTrack());
-            commands.addCommand(new TrackQueue.DeleteQueue());
-            commands.addCommand(new TrackQueue.PlayQueue());
-            commands.addCommand(new TrackQueue.SaveQueue());
+            commands.addCommand(new TrackQueue.RemoveTrack(sqlDriver, tracksTable));
+            commands.addCommand(new TrackQueue.DeleteQueue(sqlDriver, tracksTable));
+            commands.addCommand(new TrackQueue.PlayQueue(sqlDriver, tracksTable, googleApiKey));
+            commands.addCommand(new TrackQueue.SaveQueue(sqlDriver, tracksTable, googleApiKey));
             commands.addCommand(new Disconnect());
 
             // add listeners

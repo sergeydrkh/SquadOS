@@ -7,11 +7,14 @@ import app.os.discord.music.player.GuildMusicManager;
 import app.os.discord.music.player.MusicManager;
 import app.os.discord.music.utils.TrackInfo;
 import app.os.main.OS;
+import app.os.sql.drivers.SQLDriver;
+import app.os.sql.models.MusicQueueModel;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.EmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.List;
 
 public class TrackQueue {
@@ -55,9 +58,9 @@ public class TrackQueue {
                         false);
 
                 queueMessage.addField("Играет сейчас",
-                                String.format("> **%.1f мин** - %s",
-                                        (double) TrackInfo.Duration.getLength(playingTrack) / 60,
-                                        playingTrack.getInfo().title),
+                        String.format("> **%.1f мин** - %s",
+                                (double) TrackInfo.Duration.getLength(playingTrack) / 60,
+                                playingTrack.getInfo().title),
                         false);
 
                 if (!allTracks.toString().equals(""))
@@ -71,7 +74,12 @@ public class TrackQueue {
     }
 
     public static class DeleteQueue extends Command {
-        public DeleteQueue() {
+        private final SQLDriver driver;
+        private final String tracksTable;
+
+        public DeleteQueue(SQLDriver driver, String tracksTable) {
+            this.driver = driver;
+            this.tracksTable = tracksTable;
             this.name = "delq";
             this.help = "удалить плейлист";
             this.arguments = "[название]";
@@ -86,7 +94,14 @@ public class TrackQueue {
     }
 
     public static class SaveQueue extends Command {
-        public SaveQueue() {
+        private final SQLDriver driver;
+        private final String tracksTable;
+        private final String googleApiKey;
+
+        public SaveQueue(SQLDriver driver, String tracksTable, String googleApiKey) {
+            this.driver = driver;
+            this.tracksTable = tracksTable;
+            this.googleApiKey = googleApiKey;
             this.name = "saveq";
             this.help = "сохранить текущий плейлист";
             this.arguments = "[название]";
@@ -95,14 +110,40 @@ public class TrackQueue {
 
         @Override
         protected void execute(CommandEvent event) {
-            List<AudioTrack> toSave = MusicManager.getInstance().getGuildAudioPlayer(event.getGuild()).scheduler.getTracksInQueue();
-            logger.debug(toSave.toString());
-            // saveq
+            String messageText = event.getMessage().getContentRaw();
+            String[] args = messageText.split(OS.DEFAULT_MESSAGE_DELIMITER);
+            if (args.length != 2) {
+                event.getChannel().sendMessage("Неправильное использование команды!").complete();
+                return;
+            }
+
+            try {
+                List<AudioTrack> toSave = MusicManager.getInstance().getGuildAudioPlayer(event.getGuild()).scheduler.getTracksInQueue();
+                MusicQueueModel musicQueueModel = new MusicQueueModel(googleApiKey);
+                musicQueueModel.saveTracks(driver, tracksTable, toSave, event.getGuild(), args[1]);
+
+                event.getChannel().sendMessage(new EmbedBuilder()
+                        .setColor(Color.GREEN)
+                        .setTitle("Сохранение")
+                        .setDescription(String.format("Очередь ``%s`` сохранена!", args[1])).build()).complete();
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                event.getChannel().sendMessage("Ошибка! " + e.getMessage()).complete();
+                e.printStackTrace();
+                return;
+            }
         }
     }
 
     public static class PlayQueue extends Command {
-        public PlayQueue() {
+        private final SQLDriver driver;
+        private final String tracksTable;
+        private final String googleApiKey;
+
+        public PlayQueue(SQLDriver driver, String tracksTable, String googleApiKey) {
+            this.driver = driver;
+            this.tracksTable = tracksTable;
+            this.googleApiKey = googleApiKey;
             this.name = "playq";
             this.help = "воспроизвести сохраненный плейлист";
             this.arguments = "[название]";
@@ -111,12 +152,36 @@ public class TrackQueue {
 
         @Override
         protected void execute(CommandEvent event) {
-            // playq
+            String messageText = event.getMessage().getContentRaw();
+            String[] args = messageText.split(OS.DEFAULT_MESSAGE_DELIMITER);
+            if (args.length != 2) {
+                event.getChannel().sendMessage("Неправильное использование команды!").complete();
+                return;
+            }
+
+            try {
+                MusicQueueModel musicQueueModel = new MusicQueueModel(googleApiKey);
+                List<String> urls = musicQueueModel.getTracksUrl(driver, tracksTable, event.getGuild());
+
+                MusicManager musicManager = MusicManager.getInstance();
+                for (String trackUrl : urls)
+                    musicManager.loadAndPlay(event.getTextChannel(),false, trackUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage());
+                event.getChannel().sendMessage("Ошибка! " + e.getMessage()).complete();
+                return;
+            }
         }
     }
 
     public static class RemoveTrack extends Command {
-        public RemoveTrack() {
+        private final SQLDriver driver;
+        private final String tracksTable;
+
+        public RemoveTrack(SQLDriver driver, String tracksTable) {
+            this.driver = driver;
+            this.tracksTable = tracksTable;
             this.name = "remove";
             this.arguments = "[часть названия]";
             this.help = "убрать трек с определённым индексом из очереди";

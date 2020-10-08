@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Model {
-    private final String[] columnsName;
-    private final String modelName;
+    protected final String[] columnsName;
+    protected final String modelName;
 
     public Model(String[] columnsName, String modelName) {
         this.columnsName = columnsName;
