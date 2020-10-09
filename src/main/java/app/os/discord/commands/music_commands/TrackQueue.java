@@ -159,30 +159,49 @@ public class TrackQueue {
                 return;
             }
 
+            EmbedBuilder result = new EmbedBuilder();
+
             try {
                 MusicQueueModel musicQueueModel = new MusicQueueModel(googleApiKey);
-                List<String> urls = musicQueueModel.getTracksUrl(driver, tracksTable, event.getGuild());
+                List<String> urls = musicQueueModel.getTracksUrl(driver, tracksTable, event.getGuild(), args[1]);
 
                 MusicManager musicManager = MusicManager.getInstance();
-                for (String trackUrl : urls)
-                    musicManager.loadAndPlay(event.getTextChannel(),false, trackUrl);
+                for (String trackUrl : urls) {
+                    musicManager.loadAndPlay(event.getTextChannel(), false, trackUrl);
+                }
+
+                result.setTitle("Добавление");
+                if (!urls.isEmpty()) {
+                    result.setColor(Color.GREEN);
+                    result.setDescription(String.format("Очередь с названием ``%s`` успешно добавлена в общую очередь.", args[1]));
+                } else {
+                    result.setColor(Color.YELLOW);
+                    result.setDescription("Очередь оказалась пустой, треки не были добавлены.");
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
                 logger.error(e.getMessage());
-                event.getChannel().sendMessage("Ошибка! " + e.getMessage()).complete();
+
+                result.setColor(Color.RED);
+                result.setTitle("Ошибка!");
+                result.setDescription(String.format("Во время выполнения операции произошла ошибка. ``%s``.", e.getMessage()));
+
                 return;
             }
+
+            event.getChannel().sendMessage(result.build()).complete();
         }
     }
 
-    public static class RemoveTrack extends Command {
+    public static class RemoveQueue extends Command {
         private final SQLDriver driver;
         private final String tracksTable;
 
-        public RemoveTrack(SQLDriver driver, String tracksTable) {
+        public RemoveQueue(SQLDriver driver, String tracksTable) {
             this.driver = driver;
             this.tracksTable = tracksTable;
-            this.name = "remove";
+            this.name = "removeq";
             this.arguments = "[часть названия]";
             this.help = "убрать трек с определённым индексом из очереди";
             this.requiredRole = DiscordBot.DJ_ROLE;

@@ -8,7 +8,6 @@ import app.os.discord.commands.bot_commands.users.Info;
 import app.os.discord.commands.command.CommandClientBuilder;
 import app.os.discord.commands.music_commands.*;
 import app.os.discord.configs.ConfigListener;
-import app.os.discord.music.player.AutoDisconnection;
 import app.os.discord.music.reactions.ReactionListener;
 import app.os.main.OS;
 import app.os.sql.drivers.MySQLDriver;
@@ -37,9 +36,11 @@ public class DiscordBot {
         try {
             // load database
             sqlDriver = new MySQLDriver(
-                    properties.getProperty(DiscordProperties.DB_URL.getKey()),
+                    properties.getProperty(DiscordProperties.DB_NAME.getKey()),
+                    properties.getProperty(DiscordProperties.DB_HOST.getKey()),
                     properties.getProperty(DiscordProperties.DB_USER.getKey()),
-                    properties.getProperty(DiscordProperties.DB_PASS.getKey())
+                    properties.getProperty(DiscordProperties.DB_PASS.getKey()),
+                    properties.getProperty(DiscordProperties.DB_PORT.getKey())
             );
 
             // load api
@@ -77,13 +78,15 @@ public class DiscordBot {
             commands.addCommand(new Volume());
             commands.addCommand(new Pause());
             commands.addCommand(new Stop());
+            commands.addCommand(new RemoveTrack());
             commands.addCommand(new Repeat());
             commands.addCommand(new Player());
 
             String tracksTable = properties.getProperty(DiscordProperties.DB_TRACKS_TABLE.getKey());
             String googleApiKey = properties.getProperty(DiscordProperties.YOUTUBE_API_KEY.getKey());
+
             commands.addCommand(new TrackQueue.GetQueue());
-            commands.addCommand(new TrackQueue.RemoveTrack(sqlDriver, tracksTable));
+            commands.addCommand(new TrackQueue.RemoveQueue(sqlDriver, tracksTable));
             commands.addCommand(new TrackQueue.DeleteQueue(sqlDriver, tracksTable));
             commands.addCommand(new TrackQueue.PlayQueue(sqlDriver, tracksTable, googleApiKey));
             commands.addCommand(new TrackQueue.SaveQueue(sqlDriver, tracksTable, googleApiKey));
@@ -94,7 +97,7 @@ public class DiscordBot {
             jda.addEventListener(commands.build());
             jda.addEventListener(new ConfigListener());
 
-            new AutoDisconnection(jda).start();
+//            new AutoDisconnection(jda).start();
         } catch (LoginException | InterruptedException e) {
             logger.error(e.getMessage());
         }

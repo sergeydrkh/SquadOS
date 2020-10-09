@@ -29,63 +29,34 @@ public class AutoDisconnection extends Thread {
     @Override
     public void run() {
         // close all connections
-        jda.getGuilds().forEach(guild -> {
-            if (guild.getAudioManager().isConnected())
-                guild.getAudioManager().closeAudioConnection();
-        });
+        jda.getGuilds().forEach(guild -> guild.getAudioManager().closeAudioConnection());
 
-        // check new connections
+        MusicManager musicManager = MusicManager.getInstance();
+
         while (true) {
-            try {
-                // walk by all guilds
-                for (Guild guild : jda.getGuilds()) {
-                    AudioManager manager = guild.getAudioManager();
-                    MusicManager musicManager = MusicManager.getInstance();
-                    GuildMusicManager guildMusic = musicManager.getGuildAudioPlayer(guild);
+            for (Guild guild : jda.getGuilds()) {
+                AudioManager audioManager = guild.getAudioManager();
+                GuildMusicManager guildMusicManager = musicManager.getGuildAudioPlayer(guild);
 
-                    // check if connected
-                    if (manager.isConnected()) {
-                        if (isVoiceChannelEmpty(manager.getConnectedChannel())) {
-                            // if contains key in timer list
-                            if (timers.containsKey(guild)) {
-                                int timerNow = timers.get(guild);
-
-                                if (timerNow >= LIMIT) {
-                                    disconnect(manager);
-                                    timers.remove(guild);
-                                } else {
-                                    timers.put(guild, timerNow + RELOAD);
-                                }
-                            }
-                        }
-                        // check queue is empty
-                        else if (guildMusic.scheduler.getTracksInQueue().isEmpty() && guildMusic.player.getPlayingTrack() == null) {
-                            disconnect(manager);
-                        }
-
-                        else {
-                            disconnect(manager);
-                            timers.put(guild, 0);
-                        }
+                // check if connected
+                if (audioManager.isConnected()) {
+                    // check users
+                    if (isVoiceChannelEmpty(audioManager.getConnectedChannel())) {
+                        disconnect(audioManager);
                     }
 
-                    // if disconnected remove from timer list
-                    else {
-                        timers.remove(guild);
+                    // check queue
+                    if (guildMusicManager.scheduler.getTracksInQueue().isEmpty() && guildMusicManager.player.getPlayingTrack() == null) {
+                        disconnect(audioManager);
                     }
                 }
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-            }
 
-            try {
-                Thread.sleep(RELOAD);
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage());
+                // disconnected
+                else {
+                    clearQueue(guildMusicManager);
+                }
             }
-
         }
-
     }
 
     private boolean isVoiceChannelEmpty(VoiceChannel vc) {
@@ -100,12 +71,14 @@ public class AutoDisconnection extends Thread {
 
     public static void disconnect(AudioManager manager) {
         GuildMusicManager guildMusicManager = MusicManager.getInstance().getGuildAudioPlayer(manager.getGuild());
+        clearQueue(guildMusicManager);
+        manager.closeAudioConnection();
+    }
 
+    private static void clearQueue(GuildMusicManager guildMusicManager) {
         if (!guildMusicManager.scheduler.getTracksInQueue().isEmpty())
             guildMusicManager.scheduler.clearQueue();
         if (guildMusicManager.player.getPlayingTrack() != null)
             guildMusicManager.player.stopTrack();
-
-        manager.closeAudioConnection();
     }
 }

@@ -12,8 +12,8 @@ public class MySQLDriver extends SQLDriver {
     private Connection connection;
     private Statement statement;
 
-    public MySQLDriver(final String DB_URL, final String USERNAME, final String PASSWORD) {
-        super(DB_URL + "?useUnicode=true&serverTimezone=UTC", USERNAME, PASSWORD);
+    public MySQLDriver(final String DB_HOST, final String DB_NAME, final String USERNAME, final String PASSWORD, final String PORT) {
+        super(DB_HOST, DB_NAME, USERNAME, PASSWORD, PORT);
 
         // connect: success -> work, error -> return
         logger.info("Trying connect to database...");
@@ -21,7 +21,7 @@ public class MySQLDriver extends SQLDriver {
         long startConnecting = System.currentTimeMillis();
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(super.DB_URL, super.USERNAME, super.PASSWORD);
+            connection = getRemoteConnection(DB_NAME, USERNAME, PASSWORD, DB_HOST, PORT);
         } catch (Exception throwables) {
             // some error -> return
             logger.error(String.format("Error! Can't connect to database. Error: %s", throwables.getMessage()));
@@ -30,6 +30,26 @@ public class MySQLDriver extends SQLDriver {
 
         // success message
         logger.info(String.format("Connected successfully in %dms", (System.currentTimeMillis() - startConnecting)));
+    }
+
+    private static Connection getRemoteConnection(String dbName,
+                                                  String userName,
+                                                  String password,
+                                                  String hostname,
+                                                  String port) {
+        try {
+            String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
+
+            logger.trace("Getting remote connection with connection string from environment variables.");
+            Connection con = DriverManager.getConnection(jdbcUrl);
+            logger.info("Remote connection successful.");
+
+            return con;
+        } catch (SQLException e) {
+            logger.warn(e.toString());
+        }
+
+        return null;
     }
 
     @Override
@@ -95,7 +115,7 @@ public class MySQLDriver extends SQLDriver {
             statement = null;
             statement = connection.createStatement();
             statement.execute(sqlBuilder.toString());
-            
+
             return true;
         } catch (Exception throwables) {
             logger.error(String.format("Exception! Message: %s.", throwables.getMessage()));

@@ -75,3 +75,5 @@ _
 /src/main/java/app/os/sql/drivers/SQLDriver.java,6\b\6b86d998217e68adfe54d02d2ba71952fd2cf510
 a
 1src/main/java/app/os/sql/drivers/MySQLDriver.java,e\5\e57df8791cd8277300a27524a9ec6ba99a0a8010
+d
+4src/main/java/app/os/sql/models/MusicQueueModel.java,e\d\ed8e1944965960bee5315a458a1a9c0704cd1653
