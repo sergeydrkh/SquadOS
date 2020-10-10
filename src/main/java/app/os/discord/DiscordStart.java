@@ -57,8 +57,8 @@ public class DiscordStart extends Thread {
             propertiesDiff.append("---------\n");
 
             System.out.println(propertiesDiff.toString());
-//            properties = null;
-//            return;
+            properties = null;
+            return;
         }
 
         logger.info(String.format("Loaded successfully! (%dms)", (System.currentTimeMillis() - start)));
