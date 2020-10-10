@@ -13,3 +13,5 @@ INSTALL:<br/>
 3. Bot working! <br/>
  Any problems? Comment special thread in issues. Thanks. <br/>
   
+  
+  <h1>SQUADOS PROJECT CLOSED</h1> 10.10.2020
