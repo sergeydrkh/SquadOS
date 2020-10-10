@@ -43,6 +43,7 @@
         <slf4j.ver>1.7.30</slf4j.ver>
         <log4j.ver>2.13.3</log4j.ver>
         <mysql.connector.ver>8.0.21</mysql.connector.ver>
+        <awsjavasdk.version>1.11.879</awsjavasdk.version>
     </properties>
 
     <dependencies>
@@ -76,19 +77,18 @@
             <version>${slf4j.ver}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-jdk14</artifactId>-->
-<!--            <version>${slf4j.ver}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <artifactId>aws-java-sdk-core</artifactId>
+            <groupId>com.amazonaws</groupId>
+            <optional>false</optional>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.slf4j</groupId>-->
-<!--            <artifactId>slf4j-nop</artifactId>-->
-<!--            <version>${slf4j.ver}</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-rds</artifactId>
+            <version>${awsjavasdk.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>

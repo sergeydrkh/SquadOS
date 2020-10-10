@@ -30,17 +30,14 @@ public class DiscordBot {
     public static final String CREATOR_ROLE = "creator";
     public static final String DJ_ROLE = "dj";
 
-    public static SQLDriver sqlDriver;
-
     public void launch(Properties properties) {
         try {
             // load database
-            sqlDriver = new MySQLDriver(
-                    properties.getProperty(DiscordProperties.DB_NAME.getKey()),
-                    properties.getProperty(DiscordProperties.DB_HOST.getKey()),
-                    properties.getProperty(DiscordProperties.DB_USER.getKey()),
-                    properties.getProperty(DiscordProperties.DB_PASS.getKey()),
-                    properties.getProperty(DiscordProperties.DB_PORT.getKey())
+            SQLDriver sqlDriver = new MySQLDriver(
+                    properties.getProperty(DiscordProperties.DB_HOSTNAME.getKey()),
+                    Integer.parseInt(properties.getProperty(DiscordProperties.DB_PORT.getKey())),
+                    properties.getProperty(DiscordProperties.DB_REGION.getKey()),
+                    properties.getProperty(DiscordProperties.DB_USER.getKey())
             );
 
             // load api

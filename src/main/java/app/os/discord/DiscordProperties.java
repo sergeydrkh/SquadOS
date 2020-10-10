@@ -7,11 +7,10 @@ public enum DiscordProperties {
     OWNER_ID("owner_id"),
     YOUTUBE_API_KEY("youtube_apiKey"),
     INVITE_URL("url_botInvite"),
-    DB_NAME("db_name"),
-    DB_HOST("db_host"),
+    DB_HOSTNAME("db_hostname"),
     DB_PORT("db_port"),
+    DB_REGION("db_region"),
     DB_USER("db_user"),
-    DB_PASS("db_pass"),
     DB_TRACKS_TABLE("db_tracks_table_name");
 
     private final String key;

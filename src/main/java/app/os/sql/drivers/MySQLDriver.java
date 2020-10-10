@@ -3,7 +3,9 @@ package app.os.sql.drivers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.*;
 
 public class MySQLDriver extends SQLDriver {
@@ -12,44 +14,8 @@ public class MySQLDriver extends SQLDriver {
     private Connection connection;
     private Statement statement;
 
-    public MySQLDriver(final String DB_HOST, final String DB_NAME, final String USERNAME, final String PASSWORD, final String PORT) {
-        super(DB_HOST, DB_NAME, USERNAME, PASSWORD, PORT);
-
-        // connect: success -> work, error -> return
-        logger.info("Trying connect to database...");
-
-        long startConnecting = System.currentTimeMillis();
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = getRemoteConnection(DB_NAME, USERNAME, PASSWORD, DB_HOST, PORT);
-        } catch (Exception throwables) {
-            // some error -> return
-            logger.error(String.format("Error! Can't connect to database. Error: %s", throwables.getMessage()));
-            return;
-        }
-
-        // success message
-        logger.info(String.format("Connected successfully in %dms", (System.currentTimeMillis() - startConnecting)));
-    }
-
-    private static Connection getRemoteConnection(String dbName,
-                                                  String userName,
-                                                  String password,
-                                                  String hostname,
-                                                  String port) {
-        try {
-            String jdbcUrl = "jdbc:mysql://" + hostname + ":" + port + "/" + dbName + "?user=" + userName + "&password=" + password;
-
-            logger.trace("Getting remote connection with connection string from environment variables.");
-            Connection con = DriverManager.getConnection(jdbcUrl);
-            logger.info("Remote connection successful.");
-
-            return con;
-        } catch (SQLException e) {
-            logger.warn(e.toString());
-        }
-
-        return null;
+    public MySQLDriver(String rds_instance_hostname, int rds_instance_port, String region_name, String db_user) {
+        super(rds_instance_hostname, rds_instance_port, region_name, db_user);
     }
 
     @Override
