@@ -1,9 +1,14 @@
 package app.os.sql.drivers;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.rds.auth.GetIamAuthTokenRequest;
+import com.amazonaws.services.rds.auth.RdsIamAuthTokenGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.*;
@@ -16,7 +21,57 @@ public class MySQLDriver extends SQLDriver {
 
     public MySQLDriver(String rds_instance_hostname, int rds_instance_port, String region_name, String db_user) {
         super(rds_instance_hostname, rds_instance_port, region_name, db_user);
+
+        try {
+            //get the connection
+            connection = getDBConnectionUsingIam();
+
+            //verify the connection is successful
+            Statement stmt = connection.createStatement();
+
+            //close the connection
+            stmt.close();
+            connection.close();
+
+            clearSslProperties();
+        } catch (Exception e ){
+            return;
+        }
     }
+
+    private Connection getDBConnectionUsingIam() throws Exception {
+        setSslProperties();
+        return DriverManager.getConnection(super.JDBC_URL, setMySqlConnectionProperties());
+    }
+
+    private Properties setMySqlConnectionProperties() {
+        Properties mysqlConnectionProperties = new Properties();
+        mysqlConnectionProperties.setProperty("verifyServerCertificate", "true");
+        mysqlConnectionProperties.setProperty("useSSL", "true");
+        mysqlConnectionProperties.setProperty("user", DB_USER);
+        mysqlConnectionProperties.setProperty("password", generateAuthToken());
+        return mysqlConnectionProperties;
+    }
+
+    private void setSslProperties() {
+        System.setProperty("javax.net.ssl.trustStoreType", KEY_STORE_TYPE);
+        System.setProperty("javax.net.ssl.trustStorePassword", DEFAULT_KEY_STORE_PASSWORD);
+    }
+
+    private static void clearSslProperties() throws Exception {
+        System.clearProperty("javax.net.ssl.trustStoreType");
+        System.clearProperty("javax.net.ssl.trustStorePassword");
+    }
+
+    private String generateAuthToken() {
+        BasicAWSCredentials awsCredentials = new BasicAWSCredentials(AWS_ACCESS_KEY, AWS_SECRET_KEY);
+
+        RdsIamAuthTokenGenerator generator = RdsIamAuthTokenGenerator.builder()
+                .credentials(new AWSStaticCredentialsProvider(awsCredentials)).region(REGION_NAME).build();
+        return generator.getAuthToken(GetIamAuthTokenRequest.builder()
+                .hostname(RDS_INSTANCE_HOSTNAME).port(RDS_INSTANCE_PORT).userName(DB_USER).build());
+    }
+
 
     @Override
     public Map<String, List<Object>> getValuesFromTable(String tableName, String[] columns) {

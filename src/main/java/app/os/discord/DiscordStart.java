@@ -42,6 +42,7 @@ public class DiscordStart extends Thread {
             return;
         }
 
+        System.out.println(properties.size() != DiscordProperties.values().length);
         if (properties.size() != DiscordProperties.values().length) {
             logger.error("lacks properties! list of actual properties:");
 
