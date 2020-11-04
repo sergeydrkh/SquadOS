@@ -43,7 +43,7 @@
         <slf4j.ver>1.7.30</slf4j.ver>
         <log4j.ver>2.13.3</log4j.ver>
         <mysql.connector.ver>8.0.21</mysql.connector.ver>
-        <awsjavasdk.version>1.11.879</awsjavasdk.version>
+        <awsjavasdk.version>1.11.893</awsjavasdk.version>
     </properties>
 
     <dependencies>
