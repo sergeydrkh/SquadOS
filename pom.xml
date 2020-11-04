@@ -42,7 +42,7 @@
         <org.json.ver>20200518</org.json.ver>
         <slf4j.ver>1.7.30</slf4j.ver>
         <log4j.ver>2.13.3</log4j.ver>
-        <mysql.connector.ver>8.0.21</mysql.connector.ver>
+        <mysql.connector.ver>8.0.22</mysql.connector.ver>
         <awsjavasdk.version>1.11.879</awsjavasdk.version>
     </properties>
 
