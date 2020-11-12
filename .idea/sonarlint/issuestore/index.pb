@@ -77,3 +77,8 @@ a
 1src/main/java/app/os/sql/drivers/MySQLDriver.java,e\5\e57df8791cd8277300a27524a9ec6ba99a0a8010
 d
 4src/main/java/app/os/sql/models/MusicQueueModel.java,e\d\ed8e1944965960bee5315a458a1a9c0704cd1653
+`
+0src/main/java/app/os/sql/drivers/InsertData.java,c\0\c0291904092770b077e6f29a482c5eb2d2e32414
+:
+
+.gitignore,a\5\a5cc2925ca8258af241be7e5b0381edf30266302

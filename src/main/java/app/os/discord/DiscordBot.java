@@ -10,8 +10,6 @@ import app.os.discord.commands.music_commands.*;
 import app.os.discord.configs.ConfigListener;
 import app.os.discord.music.reactions.ReactionListener;
 import app.os.main.OS;
-import app.os.sql.drivers.MySQLDriver;
-import app.os.sql.drivers.SQLDriver;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -33,12 +31,12 @@ public class DiscordBot {
     public void launch(Properties properties) {
         try {
             // load database
-            SQLDriver sqlDriver = new MySQLDriver(
-                    properties.getProperty(DiscordProperties.DB_HOSTNAME.getKey()),
-                    Integer.parseInt(properties.getProperty(DiscordProperties.DB_PORT.getKey())),
-                    properties.getProperty(DiscordProperties.DB_REGION.getKey()),
-                    properties.getProperty(DiscordProperties.DB_USER.getKey())
-            );
+//            SQLDriver sqlDriver = new MySQLDriver(
+//                    properties.getProperty(DiscordProperties.DB_HOSTNAME.getKey()),
+//                    Integer.parseInt(properties.getProperty(DiscordProperties.DB_PORT.getKey())),
+//                    properties.getProperty(DiscordProperties.DB_REGION.getKey()),
+//                    properties.getProperty(DiscordProperties.DB_USER.getKey())
+//            );
 
             // load api
             JDA jda = JDABuilder.createDefault(properties.getProperty(DiscordProperties.BOT_TOKEN.getKey())).build();
@@ -83,10 +81,10 @@ public class DiscordBot {
             String googleApiKey = properties.getProperty(DiscordProperties.YOUTUBE_API_KEY.getKey());
 
             commands.addCommand(new TrackQueue.GetQueue());
-            commands.addCommand(new TrackQueue.RemoveQueue(sqlDriver, tracksTable));
-            commands.addCommand(new TrackQueue.DeleteQueue(sqlDriver, tracksTable));
-            commands.addCommand(new TrackQueue.PlayQueue(sqlDriver, tracksTable, googleApiKey));
-            commands.addCommand(new TrackQueue.SaveQueue(sqlDriver, tracksTable, googleApiKey));
+//            commands.addCommand(new TrackQueue.RemoveQueue(sqlDriver, tracksTable));
+//            commands.addCommand(new TrackQueue.DeleteQueue(sqlDriver, tracksTable));
+//            commands.addCommand(new TrackQueue.PlayQueue(sqlDriver, tracksTable, googleApiKey));
+//            commands.addCommand(new TrackQueue.SaveQueue(sqlDriver, tracksTable, googleApiKey));
             commands.addCommand(new Disconnect());
 
             // add listeners
